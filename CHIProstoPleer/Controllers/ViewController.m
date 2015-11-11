@@ -7,21 +7,27 @@
 //
 
 #import "ViewController.h"
+#import "SessionManager.h"
+#import "APIManager.h"
 
 @interface ViewController ()
 
+@property (weak, nonatomic) IBOutlet UIButton *sendButton;
+@property (strong, nonatomic) NSDictionary *dict;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)sendAction:(id)sender
+{
+//    __weak typeof(self) weakSelf = self;
+    SessionManager *sessionManager = [[SessionManager alloc] init];
+    [sessionManager sendRequest];
 }
 
 @end
