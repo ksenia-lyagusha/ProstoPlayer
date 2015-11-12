@@ -10,6 +10,7 @@
 
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
 
-- (void)sendRequest;
-
++ (instancetype)sharedInstance;
+- (void)sendRequestForToken;
+- (NSString *)searchInfo;
 @end

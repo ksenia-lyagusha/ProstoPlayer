@@ -8,7 +8,8 @@
 
 #import "APIManager.h"
 
-NSString * const URL = @"http://api.pleer.com/resource.php";
+NSString * const URL      = @"http://api.pleer.com/resource.php";
+NSString * const TokenURL = @"http://api.pleer.com/token.php";
 
 @interface APIManager ()
 
@@ -18,40 +19,28 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
 
 @implementation APIManager
 
-+ (instancetype)sharedInstance
-{
-    static APIManager *sharedInstance;
-    static dispatch_once_t once_t;
-    dispatch_once(&once_t, ^{
-        sharedInstance = [[self alloc] init];
-    });
-    return sharedInstance;
-}
-
 - (instancetype)init
 {
     self = [super init];
     if (self)
     {
-        self.dataRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:URL]];
+//        self.dataRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:URL]];
     }
     return self;
 }
 
-- (NSURLRequest *)accessToken
+- (NSString *)accessToken
 {
-    self.token = [NSString stringWithFormat:@"login=ksenya-15&password=rewert-321&http://api.pleer.com/token.php&grant_type=client_credentials"];
-    [self.dataRequest setHTTPBody:[self.token dataUsingEncoding:NSUTF8StringEncoding]];
-    
-    return self.dataRequest;
+    self.token = [NSString stringWithFormat:@"username=ksenya-15&password=rewert-321&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY"];    
+    return self.token;
 }
 
-- (NSURLRequest *)refreshToken
+- (NSMutableURLRequest *)refreshToken
 {
     return self.dataRequest;
 }
 
-- (NSURLRequest *)login
+- (NSMutableURLRequest *)login
 {
     NSString *myRequest = [NSString stringWithFormat:@"login=ksenya-15&password=rewert-321&client_id=eYBMRN4iOdy8KYyoNCpY&grant_type=client_credentials"];
     [self.dataRequest setHTTPBody:[myRequest dataUsingEncoding:NSUTF8StringEncoding]];
@@ -59,7 +48,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     return self.dataRequest;
 }
 
-- (NSURLRequest *)searchInfo
+- (NSMutableURLRequest *)searchInfo
 {
 //    query (string, обязательный) — строка поиска. Поддерживает синтаксис ПростоПлеера (artist: track: и т. п.)
 //    page (int, необязательный, по умолчанию 1) — номер страницы
@@ -73,7 +62,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     return self.dataRequest;
 }
 
-- (NSURLRequest *)trackInfo
+- (NSMutableURLRequest *)trackInfo
 {
 //    track_id (string, обязательный) идентификатор трека
     NSString *myRequest = [NSString stringWithFormat:@"query="];
@@ -82,7 +71,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     return self.dataRequest;
 }
 
-- (NSURLRequest *)trackLyrics
+- (NSMutableURLRequest *)trackLyrics
 {
 //    track_id (string, обязательный) идентификатор трека
     NSString *myRequest = [NSString stringWithFormat:@"query="];
@@ -90,7 +79,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     
     return self.dataRequest;
 }
-- (NSURLRequest *)topSongsList
+- (NSMutableURLRequest *)topSongsList
 {
 //    list_type (int, обязательный) тип списка, 1- неделя, 2 - месяц, 3 - 3 месяца, 4 - полгода, 5 - год
 //    page (int) — текущая страница.
@@ -101,7 +90,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     return self.dataRequest;
 }
 
-- (NSURLRequest *)tracksDownloadLink
+- (NSMutableURLRequest *)tracksDownloadLink
 {
 //    track_id (string, обязательный) идентификатор трека
 //    reason (string, обязательный) цель обращения. Должна быть равна listen (загрузка для прослушивания) или save (загрузка для сохранения)

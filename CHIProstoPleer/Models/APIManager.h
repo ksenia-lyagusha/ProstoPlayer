@@ -9,19 +9,18 @@
 #import <Foundation/Foundation.h>
 
 extern NSString * const URL;
+extern NSString * const TokenURL;
 
 @interface APIManager : NSObject
 
-+ (instancetype)sharedInstance;
+- (NSString *)accessToken;
+- (NSMutableURLRequest *)refreshToken;
 
-- (NSURLRequest *)accessToken;
-- (NSURLRequest *)refreshToken;
-
-- (NSURLRequest *)login;
-- (NSURLRequest *)searchInfo;
-- (NSURLRequest *)trackInfo;
-- (NSURLRequest *)trackLyrics;
-- (NSURLRequest *)topSongsList;
-- (NSURLRequest *)tracksDownloadLink;
+- (NSMutableURLRequest *)login;
+- (NSMutableURLRequest *)searchInfo;
+- (NSMutableURLRequest *)trackInfo;
+- (NSMutableURLRequest *)trackLyrics;
+- (NSMutableURLRequest *)topSongsList;
+- (NSMutableURLRequest *)tracksDownloadLink;
 
 @end

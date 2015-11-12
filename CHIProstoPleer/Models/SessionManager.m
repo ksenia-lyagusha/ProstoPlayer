@@ -12,47 +12,80 @@
 
 @interface SessionManager ()
 
-//@property (copy) void (^blockProperty)(NSDictionary *);
-@property (nonatomic, strong) NSMutableData *receivedData;
+@property (nonatomic, strong) NSString *token;
+
 @end
+
 @implementation SessionManager
 
-- (void)sendRequest
++ (instancetype)sharedInstance
+{
+    static SessionManager *sharedInstance;
+    static dispatch_once_t once_t;
+    dispatch_once(&once_t, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
+
+- (void)sendRequestForToken
 {
     NSURLSession *sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                       delegate:self
-                                                 delegateQueue:[NSOperationQueue mainQueue]];
+                                                 delegateQueue:[NSOperationQueue currentQueue]];
     
+    NSURLSessionDataTask *dataTask = [sessionURL dataTaskWithURL:[NSURL URLWithString:TokenURL]];
+    
+    NSString *token = [NSString stringWithFormat:@"username=ksenya-15&password=rewert-321&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY"];
+    NSMutableURLRequest *tokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:TokenURL]];
+    
+    [tokenRequest setHTTPMethod:@"POST"];
+    [tokenRequest setHTTPBody:[token dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSString *checkStr = [tokenRequest cURLCommandString];
+    NSLog(@"%@",checkStr);
+    
+    dataTask = [sessionURL dataTaskWithRequest:tokenRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"response %@", dataStr);
+        
+        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        
+        self.token = [result objectForKey:@"access_token"];
+    }];
+    
+    [dataTask resume];
+}
+
+- (NSString *)searchInfo
+{
+    NSURLSession *sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                                             delegate:self
+                                                        delegateQueue:[NSOperationQueue currentQueue]];
     NSURLSessionDataTask *dataTask = [sessionURL dataTaskWithURL:[NSURL URLWithString:URL]];
     
-    NSURLRequest *dataRequest = [[APIManager sharedInstance] accessToken];
-    NSString *str = [dataRequest cURLCommandString];
-    NSLog(@"%@",str);
+    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=One Republic", self.token];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:URL]];
+
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
     
-    [sessionURL dataTaskWithRequest:dataRequest];
+    NSString *checkStr = [request cURLCommandString];
+    NSLog(@"%@", checkStr);
+    
+    __block NSString *searchResult;
+    dataTask = [sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        
+        
+        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSLog(@"response %@", dataStr);
+        searchResult = [result objectForKey:@""];
+    }];
+    
     [dataTask resume];
-    
-    self.receivedData = [NSMutableData data];
-}
-
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-didReceiveResponse:(NSURLResponse *)response
- completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
-{
-    NSLog(@"response from server is -- %@", response);
-}
-
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveData:(NSData *)data
-{
-    [self.receivedData appendData:data];
-}
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)errorURLSession
-{
-    if (errorURLSession) {
-        NSLog(@"%@", errorURLSession.description);
-    }
+    return searchResult;
 }
 
 @end
