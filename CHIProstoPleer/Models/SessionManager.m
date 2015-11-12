@@ -8,6 +8,7 @@
 
 #import "SessionManager.h"
 #import "APIManager.h"
+#import "NSURLRequest+cURL.h"
 
 @interface SessionManager ()
 
@@ -24,7 +25,10 @@
     
     NSURLSessionDataTask *dataTask = [sessionURL dataTaskWithURL:[NSURL URLWithString:URL]];
     
-    NSURLRequest *dataRequest = [[APIManager sharedInstance] searchInfo];
+    NSURLRequest *dataRequest = [[APIManager sharedInstance] accessToken];
+    NSString *str = [dataRequest cURLCommandString];
+    NSLog(@"%@",str);
+    
     [sessionURL dataTaskWithRequest:dataRequest];
     [dataTask resume];
     

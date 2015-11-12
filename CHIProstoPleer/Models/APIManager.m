@@ -40,8 +40,8 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
 
 - (NSURLRequest *)accessToken
 {
-    NSString *myRequest = [NSString stringWithFormat:@"login=ksenya-15&password=rewert-321&http://api.pleer.com/token.php&grant_type=client_credentials"];
-    [self.dataRequest setHTTPBody:[myRequest dataUsingEncoding:NSUTF8StringEncoding]];
+    self.token = [NSString stringWithFormat:@"login=ksenya-15&password=rewert-321&http://api.pleer.com/token.php&grant_type=client_credentials"];
+    [self.dataRequest setHTTPBody:[self.token dataUsingEncoding:NSUTF8StringEncoding]];
     
     return self.dataRequest;
 }
@@ -68,7 +68,7 @@ NSString * const URL = @"http://api.pleer.com/resource.php";
     
 //    http://api.pleer.com/index.php -d 'access_token=82a9e6125a57199475be066f9f229633296322c8&method=tracks_search&query=aha'
     
-    NSString *myRequest = [NSString stringWithFormat:@"URL access_token=&method=tracks_search&query=One Republic"];
+    NSString *myRequest = [NSString stringWithFormat:@"access_token=&method=tracks_search&query=One Republic"];
     [self.dataRequest setHTTPBody:[myRequest dataUsingEncoding:NSUTF8StringEncoding]];
     return self.dataRequest;
 }
