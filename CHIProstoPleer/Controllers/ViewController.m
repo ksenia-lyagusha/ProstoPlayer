@@ -32,9 +32,9 @@
 
 - (IBAction)searchTextField:(id)sender
 {
-    SessionManager *sessionManager = [[SessionManager alloc] init];
-    [sessionManager searchInfo];
-    
+//    SessionManager *sessionManager = [[SessionManager alloc] init];
+//    [sessionManager searchInfo];
+
 }
 #pragma mark - UITextFieldDelegate
 
@@ -47,8 +47,9 @@
     
     [textField resignFirstResponder];
     
-    NSString *searchResult = [[SessionManager sharedInstance] searchInfo];
-    self.searchResult.text = searchResult;
+//    NSString *searchResult =
+    [[SessionManager sharedInstance] topSongsList];
+//    self.searchResult.text = searchResult;
     
     return YES;
 }

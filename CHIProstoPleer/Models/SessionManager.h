@@ -13,4 +13,6 @@
 + (instancetype)sharedInstance;
 - (void)sendRequestForToken;
 - (NSString *)searchInfo;
+- (void)topSongsList;
+
 @end
