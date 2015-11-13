@@ -32,10 +32,9 @@
 
 - (IBAction)searchTextField:(id)sender
 {
-//    SessionManager *sessionManager = [[SessionManager alloc] init];
-//    [sessionManager searchInfo];
-
+    
 }
+
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -44,14 +43,20 @@
     {
         return NO;
     }
-    
+    [[SessionManager sharedInstance] tracksDownloadLink];
     [textField resignFirstResponder];
-    
-//    NSString *searchResult =
-    [[SessionManager sharedInstance] topSongsList];
-//    self.searchResult.text = searchResult;
-    
     return YES;
 }
+
+- (IBAction)searchButton:(id)sender
+{
+    [[SessionManager sharedInstance] searchInfo];
+}
+
+- (IBAction)downloadButton:(id)sender
+{
+    [[SessionManager sharedInstance] topSongsList];
+}
+
 
 @end

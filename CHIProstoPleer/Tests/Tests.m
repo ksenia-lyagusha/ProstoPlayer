@@ -26,24 +26,42 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    
-    SessionManager *manager = [[SessionManager alloc] init];
-    NSAssert(manager, @"Manager always should create");
+- (void)testSendRequestForToken {
+ 
+    [[SessionManager sharedInstance] sendRequestForToken:^(NSString *token, NSError *error) {
+        XCTAssert(token, @"Should always receive token");
+    }];
 }
 
-- (void)testFalseTest {
+- (void)testTopSongsList
+{
+    [[SessionManager sharedInstance] topSongsList:^(NSString *searchResult, NSError *error) {
+        XCTAssert(searchResult, @"Should always receive token");
+    }];
     
-    SessionManager *manager = [[SessionManager alloc] init];
-    NSAssert(!manager, @"This is bullshit");
 }
-//- (void)testPerformanceExample {
-//    // This is an example of a performance test case.
-//    [self measureBlock:^{
-//        // Put the code you want to measure the time of here.
-//    }];
-//}
+
+- (void)testSearchInfo
+{
+    [[SessionManager sharedInstance] searchInfo:^(NSString *searchResult, NSError *error) {
+        XCTAssert(searchResult, @"Should always receive token");
+    }];
+}
+
+- (void)testTrackLyrics
+{
+    [[SessionManager sharedInstance] trackLyrics:^(NSString *text, NSError *error) {
+        XCTAssert(text, @"Should receive lyric");
+    }];
+
+}
+
+- (void)testTracksDownloadLink
+{
+    [[SessionManager sharedInstance] tracksDownloadLink:^(NSString *link, NSError *error) {
+        XCTAssert(link, @"Should receive link");
+    }];
+    
+}
 
 @end
