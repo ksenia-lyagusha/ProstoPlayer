@@ -19,6 +19,8 @@
 		676444451BF2412500967F5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6764443A1BF2412500967F5A /* main.m */; };
 		676444461BF2412500967F5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6764443D1BF2412500967F5A /* Assets.xcassets */; };
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
+		D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */; };
+		D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,10 @@
 		6764443D1BF2412500967F5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6EF7B4F42A59AACC8BA4D5F8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		805B6B06A735058C4537F79D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
+		D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
+		D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTopSongsListViewController.h; sourceTree = "<group>"; };
+		D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTopSongsListViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +151,10 @@
 			children = (
 				676444361BF2412500967F5A /* ViewController.h */,
 				676444371BF2412500967F5A /* ViewController.m */,
+				D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */,
+				D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */,
+				D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */,
+				D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -350,6 +360,8 @@
 			files = (
 				676444401BF2412500967F5A /* AppDelegate.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
+				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
+				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
 				676444431BF2412500967F5A /* ViewController.m in Sources */,
 				6709DD021BF35F860089B8CC /* APIManager.m in Sources */,

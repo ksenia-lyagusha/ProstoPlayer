@@ -17,89 +17,144 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N06-DG-6w1">
-                                <rect key="frame" x="200" y="285" width="200" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Send">
-                                    <color key="titleColor" red="0.5" green="0.0" blue="0.5" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                                <connections>
-                                    <action selector="sendAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="D0q-PS-dTx"/>
-                                </connections>
-                            </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iLl-2o-lbg">
-                                <rect key="frame" x="73" y="148" width="455" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Find track" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iLl-2o-lbg">
+                                <rect key="frame" x="73" y="198" width="455" height="30"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                 <connections>
                                     <action selector="searchTextField:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="nsZ-BP-89o"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="N1g-SC-C6y"/>
                                 </connections>
                             </textField>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="QmP-Bs-vgq">
-                                <rect key="frame" x="172" y="340" width="256" height="128"/>
-                                <animations/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="bjg-4b-wX6"/>
-                                    <constraint firstAttribute="width" constant="256" id="chB-t5-gEh"/>
-                                </constraints>
-                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
-                                <connections>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="Ibp-mz-ZRa"/>
-                                </connections>
-                            </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jc6-5q-vCf">
-                                <rect key="frame" x="492" y="285" width="48" height="30"/>
+                                <rect key="frame" x="483" y="285" width="97" height="30"/>
                                 <animations/>
-                                <state key="normal" title="Search"/>
+                                <state key="normal" title="Get top songs"/>
                                 <connections>
-                                    <action selector="searchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ojj-b3-kmz"/>
+                                    <action selector="getTopSongs:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RMs-Xf-3ed"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wDE-ZS-Ydc">
-                                <rect key="frame" x="20" y="285" width="100" height="30"/>
+                                <rect key="frame" x="20" y="285" width="69" height="30"/>
                                 <animations/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="Ajt-c5-jAa"/>
-                                </constraints>
                                 <state key="normal" title="Download"/>
                                 <connections>
-                                    <action selector="downloadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7yt-5n-2qr"/>
+                                    <action selector="downloadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="G4F-im-Pwo"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kNz-BO-qOw">
+                                <rect key="frame" x="268" y="365" width="65" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Get lyrics"/>
+                                <connections>
+                                    <action selector="lyricsAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ijf-A2-wBk"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N06-DG-6w1">
+                                <rect key="frame" x="267" y="285" width="67" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Get token"/>
+                                <connections>
+                                    <action selector="getToken:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PSn-RM-SeW"/>
                                 </connections>
                             </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="kNz-BO-qOw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="8YB-QG-SCM"/>
                             <constraint firstItem="jc6-5q-vCf" firstAttribute="centerY" secondItem="N06-DG-6w1" secondAttribute="centerY" id="Kyz-y9-sbO"/>
-                            <constraint firstItem="jc6-5q-vCf" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" multiplier="0.9" id="MS8-Nd-tVT"/>
-                            <constraint firstItem="wDE-ZS-Ydc" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" multiplier="0.2" id="NFp-07-zHd"/>
                             <constraint firstItem="N06-DG-6w1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="R6A-wq-vEX"/>
-                            <constraint firstItem="jc6-5q-vCf" firstAttribute="top" secondItem="N06-DG-6w1" secondAttribute="top" id="SJj-in-Ez6"/>
                             <constraint firstItem="iLl-2o-lbg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="73" id="SKQ-pI-IYQ"/>
-                            <constraint firstItem="QmP-Bs-vgq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Zdm-5w-dIi"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="QmP-Bs-vgq" secondAttribute="bottom" constant="132" id="f1T-GB-pfw"/>
+                            <constraint firstAttribute="trailing" secondItem="jc6-5q-vCf" secondAttribute="trailing" constant="20" id="SUI-Xa-fOg"/>
                             <constraint firstItem="wDE-ZS-Ydc" firstAttribute="centerY" secondItem="N06-DG-6w1" secondAttribute="centerY" id="lit-iI-dO5"/>
                             <constraint firstItem="wDE-ZS-Ydc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="pez-id-Nec"/>
                             <constraint firstAttribute="trailing" secondItem="iLl-2o-lbg" secondAttribute="trailing" constant="72" id="qti-jD-dQ8"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="iLl-2o-lbg" secondAttribute="bottom" constant="422" id="sPM-hg-egR"/>
-                            <constraint firstItem="N06-DG-6w1" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="1:3" id="wmn-Iv-TMx"/>
+                            <constraint firstItem="iLl-2o-lbg" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" multiplier="0.38" id="sPM-hg-egR"/>
+                            <constraint firstItem="kNz-BO-qOw" firstAttribute="top" secondItem="N06-DG-6w1" secondAttribute="bottom" constant="50" id="uMN-T2-gDz"/>
                             <constraint firstItem="N06-DG-6w1" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wrQ-D6-b1R"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="searchResult" destination="QmP-Bs-vgq" id="o8N-6O-mTC"/>
                         <outlet property="sendButton" destination="N06-DG-6w1" id="27l-0R-od8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="537" y="353"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="lZZ-ac-YSL">
+            <objects>
+                <viewController id="aFJ-Bz-0ne" customClass="PPLoginViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="zt8-yZ-rCZ"/>
+                        <viewControllerLayoutGuide type="bottom" id="u3J-ve-iQO"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="iRn-bA-TGD">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Login" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xgw-Qe-joj">
+                                <rect key="frame" x="252" y="146" width="97" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L3E-gD-xfi">
+                                <rect key="frame" x="252" y="285" width="97" height="30"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5fA-HE-gQI">
+                                <rect key="frame" x="274" y="423" width="53" height="30"/>
+                                <animations/>
+                                <state key="normal" title="Sign in"/>
+                                <connections>
+                                    <action selector="signInButton:" destination="aFJ-Bz-0ne" eventType="touchUpInside" id="GyJ-s8-GFL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QdL-OA-7jN" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-169" y="353"/>
+        </scene>
+        <!--Top Songs List View Controller-->
+        <scene sceneID="dFq-EP-QVH">
+            <objects>
+                <tableViewController id="DPv-zi-ZW5" customClass="PPTopSongsListViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="bBk-hc-iHv">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="TUT-lg-fch">
+                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TUT-lg-fch" id="2Z0-G7-bBm">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <animations/>
+                                </tableViewCellContentView>
+                                <animations/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="DPv-zi-ZW5" id="lo6-jO-med"/>
+                            <outlet property="delegate" destination="DPv-zi-ZW5" id="uws-Fw-OLf"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rdc-K2-JVB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1253" y="353"/>
         </scene>
     </scenes>
 </document>

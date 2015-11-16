@@ -13,6 +13,7 @@
 NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";
 NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
 NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewert-321&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY";
+NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
 
 @interface SessionManager ()
 
@@ -40,11 +41,8 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
     self = [super init];
     if (self) {
         self.sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                                                 delegate:nil
-                                                            delegateQueue:[[NSOperationQueue alloc] init]];
-        self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-        
-        [self.request setHTTPMethod:@"POST"];
+                                                        delegate:nil
+                                                   delegateQueue:[[NSOperationQueue alloc] init]];
     }
     return self;
 }
@@ -63,26 +61,15 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
     [tokenRequest setHTTPMethod:@"POST"];
     [tokenRequest setHTTPBody:[SessionManagerAccessToken dataUsingEncoding:NSUTF8StringEncoding]];
     
-    NSString *checkStr = [tokenRequest cURLCommandString];
-    NSLog(@"%@",checkStr);
-    
-    __block NSString *blockToken;
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:tokenRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"response %@", dataStr);
-        
-        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        
-        blockToken = [result objectForKey:@"access_token"];
-        [[NSUserDefaults standardUserDefaults] setObject:blockToken forKey:@"TOKEN"];
+         NSString *token = [resultInfo objectForKey:@"access_token"];
+        [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
         
         if (completion) {
-            completion(blockToken, error);
+            completion(token, error);
         }
     }];
-    
-    [dataTask resume];
 }
 
 - (void)searchInfo
@@ -90,29 +77,28 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
     [self searchInfo:nil];
 }
 
-- (void)searchInfo:(void(^)(NSString *trackID, NSError *error))completion
+- (void)searchInfo:(void(^)(NSArray *searchInfo, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"TOKEN"];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
     NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=Republic", token];
-  
-    [self.request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
     
-    NSString *checkStr = [self.request cURLCommandString];
-    NSLog(@"%@", checkStr);
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http:api.pleer.com/index.php"]];
+    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPMethod:@"POST"];
     
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"response %@, error %@", dataStr, error);
-        self.trackID = [result objectForKey:@"id"];
+        if (error) {
+            return ;
+        }
+        
+        self.trackID = [resultInfo objectForKey:@"id"];
+        NSArray *searchInfo = [resultInfo allValues];
         
         if (completion) {
-            completion(self.trackID, error);
+            completion(searchInfo, error);
         }
     }];
-    
-    [dataTask resume];
 }
 
 - (void)topSongsList
@@ -120,36 +106,28 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
     [self topSongsList:nil];
 }
 
-- (void)topSongsList:(void(^)(NSString *title, NSError *error))completion
+- (void)topSongsList:(void(^)(NSArray *topList, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"TOKEN"];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
  
     NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=1", token];
-
-    [self.request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
     
-    NSString *checkStr = [self.request cURLCommandString];
-    NSLog(@"%@", checkStr);
-    
-    __block NSString *searchResult;
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPMethod:@"POST"];
 
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"response %@, error %@", dataStr, error);
-        NSDictionary *tracks = [result objectForKey:@"tracks"];
+        NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
         NSDictionary *values = [tracks objectForKey:@"data"];
         NSDictionary *datas = [values objectForKey:@"13361656"];
         self.trackID = [datas objectForKey:@"id"];
-//        self.trackID = [value4 objectForKey:@"id"];
         
+        NSArray *topList = [values allValues];
         if (completion) {
-            completion(searchResult, error);
+            completion(topList, error);
         }
     }];
-    
-    [dataTask resume];
 }
 
 - (void)trackLyrics
@@ -159,29 +137,21 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
 
 - (void)trackLyrics:(void(^)(NSString *title, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"TOKEN"];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
     NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, self.trackID];
     
-    [self.request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPMethod:@"POST"];
     
-    NSString *checkStr = [self.request cURLCommandString];
-    NSLog(@"%@", checkStr);
-    
-    __block NSString *searchResult;
-    
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"response %@, error %@", dataStr, error);
-        searchResult = [result objectForKey:@"plain text"];
+       NSString *trackLyrics = [resultInfo objectForKey:@"text"];
         
         if (completion) {
-            completion(searchResult, error);
+            completion(trackLyrics, error);
         }
     }];
-    
-    [dataTask resume];
 }
 
 - (void)tracksDownloadLink
@@ -189,41 +159,40 @@ NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewer
     [self tracksDownloadLink:nil];
 }
 
-- (void)tracksDownloadLink:(void(^)(NSString *token, NSError *error))completion
+- (void)tracksDownloadLink:(void(^)(NSString *, NSError *))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:@"TOKEN"];
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
     NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, self.trackID];
     
-    [self.request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPMethod:@"POST"];
     
-    NSURLSessionDataTask *dataTask = [self dataTaskWithRequest:@"URL"];
+    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-//        if (completion) {
-//            completion(searchResult, error);
-//        }
-    
-    [dataTask resume];
+        NSString *link = [resultInfo objectForKey:@"url"];
+        if (completion) {
+            completion(link, error);
+        }
+    }];
 }
 
-- (NSURLSessionDataTask *)dataTaskWithRequest:(NSString *)key
+- (void)dataTaskWithRequest:(NSMutableURLRequest *)request complitionHandler:(void(^)(NSDictionary *, NSError *))completion
 {
     NSString *checkStr = [self.request cURLCommandString];
     NSLog(@"%@", checkStr);
     
-    __block NSString *searchResult;
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:self.request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        NSString *dataStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"response %@, error %@", dataStr, error);
-        searchResult = [result objectForKey:key];
         
-//        if (completion) {
-//            completion(searchResult, error);
-//        }
+        NSLog(@"response %@, error %@", result, error);
+        if (completion) {
+            completion(result, error);
+        }
     }];
     
-    return dataTask;
+    [dataTask resume];
 }
 
 @end

@@ -20,10 +20,10 @@ extern NSString * const SessionManagerTokenURL;
 - (void)sendRequestForToken:(void(^)(NSString *token, NSError *error))completion;
 
 - (void)searchInfo;
-- (void)searchInfo:(void(^)(NSString *token, NSError *error))completion;
+- (void)searchInfo:(void(^)(NSArray *searchInfo, NSError *error))completion;
 
 - (void)topSongsList;
-- (void)topSongsList:(void(^)(NSString *title, NSError *error))completion;
+- (void)topSongsList:(void(^)(NSArray *topList, NSError *error))completion;
 
 - (void)trackLyrics;
 - (void)trackLyrics:(void(^)(NSString *title, NSError *error))completion;

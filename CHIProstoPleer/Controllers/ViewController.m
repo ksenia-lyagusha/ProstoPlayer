@@ -13,8 +13,6 @@
 @interface ViewController () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UIButton *sendButton;
-@property (strong, nonatomic) NSDictionary *dict;
-@property (weak, nonatomic) IBOutlet UITextView *searchResult;
 
 @end
 
@@ -24,9 +22,9 @@
     [super viewDidLoad];
 }
 
-- (IBAction)sendAction:(id)sender
+- (IBAction)getToken:(id)sender
 {
-    [[SessionManager sharedInstance] sendRequestForToken];
+     [[SessionManager sharedInstance] sendRequestForToken];
     
 }
 
@@ -43,20 +41,25 @@
     {
         return NO;
     }
-    [[SessionManager sharedInstance] tracksDownloadLink];
+    [[SessionManager sharedInstance] searchInfo];
     [textField resignFirstResponder];
     return YES;
 }
 
-- (IBAction)searchButton:(id)sender
+- (IBAction)getTopSongs:(id)sender
 {
-    [[SessionManager sharedInstance] searchInfo];
+    [[SessionManager sharedInstance] topSongsList];
+    
 }
 
 - (IBAction)downloadButton:(id)sender
 {
-    [[SessionManager sharedInstance] topSongsList];
+    [[SessionManager sharedInstance] tracksDownloadLink];
 }
 
 
+- (IBAction)lyricsAction:(id)sender
+{
+    [[SessionManager sharedInstance] trackLyrics];
+}
 @end
