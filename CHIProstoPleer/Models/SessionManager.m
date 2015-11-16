@@ -49,11 +49,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 
 #pragma mark - ProstoPleer API
 
-- (void)sendRequestForToken
-{
-    [self sendRequestForToken:nil];
-}
-
 - (void)sendRequestForToken:(void(^)(NSString *token, NSError *error))completion
 {
     NSMutableURLRequest *tokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerTokenURL]];
@@ -70,11 +65,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
             completion(token, error);
         }
     }];
-}
-
-- (void)searchInfo
-{
-    [self searchInfo:nil];
 }
 
 - (void)searchInfo:(void(^)(NSArray *searchInfo, NSError *error))completion
@@ -101,11 +91,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)topSongsList
-{
-    [self topSongsList:nil];
-}
-
 - (void)topSongsList:(void(^)(NSArray *topList, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
@@ -130,11 +115,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)trackLyrics
-{
-    [self trackLyrics:nil];
-}
-
 - (void)trackLyrics:(void(^)(NSString *title, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
@@ -152,11 +132,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
             completion(trackLyrics, error);
         }
     }];
-}
-
-- (void)tracksDownloadLink
-{
-    [self tracksDownloadLink:nil];
 }
 
 - (void)tracksDownloadLink:(void(^)(NSString *, NSError *))completion

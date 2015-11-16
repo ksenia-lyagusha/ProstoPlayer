@@ -9,7 +9,10 @@
 #import "PPLoginViewController.h"
 #import "SessionManager.h"
 
-@interface PPLoginViewController ()
+@interface PPLoginViewController () <UITextFieldDelegate>
+
+@property (weak, nonatomic) IBOutlet UITextField *login;
+@property (weak, nonatomic) IBOutlet UITextField *password;
 
 @end
 
@@ -17,6 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+//    self.view.backgroundColor = [UIColor colorWithRed:<#(CGFloat)#> green:<#(CGFloat)#> blue:<#(CGFloat)#> alpha:<#(CGFloat)#>];
 
 }
 
@@ -29,4 +33,11 @@
 {
     
 }
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
 @end

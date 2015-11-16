@@ -16,19 +16,14 @@ extern NSString * const SessionManagerTokenURL;
 
 + (instancetype)sharedInstance;
 
-- (void)sendRequestForToken;
 - (void)sendRequestForToken:(void(^)(NSString *token, NSError *error))completion;
 
-- (void)searchInfo;
 - (void)searchInfo:(void(^)(NSArray *searchInfo, NSError *error))completion;
 
-- (void)topSongsList;
 - (void)topSongsList:(void(^)(NSArray *topList, NSError *error))completion;
 
-- (void)trackLyrics;
 - (void)trackLyrics:(void(^)(NSString *title, NSError *error))completion;
 
-- (void)tracksDownloadLink;
 - (void)tracksDownloadLink:(void(^)(NSString *title, NSError *error))completion;
 
 @end

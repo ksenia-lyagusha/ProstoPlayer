@@ -12,19 +12,29 @@
 
 @interface ViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UIButton *sendButton;
-
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 }
 
-- (IBAction)getToken:(id)sender
+- (IBAction)getTopSongsAction:(id)sender
 {
-     [[SessionManager sharedInstance] sendRequestForToken];
+    [[SessionManager sharedInstance] topSongsList:nil];
+    
+}
+
+- (IBAction)downloadButton:(id)sender
+{
+    [[SessionManager sharedInstance] tracksDownloadLink:nil];
+}
+
+- (IBAction)getLyricsAction:(id)sender
+{
+     [[SessionManager sharedInstance] trackLyrics:nil];
     
 }
 
@@ -41,25 +51,10 @@
     {
         return NO;
     }
-    [[SessionManager sharedInstance] searchInfo];
+    
+    [[SessionManager sharedInstance] searchInfo:nil];
     [textField resignFirstResponder];
     return YES;
 }
 
-- (IBAction)getTopSongs:(id)sender
-{
-    [[SessionManager sharedInstance] topSongsList];
-    
-}
-
-- (IBAction)downloadButton:(id)sender
-{
-    [[SessionManager sharedInstance] tracksDownloadLink];
-}
-
-
-- (IBAction)lyricsAction:(id)sender
-{
-    [[SessionManager sharedInstance] trackLyrics];
-}
 @end

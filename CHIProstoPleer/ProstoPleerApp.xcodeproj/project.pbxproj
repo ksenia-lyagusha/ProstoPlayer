@@ -17,8 +17,8 @@
 		676444421BF2412500967F5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444331BF2412500967F5A /* Main.storyboard */; };
 		676444431BF2412500967F5A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444371BF2412500967F5A /* ViewController.m */; };
 		676444451BF2412500967F5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6764443A1BF2412500967F5A /* main.m */; };
-		676444461BF2412500967F5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6764443D1BF2412500967F5A /* Assets.xcassets */; };
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
+		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
 		D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */; };
 		D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */; };
 /* End PBXBuildFile section */
@@ -51,9 +51,9 @@
 		676444371BF2412500967F5A /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		676444391BF2412500967F5A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6764443A1BF2412500967F5A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6764443D1BF2412500967F5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6EF7B4F42A59AACC8BA4D5F8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		805B6B06A735058C4537F79D /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D717805F1BFA67E6005246B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
 		D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTopSongsListViewController.h; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 		6764443C1BF2412500967F5A /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				6764443D1BF2412500967F5A /* Assets.xcassets */,
+				D717805F1BFA67E6005246B3 /* Assets.xcassets */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -290,8 +290,8 @@
 			files = (
 				676444421BF2412500967F5A /* Main.storyboard in Resources */,
 				6709DCFE1BF353E60089B8CC /* Info.plist in Resources */,
+				D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */,
 				676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */,
-				676444461BF2412500967F5A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -510,9 +510,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CHI.ProstoPleerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -522,9 +524,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CHI.ProstoPleerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
