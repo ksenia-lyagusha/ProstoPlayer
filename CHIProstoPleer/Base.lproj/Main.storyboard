@@ -43,27 +43,18 @@
                                     <action selector="downloadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="G4F-im-Pwo"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kNz-BO-qOw">
-                                <rect key="frame" x="268" y="365" width="65" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N06-DG-6w1">
+                                <rect key="frame" x="268" y="285" width="65" height="30"/>
                                 <animations/>
                                 <state key="normal" title="Get lyrics"/>
                                 <connections>
-                                    <action selector="lyricsAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ijf-A2-wBk"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N06-DG-6w1">
-                                <rect key="frame" x="267" y="285" width="67" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Get token"/>
-                                <connections>
-                                    <action selector="getToken:" destination="BYZ-38-t0r" eventType="touchUpInside" id="PSn-RM-SeW"/>
+                                    <action selector="lyricsAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rbG-4J-ZqM"/>
                                 </connections>
                             </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="kNz-BO-qOw" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="8YB-QG-SCM"/>
                             <constraint firstItem="jc6-5q-vCf" firstAttribute="centerY" secondItem="N06-DG-6w1" secondAttribute="centerY" id="Kyz-y9-sbO"/>
                             <constraint firstItem="N06-DG-6w1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="R6A-wq-vEX"/>
                             <constraint firstItem="iLl-2o-lbg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="73" id="SKQ-pI-IYQ"/>
@@ -72,13 +63,9 @@
                             <constraint firstItem="wDE-ZS-Ydc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="pez-id-Nec"/>
                             <constraint firstAttribute="trailing" secondItem="iLl-2o-lbg" secondAttribute="trailing" constant="72" id="qti-jD-dQ8"/>
                             <constraint firstItem="iLl-2o-lbg" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" multiplier="0.38" id="sPM-hg-egR"/>
-                            <constraint firstItem="kNz-BO-qOw" firstAttribute="top" secondItem="N06-DG-6w1" secondAttribute="bottom" constant="50" id="uMN-T2-gDz"/>
                             <constraint firstItem="N06-DG-6w1" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wrQ-D6-b1R"/>
                         </constraints>
                     </view>
-                    <connections>
-                        <outlet property="sendButton" destination="N06-DG-6w1" id="27l-0R-od8"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

@@ -29,11 +29,12 @@
 
 - (void)testSendRequestForToken
 {
-    [[SessionManager sharedInstance] sendRequestForToken:^(NSString *token, NSError *error) {
+    [[SessionManager sharedInstance] sendRequestForTokenWithLogin:@"ksenya-15" andPassword:@"rewert-321" withComplitionHandler:^(NSString *token, NSError *error) {
         XCTAssert(token, @"Should always receive token");
         
         [self.expectation fulfill];
     }];
+    
     [self waitForExpectationsWithTimeout:30.0 handler:^(NSError * _Nullable error) {
         XCTAssertNil(error, "Error");
     }];
@@ -41,8 +42,8 @@
 
 - (void)testTopSongsList
 {
-    [[SessionManager sharedInstance] topSongsList:^(NSArray *topList, NSError *error) {
-        XCTAssert(topList, @"Should always receive top list array");
+    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
+        XCTAssert(topList, @"Should always receive top list");
         
         [self.expectation fulfill];
     }];
@@ -54,8 +55,9 @@
 
 - (void)testSearchInfo
 {
-    [[SessionManager sharedInstance] searchInfo:^(NSArray *searchInfo, NSError *error) {
+    [[SessionManager sharedInstance] searchInfoWithText:@"One Republic" withComplitionHandler:^(NSArray *searchInfo, NSError *error) {
         XCTAssert(searchInfo, @"Should always receive searching info");
+        
         
         [self.expectation fulfill];
     }];
@@ -67,7 +69,7 @@
 
 - (void)testTrackLyrics
 {
-    [[SessionManager sharedInstance] trackLyrics:^(NSString *text, NSError *error) {
+    [[SessionManager sharedInstance] trackLyricsWithTrackID:@"44736143Ee9" withComplitionHandler:^(NSString *text, NSError *error) {
         XCTAssert(text, @"Should receive lyrics");
         
         [self.expectation fulfill];
@@ -80,7 +82,7 @@
 
 - (void)testTracksDownloadLink
 {
-    [[SessionManager sharedInstance] tracksDownloadLink:^(NSString *link, NSError *error) {
+    [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:@"44736143Ee9" withComplitionHandler:^(NSString *link, NSError *error) {
         XCTAssert(link, @"Should receive link");
     
         [self.expectation fulfill];

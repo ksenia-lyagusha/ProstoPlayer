@@ -22,11 +22,11 @@
 
 - (IBAction)signInButton:(id)sender
 {
-    [[SessionManager sharedInstance] sendRequestForToken];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+     [[SessionManager sharedInstance] sendRequestForTokenWithLogin:@"ksenya-15" andPassword:@"rewert-321" withComplitionHandler:^(NSString *token, NSError *error) {
+         
+         
+     }];
     
 }
+
 @end

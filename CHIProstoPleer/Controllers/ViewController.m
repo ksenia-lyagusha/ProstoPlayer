@@ -11,21 +11,13 @@
 #import "APIManager.h"
 
 @interface ViewController () <UITextFieldDelegate>
-
-@property (weak, nonatomic) IBOutlet UIButton *sendButton;
-
+@property (nonatomic, strong) NSDictionary *topList;
 @end
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-}
-
-- (IBAction)getToken:(id)sender
-{
-     [[SessionManager sharedInstance] sendRequestForToken];
-    
 }
 
 - (IBAction)searchTextField:(id)sender
@@ -41,25 +33,29 @@
     {
         return NO;
     }
-    [[SessionManager sharedInstance] searchInfo];
+    [[SessionManager sharedInstance] searchInfoWithText:textField.text withComplitionHandler:nil];
     [textField resignFirstResponder];
     return YES;
 }
 
 - (IBAction)getTopSongs:(id)sender
 {
-    [[SessionManager sharedInstance] topSongsList];
+    [[SessionManager sharedInstance] sendRequestForTokenWithLogin:@"ksenya-15" andPassword:@"rewert-321" withComplitionHandler:nil];
+    
+    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
+        self.topList = topList;
+    }];
     
 }
 
 - (IBAction)downloadButton:(id)sender
 {
-    [[SessionManager sharedInstance] tracksDownloadLink];
+    [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:@"44736143Ee9" withComplitionHandler:nil];
 }
 
 
 - (IBAction)lyricsAction:(id)sender
 {
-    [[SessionManager sharedInstance] trackLyrics];
+    [[SessionManager sharedInstance] trackLyricsWithTrackID:@"44736143Ee9" withComplitionHandler:nil];
 }
 @end
