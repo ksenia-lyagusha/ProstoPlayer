@@ -12,6 +12,8 @@
 
 @interface ViewController () <UITextFieldDelegate>
 
+@property (nonatomic, strong) NSDictionary *topList;
+
 @end
 
 @implementation ViewController
@@ -19,23 +21,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-}
-
-- (IBAction)getTopSongsAction:(id)sender
-{
-    [[SessionManager sharedInstance] topSongsList:nil];
-    
-}
-
-- (IBAction)downloadButton:(id)sender
-{
-    [[SessionManager sharedInstance] tracksDownloadLink:nil];
-}
-
-- (IBAction)getLyricsAction:(id)sender
-{
-     [[SessionManager sharedInstance] trackLyrics:nil];
-    
 }
 
 - (IBAction)searchTextField:(id)sender
@@ -51,10 +36,33 @@
     {
         return NO;
     }
+
+    [[SessionManager sharedInstance] searchInfoWithText:textField.text withComplitionHandler:nil];
     
-    [[SessionManager sharedInstance] searchInfo:nil];
     [textField resignFirstResponder];
     return YES;
+}
+
+
+- (IBAction)getTopSongs:(id)sender
+{
+    [[SessionManager sharedInstance] sendRequestForTokenWithLogin:@"ksenya-15" andPassword:@"rewert-321" withComplitionHandler:nil];
+    
+    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
+        self.topList = topList;
+    }];
+    
+}
+
+- (IBAction)downloadButton:(id)sender
+{
+    [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:@"44736143Ee9" withComplitionHandler:nil];
+}
+
+
+- (IBAction)lyricsAction:(id)sender
+{ 
+    [[SessionManager sharedInstance] trackLyricsWithTrackID:@"44736143Ee9" withComplitionHandler:nil];
 }
 
 @end

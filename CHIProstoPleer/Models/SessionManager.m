@@ -12,14 +12,13 @@
 
 NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";
 NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
-NSString * const SessionManagerAccessToken = @"username=ksenya-15&password=rewert-321&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY";
 NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
 
 @interface SessionManager ()
 
 
 @property (nonatomic, strong) NSURLSession *sessionURL;
-@property (nonatomic, strong) NSString *trackID;
+//@property (nonatomic, strong) NSString *trackID;
 @property (nonatomic, strong) NSMutableURLRequest *request;
 
 @end
@@ -49,12 +48,13 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 
 #pragma mark - ProstoPleer API
 
-- (void)sendRequestForToken:(void(^)(NSString *token, NSError *error))completion
+- (void)sendRequestForTokenWithLogin:(NSString *)login andPassword:(NSString *)password withComplitionHandler:(void(^)(NSString *token, NSError *error))completion
 {
     NSMutableURLRequest *tokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerTokenURL]];
     
+    NSString *requestText = [NSString stringWithFormat:@"username=%@&password=%@&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY", login, password];
     [tokenRequest setHTTPMethod:@"POST"];
-    [tokenRequest setHTTPBody:[SessionManagerAccessToken dataUsingEncoding:NSUTF8StringEncoding]];
+    [tokenRequest setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
     
     [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
@@ -67,10 +67,10 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)searchInfo:(void(^)(NSArray *searchInfo, NSError *error))completion
+- (void)searchInfoWithText:(NSString *)text withComplitionHandler:(void(^)(NSArray *searchInfo, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=Republic", token];
+    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=%@", token, text];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http:api.pleer.com/index.php"]];
     [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -82,7 +82,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
             return ;
         }
         
-        self.trackID = [resultInfo objectForKey:@"id"];
         NSArray *searchInfo = [resultInfo allValues];
         
         if (completion) {
@@ -91,7 +90,7 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)topSongsList:(void(^)(NSArray *topList, NSError *error))completion
+- (void)topSongsList:(void(^)(NSDictionary *topList, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
  
@@ -105,20 +104,17 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         
         NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
         NSDictionary *values = [tracks objectForKey:@"data"];
-        NSDictionary *datas = [values objectForKey:@"13361656"];
-        self.trackID = [datas objectForKey:@"id"];
         
-        NSArray *topList = [values allValues];
         if (completion) {
-            completion(topList, error);
+            completion(values, error);
         }
     }];
 }
 
-- (void)trackLyrics:(void(^)(NSString *title, NSError *error))completion
+- (void)trackLyricsWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *title, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, self.trackID];
+    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, trackID];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
     [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -134,10 +130,10 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)tracksDownloadLink:(void(^)(NSString *, NSError *))completion
+- (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, self.trackID];
+    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, trackID];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
     [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
