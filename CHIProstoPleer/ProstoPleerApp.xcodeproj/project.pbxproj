@@ -20,7 +20,9 @@
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
 		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
 		D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */; };
+		D76D144C1BFD129000D10503 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = D76D144B1BFD129000D10503 /* LoginView.m */; };
 		D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */; };
+		D797722B1BFD1CB8005E6F0D /* UIAlertController+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */; };
 		D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -57,8 +59,12 @@
 		D717805F1BFA67E6005246B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
+		D76D144A1BFD129000D10503 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = SOURCE_ROOT; };
+		D76D144B1BFD129000D10503 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = SOURCE_ROOT; };
 		D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTopSongsListViewController.h; sourceTree = "<group>"; };
 		D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTopSongsListViewController.m; sourceTree = "<group>"; };
+		D79772291BFD1CB8005E6F0D /* UIAlertController+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Category.h"; sourceTree = SOURCE_ROOT; };
+		D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Category.m"; sourceTree = SOURCE_ROOT; };
 		D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -180,6 +186,8 @@
 		6764443E1BF2412500967F5A /* Utility */ = {
 			isa = PBXGroup;
 			children = (
+				D79772291BFD1CB8005E6F0D /* UIAlertController+Category.h */,
+				D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -187,6 +195,8 @@
 		6764443F1BF2412500967F5A /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D76D144A1BFD129000D10503 /* LoginView.h */,
+				D76D144B1BFD129000D10503 /* LoginView.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -363,7 +373,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				676444401BF2412500967F5A /* AppDelegate.m in Sources */,
+				D797722B1BFD1CB8005E6F0D /* UIAlertController+Category.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
+				D76D144C1BFD129000D10503 /* LoginView.m in Sources */,
 				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
