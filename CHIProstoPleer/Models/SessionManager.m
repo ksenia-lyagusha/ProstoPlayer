@@ -18,8 +18,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 
 
 @property (nonatomic, strong) NSURLSession *sessionURL;
-//@property (nonatomic, strong) NSString *trackID;
-@property (nonatomic, strong) NSMutableURLRequest *request;
 
 @end
 
@@ -41,7 +39,7 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     if (self) {
         self.sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                         delegate:nil
-                                                   delegateQueue:[[NSOperationQueue alloc] init]];
+                                                   delegateQueue:[NSOperationQueue mainQueue]];
     }
     return self;
 }
@@ -150,9 +148,6 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 
 - (void)dataTaskWithRequest:(NSMutableURLRequest *)request complitionHandler:(void(^)(NSDictionary *, NSError *))completion
 {
-    NSString *checkStr = [self.request cURLCommandString];
-    NSLog(@"%@", checkStr);
-    
     NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];

@@ -21,6 +21,7 @@
 		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
 		D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */; };
 		D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */; };
+		D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
 		D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTopSongsListViewController.h; sourceTree = "<group>"; };
 		D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTopSongsListViewController.m; sourceTree = "<group>"; };
+		D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				676444311BF2412500967F5A /* LaunchScreen.storyboard */,
 				6764443A1BF2412500967F5A /* main.m */,
 				676444331BF2412500967F5A /* Main.storyboard */,
+				D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */,
 				6709DCE61BF347670089B8CC /* Models */,
 				6764443C1BF2412500967F5A /* Resource */,
 				6764443E1BF2412500967F5A /* Utility */,
@@ -289,6 +292,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				676444421BF2412500967F5A /* Main.storyboard in Resources */,
+				D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */,
 				6709DCFE1BF353E60089B8CC /* Info.plist in Resources */,
 				D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */,
 				676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */,

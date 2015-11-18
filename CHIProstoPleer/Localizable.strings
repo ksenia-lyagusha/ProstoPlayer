@@ -1,0 +1,12 @@
+/* 
+  Localisation.strings
+  ProstoPleerApp
+
+  Created by Оксана on 18.11.15.
+  Copyright © 2015 CHI Software. All rights reserved.
+*/
+
+"CHIPleer" = "CHIProstoPleer";
+"OK" = "OK";
+"IncorrectInput" = "Sorry, but you have empty fields";
+"InvalidData" = "Incorrect login or password. Please, check your input data";
