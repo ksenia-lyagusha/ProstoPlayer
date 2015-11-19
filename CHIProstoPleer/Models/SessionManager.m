@@ -44,6 +44,11 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     return self;
 }
 
++ (NSString *)userToken
+{
+    return [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+}
+
 #pragma mark - ProstoPleer API
 
 - (void)sendRequestForTokenWithLogin:(NSString *)login andPassword:(NSString *)password withComplitionHandler:(void(^)(NSString *token, NSError *error))completion
@@ -79,7 +84,7 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         if (error) {
             return ;
         }
-        
+    
         NSArray *searchInfo = [resultInfo allValues];
         
         if (completion) {
@@ -102,8 +107,7 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         
         NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
         NSDictionary *values = [tracks objectForKey:@"data"];
-        NSDictionary *datas = [values objectForKey:@"value"];
-        
+       
         if (completion) {
             completion(values, error);
         }

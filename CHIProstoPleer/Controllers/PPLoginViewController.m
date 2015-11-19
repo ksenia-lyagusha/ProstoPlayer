@@ -42,6 +42,10 @@
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
+    if([SessionManager userToken])
+    {
+//        [self goToMainMenu];
+    }
 }
 
 #pragma mark - PPLoginViewDelegate
@@ -59,16 +63,7 @@
     [[SessionManager sharedInstance] sendRequestForTokenWithLogin:view.loginTextField.text andPassword:view.passwordTextField.text withComplitionHandler:^(NSString *token, NSError *error) {
         
         if (token) {
-
-            UITabBarController *tabController = [[UITabBarController alloc] init];
-            
-            PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-            FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-        
-            NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC, nil];
-            tabController.viewControllers = controllers;
-            
-            [weakSelf.navigationController pushViewController:tabController animated:YES];
+            [weakSelf goToMainMenu];
         }
         else
         {
@@ -76,8 +71,20 @@
             
             [weakSelf presentViewController:alert animated:YES completion:nil];
         }
-        
     }];    
+}
+
+- (void)goToMainMenu
+{
+    UITabBarController *tabController = [[UITabBarController alloc] init];
+    
+    PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
+    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+    
+    NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC, nil];
+    tabController.viewControllers = controllers;
+    
+    [self.navigationController pushViewController:tabController animated:YES];
 }
 
 @end

@@ -25,7 +25,6 @@
         UITabBarItem *topSongsListTabBar = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMostViewed tag:2];
         
         self.tabBarItem = topSongsListTabBar;
-        [topSongsListTabBar setTitle:@"Top list"];
     }
     return self;
 }
@@ -34,16 +33,16 @@
 {
     [super viewDidLoad];
     
-    self.searchBar = [[UISearchBar alloc] init];
+    self.title = @"Top songs list";
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
     self.searchBar.delegate = self;
-
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
     
+    __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
-        self.topList = [topList allValues];
+        
+        weakSelf.topList = [topList allValues];
+        [weakSelf.tableView reloadData];
     }];
-    
 }
 #pragma mark - TableViewDataSource and TableViewDelegate
 
@@ -51,19 +50,24 @@
 {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
     
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
+    }
+    
     [cell setPreservesSuperviewLayoutMargins:NO];
     [cell setLayoutMargins:UIEdgeInsetsZero];
+    
+    NSDictionary *value = [self.topList objectAtIndex:indexPath.row];
+    cell.textLabel.text = [value objectForKey:@"artist"];
+    cell.detailTextLabel.text = [value objectForKey:@"track"];
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section

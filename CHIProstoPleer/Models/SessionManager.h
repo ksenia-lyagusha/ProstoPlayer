@@ -8,13 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * const SessionManagerAccessToken;
-extern NSString * const SessionManagerURL;
-extern NSString * const SessionManagerTokenURL;
-
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
 
 + (instancetype)sharedInstance;
++ (NSString *)userToken;
 
 - (void)sendRequestForTokenWithLogin:(NSString *)login andPassword:(NSString *)password withComplitionHandler:(void(^)(NSString *token, NSError *error))completion;
 
