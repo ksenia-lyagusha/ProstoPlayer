@@ -102,6 +102,7 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         
         NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
         NSDictionary *values = [tracks objectForKey:@"data"];
+        NSDictionary *datas = [values objectForKey:@"value"];
         
         if (completion) {
             completion(values, error);

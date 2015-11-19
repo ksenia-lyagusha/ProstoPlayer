@@ -2,105 +2,66 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
+        <!--Item 2-->
+        <scene sceneID="Ajv-Sr-fuT">
             <objects>
-                <viewController id="BYZ-38-t0r" sceneMemberID="viewController">
+                <viewController id="RYm-qc-48c" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
-                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                        <viewControllerLayoutGuide type="top" id="Zj1-uC-lMb"/>
+                        <viewControllerLayoutGuide type="bottom" id="AvV-LF-cva"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Find track" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="iLl-2o-lbg">
-                                <rect key="frame" x="73" y="198" width="455" height="30"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no"/>
-                                <connections>
-                                    <action selector="searchTextField:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="nsZ-BP-89o"/>
-                                    <outlet property="delegate" destination="BYZ-38-t0r" id="N1g-SC-C6y"/>
-                                </connections>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jc6-5q-vCf">
-                                <rect key="frame" x="483" y="285" width="97" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Get top songs"/>
-                                <connections>
-                                    <action selector="getTopSongs:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RMs-Xf-3ed"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wDE-ZS-Ydc">
-                                <rect key="frame" x="20" y="285" width="69" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Download"/>
-                                <connections>
-                                    <action selector="downloadButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="G4F-im-Pwo"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N06-DG-6w1">
-                                <rect key="frame" x="268" y="285" width="65" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Get lyrics"/>
-                                <connections>
-                                    <action selector="lyricsAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="rbG-4J-ZqM"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="jc6-5q-vCf" firstAttribute="centerY" secondItem="N06-DG-6w1" secondAttribute="centerY" id="Kyz-y9-sbO"/>
-                            <constraint firstItem="N06-DG-6w1" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="R6A-wq-vEX"/>
-                            <constraint firstItem="iLl-2o-lbg" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="73" id="SKQ-pI-IYQ"/>
-                            <constraint firstAttribute="trailing" secondItem="jc6-5q-vCf" secondAttribute="trailing" constant="20" id="SUI-Xa-fOg"/>
-                            <constraint firstItem="wDE-ZS-Ydc" firstAttribute="centerY" secondItem="N06-DG-6w1" secondAttribute="centerY" id="lit-iI-dO5"/>
-                            <constraint firstItem="wDE-ZS-Ydc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="pez-id-Nec"/>
-                            <constraint firstAttribute="trailing" secondItem="iLl-2o-lbg" secondAttribute="trailing" constant="72" id="qti-jD-dQ8"/>
-                            <constraint firstItem="iLl-2o-lbg" firstAttribute="bottom" secondItem="wfy-db-euE" secondAttribute="top" multiplier="0.38" id="sPM-hg-egR"/>
-                            <constraint firstItem="N06-DG-6w1" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="wrQ-D6-b1R"/>
-                        </constraints>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1114" y="169"/>
-        </scene>
-        <!--Top Songs List View Controller-->
-        <scene sceneID="dFq-EP-QVH">
-            <objects>
-                <tableViewController id="DPv-zi-ZW5" customClass="PPTopSongsListViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="bBk-hc-iHv">
+                    <view key="view" contentMode="scaleToFill" id="gg4-JL-GoZ">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="TUT-lg-fch">
-                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TUT-lg-fch" id="2Z0-G7-bBm">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <animations/>
-                                </tableViewCellContentView>
-                                <animations/>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="DPv-zi-ZW5" id="lo6-jO-med"/>
-                            <outlet property="delegate" destination="DPv-zi-ZW5" id="uws-Fw-OLf"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="rdc-K2-JVB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item 2" id="zdl-ek-1vf"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KGC-hM-7wh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1799" y="169"/>
+            <point key="canvasLocation" x="1832" y="-278"/>
+        </scene>
+        <!--Item 1-->
+        <scene sceneID="pb9-Kl-Mr6">
+            <objects>
+                <viewController id="AMt-Vr-2r4" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="WnC-PB-mYO"/>
+                        <viewControllerLayoutGuide type="bottom" id="cog-ov-etD"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kSS-5o-46j">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Item 1" id="PKV-rG-0S3"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ikS-ka-VEH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1826" y="-964"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="pXb-V1-Qxx">
+            <objects>
+                <tabBarController id="xR0-BD-4ND" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="7JC-cB-b1u">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="AMt-Vr-2r4" kind="relationship" relationship="viewControllers" id="g9v-VM-uGc"/>
+                        <segue destination="RYm-qc-48c" kind="relationship" relationship="viewControllers" id="78D-yA-OPb"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VtP-sD-bzi" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="967" y="-623"/>
         </scene>
     </scenes>
 </document>

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "PPLoginViewController.h"
+#import "MainViewController.h"
 
 @interface AppDelegate ()
 
@@ -21,7 +22,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     PPLoginViewController *loginViewController = [[PPLoginViewController alloc] init];
-    
+//    MainViewController *topListViewContr = [[MainViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
     self.window.rootViewController = navigationController;
     

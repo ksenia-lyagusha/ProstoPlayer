@@ -6,23 +6,33 @@
 //  Copyright © 2015 CHI Software. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "MainViewController.h"
 #import "SessionManager.h"
 #import "APIManager.h"
 
-@interface ViewController () <UITextFieldDelegate>
+@interface MainViewController () <UITabBarControllerDelegate>
 
 @property (nonatomic, strong) NSDictionary *topList;
 
 @end
 
-@implementation ViewController
+@implementation MainViewController
+
+//- (instancetype)init
+//{
+//    self = [super init];
+//    if (self) {
+//        
+//    
+//    }
+//    
+//    return self;
+//}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor lightGrayColor];
-    
 }
 
 - (IBAction)searchTextField:(id)sender

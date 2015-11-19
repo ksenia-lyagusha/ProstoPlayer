@@ -7,9 +7,12 @@
 //
 
 #import "PPLoginViewController.h"
-#import "SessionManager.h"
-#import "ViewController.h"
+#import "MainViewController.h"
+#import "PPTopSongsListViewController.h"
+#import "FavoriteViewController.h"
 #import "LoginView.h"
+
+#import "SessionManager.h"
 #import "UIAlertController+Category.h"
 
 @interface PPLoginViewController () <PPLoginViewDelegate>
@@ -56,8 +59,16 @@
     [[SessionManager sharedInstance] sendRequestForTokenWithLogin:view.loginTextField.text andPassword:view.passwordTextField.text withComplitionHandler:^(NSString *token, NSError *error) {
         
         if (token) {
-            ViewController *viewController = [[ViewController alloc] init];
-            [weakSelf.navigationController pushViewController:viewController animated:YES];
+
+            UITabBarController *tabController = [[UITabBarController alloc] init];
+            
+            PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
+            FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+        
+            NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC, nil];
+            tabController.viewControllers = controllers;
+            
+            [weakSelf.navigationController pushViewController:tabController animated:YES];
         }
         else
         {
