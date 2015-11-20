@@ -21,7 +21,7 @@
     self = [super init];
     if (self)
     {
-        UIButton *signInButton = [[UIButton alloc] init];
+        UIButton *signInButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
         [signInButton setTitle:@"Sign in" forState:UIControlStateNormal];
         signInButton.translatesAutoresizingMaskIntoConstraints = NO;
         [signInButton setTitleColor:[UIColor purpleColor] forState:UIControlStateNormal];
@@ -40,9 +40,9 @@
         self.passwordTextField.borderStyle = UITextBorderStyleRoundedRect;
         self.passwordTextField.delegate = self;
         
-        [self addSubview:signInButton];
         [self addSubview:self.loginTextField];
         [self addSubview:self.passwordTextField];
+        [self addSubview:signInButton];
         
         
         NSDictionary *views = NSDictionaryOfVariableBindings(signInButton, _loginTextField, _passwordTextField);

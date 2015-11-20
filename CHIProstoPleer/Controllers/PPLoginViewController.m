@@ -26,7 +26,8 @@
     [super viewDidLoad];
     self.title = @"CHIProstoPleer";
     self.view.backgroundColor = [UIColor colorWithRed:166/255.0 green:239/255.0 blue:42/255.0 alpha:1];
-    
+     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
+
     LoginView *view = [[LoginView alloc] init];
     [self.view addSubview:view];
     view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -44,7 +45,7 @@
                                                                         views:views]];
     if([SessionManager userToken])
     {
-//        [self goToMainMenu];
+        [self goToMainMenu];
     }
 }
 
@@ -79,11 +80,15 @@
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:topSongsListVC];
     
-    NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC, nil];
+     FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+    UINavigationController *otherNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteVC];
+    
+    
+    NSArray *controllers = [NSArray arrayWithObjects:navigationController, otherNavigationController, nil];
     tabController.viewControllers = controllers;
-    
+
     [self.navigationController pushViewController:tabController animated:YES];
 }
 

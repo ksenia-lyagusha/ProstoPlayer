@@ -34,8 +34,9 @@
     [super viewDidLoad];
     
     self.title = @"Top songs list";
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
     self.searchBar.delegate = self;
+    self.tableView.tableHeaderView = self.searchBar;
     
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
@@ -44,6 +45,7 @@
         [weakSelf.tableView reloadData];
     }];
 }
+
 #pragma mark - TableViewDataSource and TableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
