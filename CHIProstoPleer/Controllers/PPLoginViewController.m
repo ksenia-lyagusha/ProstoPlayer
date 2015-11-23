@@ -34,18 +34,18 @@
     view.delegate = self;
     
     NSDictionary *views = NSDictionaryOfVariableBindings(view);
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[view]-0-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[view]|"
                                                                      options:0
                                                                      metrics:nil
                                                                        views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[view]-320-|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|"
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
     if([SessionManager userToken])
     {
-        [self goToMainMenu];
+//        [self goToMainMenu];
     }
 }
 

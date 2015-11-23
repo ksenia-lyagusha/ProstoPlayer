@@ -7,7 +7,7 @@
 //
 
 #import "SessionManager.h"
-#import "APIManager.h"
+
 #import "NSURLRequest+cURL.h"
 
 NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";

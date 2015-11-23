@@ -8,7 +8,6 @@
 
 #import "MainViewController.h"
 #import "SessionManager.h"
-#import "APIManager.h"
 
 @interface MainViewController () <UITabBarControllerDelegate>
 

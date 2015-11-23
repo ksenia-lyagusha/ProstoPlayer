@@ -11,7 +11,6 @@
 		6709DCF51BF352A10089B8CC /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCF41BF352A10089B8CC /* Tests.m */; };
 		6709DCFE1BF353E60089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 676444391BF2412500967F5A /* Info.plist */; };
 		6709DCFF1BF3546E0089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6709DCF61BF352A10089B8CC /* Info.plist */; };
-		6709DD021BF35F860089B8CC /* APIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DD011BF35F860089B8CC /* APIManager.m */; };
 		674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */; };
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
@@ -44,8 +43,6 @@
 		6709DCF21BF352A10089B8CC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6709DCF41BF352A10089B8CC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		6709DCF61BF352A10089B8CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6709DD001BF35F860089B8CC /* APIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APIManager.h; sourceTree = "<group>"; };
-		6709DD011BF35F860089B8CC /* APIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APIManager.m; sourceTree = "<group>"; };
 		674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		676444081BF2336B00967F5A /* ProstoPleerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProstoPleerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,8 +98,6 @@
 		6709DCE61BF347670089B8CC /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				6709DD001BF35F860089B8CC /* APIManager.h */,
-				6709DD011BF35F860089B8CC /* APIManager.m */,
 				6709DCE71BF347790089B8CC /* SessionManager.h */,
 				6709DCE81BF347790089B8CC /* SessionManager.m */,
 			);
@@ -386,7 +381,6 @@
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
 				676444431BF2412500967F5A /* MainViewController.m in Sources */,
-				6709DD021BF35F860089B8CC /* APIManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
