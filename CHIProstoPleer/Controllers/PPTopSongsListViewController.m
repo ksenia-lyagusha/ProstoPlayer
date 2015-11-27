@@ -46,6 +46,11 @@
         weakSelf.topList = [topList allValues];
         [weakSelf.tableView reloadData];
     }];
+    
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.tintColor = [UIColor blackColor];
+    
+    [self.refreshControl addTarget:self action:@selector(getLatestLoans) forControlEvents:UIControlEventValueChanged];
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -151,4 +156,32 @@
     // 3. Reload the table to show the query results.
     [self.tableView reloadData];
 }
+
+- (void)getLatestLoans
+{
+    [self reloadData];
+
+}
+
+- (void)reloadData
+{
+    // Reload table data
+    [self.tableView reloadData];
+    
+    // End the refreshing
+    if (self.refreshControl) {
+        
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"MMM d, h:mm a"];
+        NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor whiteColor]
+                                                                    forKey:NSForegroundColorAttributeName];
+        NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
+        self.refreshControl.attributedTitle = attributedTitle;
+        
+        [self.refreshControl endRefreshing];
+    }
+}
+
 @end
+
