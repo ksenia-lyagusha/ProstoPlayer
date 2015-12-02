@@ -13,8 +13,8 @@
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate>
 
 @property (strong, nonatomic) UISearchBar *searchBar;
-@property (strong, nonatomic) NSArray *topList;
 @property (strong, nonatomic) NSArray *filteredList;
+@property (strong, nonatomic) NSMutableArray *topList;
 
 @end
 
@@ -44,7 +44,8 @@
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
         
-        weakSelf.topList = [topList allValues];
+        NSArray *innerArray = [topList allValues];
+        [weakSelf.topList addObject:innerArray];
         [weakSelf.tableView reloadData];
     }];
 }
@@ -98,14 +99,22 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Explictly set your cell's layout margins
-    [cell setLayoutMargins:UIEdgeInsetsZero];
+    // for ios 8 and later
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+    // for ios 7
+    [cell setSeparatorInset:UIEdgeInsetsZero];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
+    musicVC.topList = self.topList;
+    musicVC.index = indexPath.row;
     [self.navigationController pushViewController:musicVC animated:YES];
+    
 }
 
 #pragma mark - UISearchBarDelegate
