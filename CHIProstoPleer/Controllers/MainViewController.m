@@ -17,17 +17,6 @@
 
 @implementation MainViewController
 
-//- (instancetype)init
-//{
-//    self = [super init];
-//    if (self) {
-//        
-//    
-//    }
-//    
-//    return self;
-//}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -52,17 +41,6 @@
     
     [textField resignFirstResponder];
     return YES;
-}
-
-
-- (IBAction)getTopSongs:(id)sender
-{
-    [[SessionManager sharedInstance] sendRequestForTokenWithLogin:@"ksenya-15" andPassword:@"rewert-321" withComplitionHandler:nil];
-    
-    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
-        self.topList = topList;
-    }];
-    
 }
 
 - (IBAction)downloadButton:(id)sender

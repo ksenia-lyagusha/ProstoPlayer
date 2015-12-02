@@ -17,7 +17,7 @@
 
 - (void)searchInfoWithText:(NSString *)text withComplitionHandler:(void(^)(NSArray *searchInfo, NSError *error))completion;
 
-- (void)topSongsList:(void(^)(NSDictionary *topList, NSError *error))completion;
+- (void)topSongsListForPage:(NSInteger )page withComplitionHandler:(void(^)(NSDictionary *topList, NSError *error))completion;
 
 - (void)trackLyricsWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *title, NSError *error))completion;
 

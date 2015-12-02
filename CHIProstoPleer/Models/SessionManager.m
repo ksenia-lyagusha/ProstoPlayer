@@ -93,11 +93,11 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
 }
 
-- (void)topSongsList:(void(^)(NSDictionary *topList, NSError *error))completion
+- (void)topSongsListForPage:(NSInteger )page withComplitionHandler:(void(^)(NSDictionary *topList, NSError *error))completion
 {
     NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
  
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=1", token];
+    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", token, page];
     
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
     [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];

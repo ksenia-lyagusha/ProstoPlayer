@@ -14,6 +14,7 @@
 @property (strong, nonatomic) UISearchBar *searchBar;
 @property (strong, nonatomic) NSArray *topList;
 @property (strong, nonatomic) NSArray *filteredList;
+@property NSInteger currentPage;
 
 @end
 
@@ -40,17 +41,12 @@
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
     
-    __weak typeof(self) weakSelf = self;
-    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
-        
-        weakSelf.topList = [topList allValues];
-        [weakSelf.tableView reloadData];
-    }];
+    self.currentPage = 1;
+    [self refrashTableView:self.currentPage];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.tintColor = [UIColor blackColor];
-    
-    [self.refreshControl addTarget:self action:@selector(getLatestLoans) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(refrash:) forControlEvents:UIControlEventValueChanged];
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -80,6 +76,11 @@
         value = [self.topList objectAtIndex:indexPath.row];
 
     }
+    
+    if (self.topList.count - 1 == indexPath.row) {
+        [self refrashTableView:self.currentPage + 1];
+    }
+
     cell.textLabel.text = [value objectForKey:@"artist"];
     cell.detailTextLabel.text = [value objectForKey:@"track"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -157,30 +158,48 @@
     [self.tableView reloadData];
 }
 
-- (void)getLatestLoans
+- (void)refrash:(id)sender
 {
+    [self.refreshControl beginRefreshing];
     [self reloadData];
-
+    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSLog(@"refreshing");
+//        sleep(2);
+//        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+             [self.refreshControl endRefreshing];
+//        });
+//    });
+    
 }
 
 - (void)reloadData
 {
-    // Reload table data
-    [self.tableView reloadData];
-    
-    // End the refreshing
     if (self.refreshControl) {
         
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"MMM d, h:mm a"];
         NSString *title = [NSString stringWithFormat:@"Last update: %@", [formatter stringFromDate:[NSDate date]]];
-        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor whiteColor]
+        NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObject:[UIColor blackColor]
                                                                     forKey:NSForegroundColorAttributeName];
         NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
         self.refreshControl.attributedTitle = attributedTitle;
         
-        [self.refreshControl endRefreshing];
+        [self refrashTableView:self.currentPage];
+        
     }
+}
+
+- (void)refrashTableView:(NSInteger )page
+{
+    __weak typeof(self) weakSelf = self;
+    [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
+        
+        weakSelf.topList = [topList allValues];
+        [weakSelf.tableView reloadData];
+    }];
+
 }
 
 @end

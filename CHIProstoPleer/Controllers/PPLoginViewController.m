@@ -7,7 +7,7 @@
 //
 
 #import "PPLoginViewController.h"
-#import "MainViewController.h"
+//#import "MainViewController.h" 
 #import "PPTopSongsListViewController.h"
 #import "FavoriteViewController.h"
 #import "LoginView.h"
@@ -45,7 +45,7 @@
                                                                         views:views]];
     if([SessionManager userToken])
     {
-//        [self goToMainMenu];
+        [self goToMainMenu];
     }
 }
 
