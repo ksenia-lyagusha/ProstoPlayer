@@ -11,9 +11,10 @@
 
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate>
 
-@property (strong, nonatomic) UISearchBar *searchBar;
-@property (strong, nonatomic) NSArray *topList;
-@property (strong, nonatomic) NSArray *filteredList;
+@property (strong, nonatomic) UISearchBar    *searchBar;
+@property (strong, nonatomic) NSMutableArray *topList;
+@property (strong, nonatomic) NSMutableArray *filteredList;
+//@property (strong, nonatomic) NSArray *
 @property NSInteger currentPage;
 
 @end
@@ -27,6 +28,7 @@
         UITabBarItem *topSongsListTabBar = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMostViewed tag:2];
         
         self.tabBarItem = topSongsListTabBar;
+        
     }
     return self;
 }
@@ -35,8 +37,6 @@
 {
     [super viewDidLoad];
     
-    self.title = @"Top songs list";
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
     self.searchBar.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
@@ -47,6 +47,15 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.tintColor = [UIColor blackColor];
     [self.refreshControl addTarget:self action:@selector(refrash:) forControlEvents:UIControlEventValueChanged];
+    
+    self.topList = [NSMutableArray array];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    self.parentViewController.tabBarController.title = @"Top songs list";
+    self.parentViewController.tabBarController.navigationItem.hidesBackButton = YES;
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -77,10 +86,6 @@
 
     }
     
-    if (self.topList.count - 1 == indexPath.row) {
-        [self refrashTableView:self.currentPage + 1];
-    }
-
     cell.textLabel.text = [value objectForKey:@"artist"];
     cell.detailTextLabel.text = [value objectForKey:@"track"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -105,6 +110,11 @@
 {
     // Explictly set your cell's layout margins
     [cell setLayoutMargins:UIEdgeInsetsZero];
+    
+    if (self.topList.count - 10 == indexPath.row) {
+        self.currentPage += 1;
+        [self refrashTableView:self.currentPage];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -163,14 +173,14 @@
     [self.refreshControl beginRefreshing];
     [self reloadData];
     
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        NSLog(@"refreshing");
-//        sleep(2);
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"refreshing");
+        sleep(2);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
              [self.refreshControl endRefreshing];
-//        });
-//    });
+        });
+    });
     
 }
 
@@ -185,7 +195,8 @@
                                                                     forKey:NSForegroundColorAttributeName];
         NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:attrsDictionary];
         self.refreshControl.attributedTitle = attributedTitle;
-        
+        self.currentPage = 1;
+        self.topList = nil;
         [self refrashTableView:self.currentPage];
         
     }
@@ -196,11 +207,19 @@
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         
-        weakSelf.topList = [topList allValues];
-        [weakSelf.tableView reloadData];
+        NSArray *innerArray = [topList allValues];
+        
+        if (weakSelf.topList)
+        {
+            [weakSelf.topList addObjectsFromArray:innerArray];
+            [weakSelf.tableView reloadData];
+        }
+        else
+        {
+            weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
+        }
+            
     }];
-
 }
-
 @end
 
