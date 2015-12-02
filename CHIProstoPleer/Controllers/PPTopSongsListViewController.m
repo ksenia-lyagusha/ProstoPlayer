@@ -7,6 +7,7 @@
 //
 
 #import "PPTopSongsListViewController.h"
+#import "PPMusicViewController.h"
 #import "SessionManager.h"
 
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate>
@@ -103,7 +104,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
+    [self.navigationController pushViewController:musicVC animated:YES];
 }
 
 #pragma mark - UISearchBarDelegate
