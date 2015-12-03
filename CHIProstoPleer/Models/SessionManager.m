@@ -61,10 +61,12 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     
     [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-         NSString *token = [resultInfo objectForKey:@"access_token"];
+        NSString *token = [resultInfo objectForKey:@"access_token"];
+        
         [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
         
-        if (completion) {
+        if (completion)
+        {
             completion(token, error);
         }
     }];
@@ -81,13 +83,15 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     
     [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        if (error) {
+        if (error)
+        {
             return ;
         }
     
         NSArray *searchInfo = [resultInfo allValues];
         
-        if (completion) {
+        if (completion)
+        {
             completion(searchInfo, error);
         }
     }];
@@ -108,7 +112,8 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
         NSDictionary *values = [tracks objectForKey:@"data"];
        
-        if (completion) {
+        if (completion)
+        {
             completion(values, error);
         }
     }];
@@ -164,6 +169,18 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     }];
     
     [dataTask resume];
+}
+
+- (void)refreshTokenWithComplitonHandler:(void(^)(NSDictionary *topList, NSError *error))completion
+{
+    NSDate *date = [NSDate date];
+    NSDate *expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
+
+    if ([date isEqualToDate:expiredDate])
+    {
+//        completion ();
+    }
+
 }
 
 @end

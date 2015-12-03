@@ -9,6 +9,8 @@
 #import "PPTopSongsListViewController.h"
 #import "SessionManager.h"
 
+#import "UIAlertController+Category.h"
+
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate>
 
 @property (strong, nonatomic) UISearchBar    *searchBar;
@@ -173,13 +175,9 @@
     [self.refreshControl beginRefreshing];
     [self reloadData];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"refreshing");
-        sleep(2);
+    dispatch_async(dispatch_get_main_queue(), ^{
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-             [self.refreshControl endRefreshing];
-        });
+        [self.refreshControl endRefreshing];
     });
     
 }
@@ -204,6 +202,17 @@
 
 - (void)refrashTableView:(NSInteger )page
 {
+     dispatch_async(dispatch_get_main_queue(), ^{
+         //все userInterface методы делать в главном потоке ( типа reloadData)
+     });
+    
+    NSInteger allTracks = [self.topList count];
+    if (allTracks >= 1000)
+    {
+//        [UIAlertController createAlertWithMessage:NSLocalizedString(@"No more tracks", nil)];
+        return;
+    }
+    
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         

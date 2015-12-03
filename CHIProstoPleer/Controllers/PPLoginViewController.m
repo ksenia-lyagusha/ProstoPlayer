@@ -45,7 +45,7 @@
                                                                         views:views]];
     if([SessionManager userToken])
     {
-        [self goToMainMenu];
+//        [self goToMainMenu];
     }
 }
 
