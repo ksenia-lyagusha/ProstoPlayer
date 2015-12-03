@@ -8,12 +8,13 @@
 
 #import "PPMusicViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "SessionManager.h"
 
 @interface PPMusicViewController ()
 
 @property (nonatomic, strong) AVAudioPlayer *audioPlayer;
 @property (nonatomic, strong) UISlider      *currentTimeSlider;
-@property (nonatomic, strong) NSTimer       *timer;
+
 @end
 
 @implementation PPMusicViewController
@@ -61,51 +62,56 @@
     [self.view addSubview:remainingTimeLabel];
     
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton, self.currentTimeSlider, elapsedTimeLabel, remainingTimeLabel);
+    NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton, _currentTimeSlider, elapsedTimeLabel, remainingTimeLabel);
     NSDictionary *metrics = @{@"sideSpacing" : @364.0, @"verticalSpacing" : @40.0};
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|V-sideSpacing-[elapsedTimeLabel-verticalSpacing-[playButton]|"
-                                                                      options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[elapsedTimeLabel]-10-[self.currentTimeSlider]-10-[remainingTimeLabel]|"
-                                                                      options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[playButton]-10-[previousTrack]-40-[nextTrack]-10-[pauseButton]|"
-                                                                      options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-sideSpacing-[elapsedTimeLabel]-verticalSpacing-[playButton]|"
+//                                                                      options:0
+//                                                                      metrics:metrics
+//                                                                        views:views]];
+//    
+//    
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[elapsedTimeLabel]-10-[_currentTimeSlider]-10-[remainingTimeLabel]|"
+//                                                                      options:0
+//                                                                      metrics:metrics
+//                                                                        views:views]];
+//    
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[playButton]-10-[previousTrack]-40-[nextTrack]-10-[pauseButton]|"
+//                                                                      options:0
+//                                                                      metrics:metrics
+//                                                                        views:views]];
 }
 
 - (void)playAction:(UIButton *)sender
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"audioTest" ofType:@"mp3"];
-    self.audioPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL: [NSURL fileURLWithPath:path] error:NULL];
-    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(timerFired:) userInfo:nil repeats:YES];
+    NSDictionary *value = [self.topList objectAtIndex:self.index];
+    NSString *trackID = [value objectForKey:@"id"];
     
-    [self.audioPlayer play];
+    [self trackDownloadAction:trackID];
+  
 }
 
 - (void)nextTrackAction:(UIButton *)sender
 {
-    [self.topList objectAtIndex:self.index + 1];
-    [self.audioPlayer play];
+    NSDictionary *value = [self.topList objectAtIndex:self.index + 1];
+    NSString *trackID = [value objectForKey:@"id"];
+    
+    [self trackDownloadAction:trackID];
+    
 }
 
 - (void)previousTrackAction:(UIButton *)sender
 {
-    [self.topList objectAtIndex:self.index - 1];
-    [self.audioPlayer play];
+    NSDictionary *value = [self.topList objectAtIndex:self.index - 1];
+    NSString *trackID = [value objectForKey:@"id"];
+    
+    [self trackDownloadAction:trackID];
 }
 
 - (void)pauseAction:(UIButton *)sender
 {
-    [self.audioPlayer stop];
-    [self stopTimer];
+    [self.audioPlayer pause];
+
 }
 
 - (void)screenLocksAction
@@ -117,28 +123,23 @@
     [[AVAudioSession sharedInstance] setActive:YES error:&activationErr];
 }
 
-- (void)updateDisplay
-{
-    NSTimeInterval currentTime = self.audioPlayer.currentTime;
-//    NSString* currentTimeString = [NSString stringWithFormat:@"%.02f", currentTime];
-    
-    self.currentTimeSlider.value = currentTime;
-//    [self updateSliderLabels];
 
-}
 
-#pragma mark - Timer
 
 - (void)timerFired:(NSTimer*)timer
 {
-    [self updateDisplay];
+
 }
 
-- (void)stopTimer
+- (void)trackDownloadAction:(NSString *)trackID
 {
-    [self.timer invalidate];
-    self.timer = nil;
-    [self updateDisplay];
+    __weak typeof(self) weakSelf = self;
+    [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
+        
+        NSString *path = [[NSBundle mainBundle] pathForResource:link ofType:@"mp3"];
+        weakSelf.audioPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL: [NSURL fileURLWithPath:path] error:NULL];
+        [weakSelf.audioPlayer play];
+    }];
 }
 
 @end

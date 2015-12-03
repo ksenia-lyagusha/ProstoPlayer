@@ -40,13 +40,25 @@
     self.searchBar.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
+    self.topList = [NSMutableArray array];
+
+    
     
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
         
         NSArray *innerArray = [topList allValues];
-        [weakSelf.topList addObject:innerArray];
-        [weakSelf.tableView reloadData];
+        
+        if (weakSelf.topList)
+        {
+            [weakSelf.topList addObjectsFromArray:innerArray];
+            [weakSelf.tableView reloadData];
+        }
+        else
+        {
+            weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
+        }
+
     }];
 }
 
