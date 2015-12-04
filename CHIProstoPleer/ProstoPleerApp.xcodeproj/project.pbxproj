@@ -11,6 +11,8 @@
 		6709DCF51BF352A10089B8CC /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCF41BF352A10089B8CC /* Tests.m */; };
 		6709DCFE1BF353E60089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 676444391BF2412500967F5A /* Info.plist */; };
 		6709DCFF1BF3546E0089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6709DCF61BF352A10089B8CC /* Info.plist */; };
+		6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBDF1C108540005A8385 /* UIAlertController+Category.m */; };
+		6714CBE41C108548005A8385 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBE31C108548005A8385 /* LoginView.m */; };
 		674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */; };
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
@@ -20,9 +22,9 @@
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
 		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
 		D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */; };
-		D76D144C1BFD129000D10503 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = D76D144B1BFD129000D10503 /* LoginView.m */; };
 		D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */; };
-		D797722B1BFD1CB8005E6F0D /* UIAlertController+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */; };
+		D7A1FDFB1C0588D0009EF802 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */; };
+		D7A1FE011C0591CD009EF802 /* PPMusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7A1FE001C0591CD009EF802 /* PPMusicViewController.m */; };
 		D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +45,10 @@
 		6709DCF21BF352A10089B8CC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6709DCF41BF352A10089B8CC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		6709DCF61BF352A10089B8CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6714CBDE1C108540005A8385 /* UIAlertController+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Category.h"; sourceTree = "<group>"; };
+		6714CBDF1C108540005A8385 /* UIAlertController+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Category.m"; sourceTree = "<group>"; };
+		6714CBE21C108548005A8385 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
+		6714CBE31C108548005A8385 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
 		674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		676444081BF2336B00967F5A /* ProstoPleerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProstoPleerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,12 +65,11 @@
 		D717805F1BFA67E6005246B3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPLoginViewController.h; sourceTree = "<group>"; };
 		D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPLoginViewController.m; sourceTree = "<group>"; };
-		D76D144A1BFD129000D10503 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = SOURCE_ROOT; };
-		D76D144B1BFD129000D10503 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = SOURCE_ROOT; };
 		D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPTopSongsListViewController.h; sourceTree = "<group>"; };
 		D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPTopSongsListViewController.m; sourceTree = "<group>"; };
-		D79772291BFD1CB8005E6F0D /* UIAlertController+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+Category.h"; sourceTree = SOURCE_ROOT; };
-		D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Category.m"; sourceTree = SOURCE_ROOT; };
+		D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		D7A1FDFF1C0591CD009EF802 /* PPMusicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMusicViewController.h; sourceTree = "<group>"; };
+		D7A1FE001C0591CD009EF802 /* PPMusicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMusicViewController.m; sourceTree = "<group>"; };
 		D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +85,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7A1FDFB1C0588D0009EF802 /* AVFoundation.framework in Frameworks */,
 				9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +96,7 @@
 		31AD3D236614CD29CCEF39D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */,
 				805B6B06A735058C4537F79D /* libPods.a */,
 			);
 			name = Frameworks;
@@ -113,14 +120,32 @@
 			path = Tests;
 			sourceTree = "<group>";
 		};
+		6714CBDD1C108540005A8385 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				6714CBDE1C108540005A8385 /* UIAlertController+Category.h */,
+				6714CBDF1C108540005A8385 /* UIAlertController+Category.m */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		6714CBE11C108548005A8385 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				6714CBE21C108548005A8385 /* LoginView.h */,
+				6714CBE31C108548005A8385 /* LoginView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		676443FF1BF2336B00967F5A = {
 			isa = PBXGroup;
 			children = (
 				6764442E1BF2412500967F5A /* CHIProstoPleer */,
-				6709DCF31BF352A10089B8CC /* Tests */,
-				676444091BF2336B00967F5A /* Products */,
-				9F06CA1500AF558C84213481 /* Pods */,
 				31AD3D236614CD29CCEF39D9 /* Frameworks */,
+				9F06CA1500AF558C84213481 /* Pods */,
+				676444091BF2336B00967F5A /* Products */,
+				6709DCF31BF352A10089B8CC /* Tests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -142,13 +167,13 @@
 				676444381BF2412500967F5A /* Helpers */,
 				676444391BF2412500967F5A /* Info.plist */,
 				676444311BF2412500967F5A /* LaunchScreen.storyboard */,
+				D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */,
 				6764443A1BF2412500967F5A /* main.m */,
 				676444331BF2412500967F5A /* Main.storyboard */,
-				D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */,
 				6709DCE61BF347670089B8CC /* Models */,
 				6764443C1BF2412500967F5A /* Resource */,
-				6764443E1BF2412500967F5A /* Utility */,
-				6764443F1BF2412500967F5A /* View */,
+				6714CBDD1C108540005A8385 /* Utility */,
+				6714CBE11C108548005A8385 /* View */,
 			);
 			name = CHIProstoPleer;
 			sourceTree = "<group>";
@@ -156,14 +181,16 @@
 		676444351BF2412500967F5A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */,
+				674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */,
 				676444361BF2412500967F5A /* MainViewController.h */,
 				676444371BF2412500967F5A /* MainViewController.m */,
 				D73479BE1BF8EE2B0024053A /* PPLoginViewController.h */,
 				D73479BF1BF8EE2B0024053A /* PPLoginViewController.m */,
+				D7A1FDFF1C0591CD009EF802 /* PPMusicViewController.h */,
+				D7A1FE001C0591CD009EF802 /* PPMusicViewController.m */,
 				D79193E41BF9C9AE003690AD /* PPTopSongsListViewController.h */,
 				D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */,
-				674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */,
-				674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -181,24 +208,6 @@
 				D717805F1BFA67E6005246B3 /* Assets.xcassets */,
 			);
 			path = Resource;
-			sourceTree = "<group>";
-		};
-		6764443E1BF2412500967F5A /* Utility */ = {
-			isa = PBXGroup;
-			children = (
-				D79772291BFD1CB8005E6F0D /* UIAlertController+Category.h */,
-				D797722A1BFD1CB8005E6F0D /* UIAlertController+Category.m */,
-			);
-			path = Utility;
-			sourceTree = "<group>";
-		};
-		6764443F1BF2412500967F5A /* View */ = {
-			isa = PBXGroup;
-			children = (
-				D76D144A1BFD129000D10503 /* LoginView.h */,
-				D76D144B1BFD129000D10503 /* LoginView.m */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 		9F06CA1500AF558C84213481 /* Pods */ = {
@@ -374,12 +383,13 @@
 			files = (
 				674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */,
 				676444401BF2412500967F5A /* AppDelegate.m in Sources */,
-				D797722B1BFD1CB8005E6F0D /* UIAlertController+Category.m in Sources */,
+				D7A1FE011C0591CD009EF802 /* PPMusicViewController.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
-				D76D144C1BFD129000D10503 /* LoginView.m in Sources */,
 				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
+				6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
+				6714CBE41C108548005A8385 /* LoginView.m in Sources */,
 				676444431BF2412500967F5A /* MainViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

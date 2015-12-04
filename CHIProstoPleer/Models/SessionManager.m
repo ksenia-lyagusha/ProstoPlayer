@@ -14,7 +14,7 @@ NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php
 NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
 NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
 
-@interface SessionManager ()
+@interface SessionManager () 
 
 
 @property (nonatomic, strong) NSURLSession *sessionURL;

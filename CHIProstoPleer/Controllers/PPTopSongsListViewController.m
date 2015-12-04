@@ -7,6 +7,7 @@
 //
 
 #import "PPTopSongsListViewController.h"
+#import "PPMusicViewController.h"
 #import "SessionManager.h"
 
 #import "UIAlertController+Category.h"
@@ -20,7 +21,6 @@
 @property NSInteger currentPage;
 
 @end
-
 @implementation PPTopSongsListViewController
 
 - (instancetype)init
@@ -42,6 +42,7 @@
     self.searchBar.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
+    self.topList = [NSMutableArray array];
     
     self.currentPage = 1;
     [self refrashTableView:self.currentPage];
@@ -58,6 +59,22 @@
 {
     self.parentViewController.tabBarController.title = @"Top songs list";
     self.parentViewController.tabBarController.navigationItem.hidesBackButton = YES;
+    __weak typeof(self) weakSelf = self;
+    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
+        
+        NSArray *innerArray = [topList allValues];
+        
+        if (weakSelf.topList)
+        {
+            [weakSelf.topList addObjectsFromArray:innerArray];
+            [weakSelf.tableView reloadData];
+        }
+        else
+        {
+            weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
+        }
+
+    }];
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -110,17 +127,26 @@
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Explictly set your cell's layout margins
-    [cell setLayoutMargins:UIEdgeInsetsZero];
-    
     if (self.topList.count - 10 == indexPath.row) {
         self.currentPage += 1;
         [self refrashTableView:self.currentPage];
     }
+    
+    // for ios 8 and later
+    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
+        [cell setPreservesSuperviewLayoutMargins:NO];
+        [cell setLayoutMargins:UIEdgeInsetsZero];
+    }
+    // for ios 7
+    [cell setSeparatorInset:UIEdgeInsetsZero];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
+    musicVC.topList = self.topList;
+    musicVC.index = indexPath.row;
+    [self.navigationController pushViewController:musicVC animated:YES];
     
 }
 
