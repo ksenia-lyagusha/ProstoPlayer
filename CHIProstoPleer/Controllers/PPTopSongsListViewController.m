@@ -16,7 +16,7 @@
 @property (strong, nonatomic) UISearchBar    *searchBar;
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
-//@property (strong, nonatomic) NSArray *
+@property (strong, nonatomic) NSNumber       *count;
 @property NSInteger currentPage;
 
 @end
@@ -203,11 +203,11 @@
 - (void)refrashTableView:(NSInteger )page
 {
      dispatch_async(dispatch_get_main_queue(), ^{
-         //все userInterface методы делать в главном потоке ( типа reloadData)
+         //все userInterface методы делать в главном потоке (типа reloadData)
      });
     
-    NSInteger allTracks = [self.topList count];
-    if (allTracks >= 1000)
+//    NSInteger allTracks = [self.topList count];
+    if ([self.topList count] >= [self.count integerValue])
     {
 //        [UIAlertController createAlertWithMessage:NSLocalizedString(@"No more tracks", nil)];
         return;
@@ -217,6 +217,7 @@
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         
         NSArray *innerArray = [topList allValues];
+        self.count = [topList objectForKey:@"count"];
         
         if (weakSelf.topList)
         {
