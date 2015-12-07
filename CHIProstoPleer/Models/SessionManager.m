@@ -110,11 +110,10 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
         NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
-        NSDictionary *values = [tracks objectForKey:@"data"];
        
         if (completion)
         {
-            completion(values, error);
+            completion(tracks, error);
         }
     }];
 }

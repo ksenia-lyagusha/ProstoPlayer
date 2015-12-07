@@ -39,6 +39,7 @@
 {
     [super viewDidLoad];
     
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
     self.searchBar.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
@@ -59,22 +60,6 @@
 {
     self.parentViewController.tabBarController.title = @"Top songs list";
     self.parentViewController.tabBarController.navigationItem.hidesBackButton = YES;
-    __weak typeof(self) weakSelf = self;
-    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
-        
-        NSArray *innerArray = [topList allValues];
-        
-        if (weakSelf.topList)
-        {
-            [weakSelf.topList addObjectsFromArray:innerArray];
-            [weakSelf.tableView reloadData];
-        }
-        else
-        {
-            weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
-        }
-
-    }];
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -226,23 +211,26 @@
     }
 }
 
-- (void)refrashTableView:(NSInteger )page
+- (void)refrashTableView:(NSInteger)page
 {
-     dispatch_async(dispatch_get_main_queue(), ^{
-         //все userInterface методы делать в главном потоке (типа reloadData)
-     });
-    
-//    NSInteger allTracks = [self.topList count];
-    if ([self.topList count] >= [self.count integerValue])
+//     dispatch_async(dispatch_get_main_queue(), ^{
+//         //все userInterface методы делать в главном потоке (типа reloadData)
+//     });
+//    
+    if ([self.topList count] && [self.topList count] >= [self.count integerValue])
     {
-//        [UIAlertController createAlertWithMessage:NSLocalizedString(@"No more tracks", nil)];
+        UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"No more tracks", nil)];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         
-        NSArray *innerArray = [topList allValues];
+       
+        NSDictionary *values = [topList objectForKey:@"data"];
+        NSArray *innerArray = [values allValues];
+        
         self.count = [topList objectForKey:@"count"];
         
         if (weakSelf.topList)
