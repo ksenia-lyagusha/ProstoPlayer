@@ -74,86 +74,99 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 
 - (void)searchInfoWithText:(NSString *)text withComplitionHandler:(void(^)(NSArray *searchInfo, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=%@", token, text];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http:api.pleer.com/index.php"]];
-    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPMethod:@"POST"];
-    
-    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+    [self checkTokenWithComplitionHandler:^{
         
-        if (error)
-        {
-            return ;
-        }
-    
-        NSArray *searchInfo = [resultInfo allValues];
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=%@", token, text];
         
-        if (completion)
-        {
-            completion(searchInfo, error);
-        }
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http:api.pleer.com/index.php"]];
+        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPMethod:@"POST"];
+        
+        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            
+            if (error)
+            {
+                return ;
+            }
+            
+            NSArray *searchInfo = [resultInfo allValues];
+            
+            if (completion)
+            {
+                completion(searchInfo, error);
+            }
+        }];
     }];
+    
 }
 
 - (void)topSongsListForPage:(NSInteger )page withComplitionHandler:(void(^)(NSDictionary *topList, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
- 
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", token, page];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPMethod:@"POST"];
-
-    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+    [self checkTokenWithComplitionHandler:^{
         
-        NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
-       
-        if (completion)
-        {
-            completion(tracks, error);
-        }
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+     
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", token, page];
+        
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPMethod:@"POST"];
+
+        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            
+            NSDictionary *tracks = [resultInfo objectForKey:@"tracks"];
+           
+            if (completion)
+            {
+                completion(tracks, error);
+            }
+        }];
     }];
 }
 
 - (void)trackLyricsWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *title, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, trackID];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPMethod:@"POST"];
-    
-    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+    [self checkTokenWithComplitionHandler:^{
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, trackID];
         
-       NSString *trackLyrics = [resultInfo objectForKey:@"text"];
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPMethod:@"POST"];
         
-        if (completion) {
-            completion(trackLyrics, error);
-        }
+        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            
+           NSString *trackLyrics = [resultInfo objectForKey:@"text"];
+            
+            if (completion) {
+                completion(trackLyrics, error);
+            }
+        }];
     }];
 }
 
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-    NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, trackID];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-    [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-    [request setHTTPMethod:@"POST"];
-    
-    [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+    [self checkTokenWithComplitionHandler:^{
+        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, trackID];
         
-        NSString *link = [resultInfo objectForKey:@"url"];
-        if (completion) {
-            completion(link, error);
-        }
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPMethod:@"POST"];
+        
+        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            
+            NSString *link = [resultInfo objectForKey:@"url"];
+            if (completion) {
+                completion(link, error);
+            }
+        }];
     }];
 }
+
+#pragma mark - Private methods
 
 - (void)dataTaskWithRequest:(NSMutableURLRequest *)request complitionHandler:(void(^)(NSDictionary *, NSError *))completion
 {
@@ -170,16 +183,48 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     [dataTask resume];
 }
 
-- (void)refreshTokenWithComplitonHandler:(void(^)(NSDictionary *topList, NSError *error))completion
+
+- (void)checkTokenWithComplitionHandler:(void(^)(void))completion
+{
+    BOOL isTokenValid = [self isTokenValid];
+    
+    if (isTokenValid)
+    {
+        completion();
+    }
+    else
+    {
+        [self refreshTokenWithComplitionHandler:^(NSString *token, NSError *error) {
+             [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
+        }];
+    }
+}
+
+- (BOOL)isTokenValid
 {
     NSDate *date = [NSDate date];
     NSDate *expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
+    return ![date isEqualToDate:expiredDate];
+}
 
-    if ([date isEqualToDate:expiredDate])
-    {
-//        completion ();
-    }
-
+- (void)refreshTokenWithComplitionHandler:(void(^)(NSString *token, NSError *error))completion
+{
+    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+    NSMutableURLRequest *tokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerTokenURL]];
+    
+    NSString *requestText = [NSString stringWithFormat:@"refresh_token=%@&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY", token];
+    [tokenRequest setHTTPMethod:@"POST"];
+    [tokenRequest setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+        
+        NSString *token = [resultInfo objectForKey:@"access_token"];
+        
+        if (completion)
+        {
+            completion(token, error);
+        }
+    }];
 }
 
 @end

@@ -46,6 +46,7 @@
     if([SessionManager userToken])
     {
         [self goToMainMenu];
+        
     }
 }
 
@@ -61,6 +62,7 @@
         return;
     }
     __weak typeof(self) weakSelf = self;
+    
     [[SessionManager sharedInstance] sendRequestForTokenWithLogin:view.loginTextField.text andPassword:view.passwordTextField.text withComplitionHandler:^(NSString *token, NSError *error) {
         
         if (token) {

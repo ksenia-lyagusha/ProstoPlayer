@@ -46,11 +46,11 @@
     self.topList = [NSMutableArray array];
     
     self.currentPage = 1;
-    [self refrashTableView:self.currentPage];
+    [self refreshTableView:self.currentPage withComplitionHandler:nil];
     
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.tintColor = [UIColor blackColor];
-    [self.refreshControl addTarget:self action:@selector(refrash:) forControlEvents:UIControlEventValueChanged];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     
     self.topList = [NSMutableArray array];
     
@@ -114,7 +114,7 @@
 {
     if (self.topList.count - 10 == indexPath.row) {
         self.currentPage += 1;
-        [self refrashTableView:self.currentPage];
+        [self refreshTableView:self.currentPage withComplitionHandler:nil];
     }
     
     // for ios 8 and later
@@ -181,21 +181,11 @@
     [self.tableView reloadData];
 }
 
-- (void)refrash:(id)sender
+- (void)refresh:(id)sender
 {
-    [self.refreshControl beginRefreshing];
-    [self reloadData];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        
-        [self.refreshControl endRefreshing];
-    });
-    
-}
-
-- (void)reloadData
-{
-    if (self.refreshControl) {
+    if (self.refreshControl)
+    {
+        [self.refreshControl beginRefreshing];
         
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"MMM d, h:mm a"];
@@ -206,17 +196,18 @@
         self.refreshControl.attributedTitle = attributedTitle;
         self.currentPage = 1;
         self.topList = nil;
-        [self refrashTableView:self.currentPage];
         
+        __weak typeof(self) weakSelf = self;
+        [self refreshTableView:self.currentPage withComplitionHandler:^ {
+              
+            [weakSelf.refreshControl endRefreshing];
+ 
+        }];
     }
 }
 
-- (void)refrashTableView:(NSInteger)page
+- (void)refreshTableView:(NSInteger)page withComplitionHandler:(void(^)(void))complitionHandler
 {
-//     dispatch_async(dispatch_get_main_queue(), ^{
-//         //все userInterface методы делать в главном потоке (типа reloadData)
-//     });
-//    
     if ([self.topList count] && [self.topList count] >= [self.count integerValue])
     {
         UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"No more tracks", nil)];
@@ -226,24 +217,32 @@
     
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
         
-       
-        NSDictionary *values = [topList objectForKey:@"data"];
-        NSArray *innerArray = [values allValues];
-        
-        self.count = [topList objectForKey:@"count"];
-        
-        if (weakSelf.topList)
-        {
-            [weakSelf.topList addObjectsFromArray:innerArray];
-            [weakSelf.tableView reloadData];
-        }
-        else
-        {
-            weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
-        }
+            NSDictionary *values = [topList objectForKey:@"data"];
+            NSArray *innerArray = [values allValues];
             
+            self.count = [topList objectForKey:@"count"];
+            
+            if (weakSelf.topList)
+            {
+                [weakSelf.topList addObjectsFromArray:innerArray];
+                
+            }
+            else
+            {
+                weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
+                
+                if(complitionHandler)
+                {
+                    complitionHandler();
+                }
+            }
+        
+            [weakSelf.tableView reloadData];
+        });
     }];
 }
+
 @end
 

@@ -23,35 +23,41 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor grayColor];
-    self.navigationItem.title = @"Music player";
+    self.parentViewController.tabBarController.title = @"Music player";
+
     
     UIButton *playButton = [[UIButton alloc] init];
     [playButton setImage:[UIImage imageNamed:@"play"]  forState:UIControlStateNormal];
     [playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
+    playButton.translatesAutoresizingMaskIntoConstraints = NO;
     
     UIButton *nextTrack = [[UIButton alloc] init];
     [nextTrack setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
-    [playButton addTarget:self action:@selector(nextTrackAction:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [nextTrack addTarget:self action:@selector(nextTrackAction:) forControlEvents:UIControlEventTouchUpInside];
+    nextTrack.translatesAutoresizingMaskIntoConstraints = NO;
     
     UIButton *previousTrack = [[UIButton alloc] init];
     [previousTrack setImage:[UIImage imageNamed:@"previous"] forState:UIControlStateNormal];
-    [playButton addTarget:self action:@selector(previousTrackAction:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [previousTrack addTarget:self action:@selector(previousTrackAction:) forControlEvents:UIControlEventTouchUpInside];
+    previousTrack.translatesAutoresizingMaskIntoConstraints = NO;
     
     UIButton *pauseButton = [[UIButton alloc] init];
     [pauseButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-    [playButton addTarget:self action:@selector(pauseAction:) forControlEvents:UIControlEventTouchUpInside];
+    [pauseButton addTarget:self action:@selector(pauseAction:) forControlEvents:UIControlEventTouchUpInside];
+    pauseButton.translatesAutoresizingMaskIntoConstraints = NO;
     
     UILabel *elapsedTimeLabel = [[UILabel alloc] init];
     elapsedTimeLabel.text = @"00.00";
+    elapsedTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     UILabel *remainingTimeLabel = [[UILabel alloc] init];
     remainingTimeLabel.text = @"00.00";
+    remainingTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.currentTimeSlider = [[UISlider alloc] init];
     self.currentTimeSlider.minimumValue = 0.0f;
     self.currentTimeSlider.maximumValue = self.audioPlayer.duration;
+    self.currentTimeSlider.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self.view addSubview:playButton];
     [self.view addSubview:nextTrack];
@@ -65,21 +71,25 @@
     NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton, _currentTimeSlider, elapsedTimeLabel, remainingTimeLabel);
     NSDictionary *metrics = @{@"sideSpacing" : @364.0, @"verticalSpacing" : @40.0};
     
-//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-sideSpacing-[elapsedTimeLabel]-verticalSpacing-[playButton]|"
-//                                                                      options:0
-//                                                                      metrics:metrics
-//                                                                        views:views]];
-//    
-//    
-//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[elapsedTimeLabel]-10-[_currentTimeSlider]-10-[remainingTimeLabel]|"
-//                                                                      options:0
-//                                                                      metrics:metrics
-//                                                                        views:views]];
-//    
-//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-20-[playButton]-10-[previousTrack]-40-[nextTrack]-10-[pauseButton]|"
-//                                                                      options:0
-//                                                                      metrics:metrics
-//                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[nextTrack]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[playButton]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[previousTrack]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[pauseButton]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
 }
 
 - (void)playAction:(UIButton *)sender
