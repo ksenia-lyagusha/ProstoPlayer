@@ -18,6 +18,7 @@
 @interface LoginView : UIView
 
 @property (weak, nonatomic) id <PPLoginViewDelegate>delegate;
+
 @property (nonatomic, strong, readonly) UITextField *loginTextField;
 @property (nonatomic, strong, readonly) UITextField *passwordTextField;
 

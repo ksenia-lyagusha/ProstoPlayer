@@ -209,18 +209,8 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 }
 
 - (BOOL)isTokenValid
-{
-    NSDate *date = [NSDate date];
-    self.expiredDate = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerExpiredDatedefaultsKey];
-    
-    if (self.expiredDate)
-    {
-        return [self.expiredDate compare:date] == NSOrderedDescending;
-    }
-    
-    self.expiredDate = [NSDate dateWithTimeInterval:60 sinceDate:date];
-    [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
-    return  YES;
+{  
+    return [self.expiredDate compare:[NSDate date]] == NSOrderedDescending;
 }
 
 - (void)refreshTokenWithComplitionHandler:(void(^)(NSString *token, NSError *error))completion
@@ -235,9 +225,7 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
     [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
         NSString *token = [resultInfo objectForKey:@"access_token"];
-        
-
-        
+        [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
         if (completion)
         {
             completion(token, error);
@@ -247,9 +235,16 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 
 - (NSDate *)expiredDate
 {
-    NSDate *date = [NSDate date];
-    _expiredDate = [NSDate dateWithTimeInterval:60 sinceDate:date];
+    _expiredDate = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerExpiredDatedefaultsKey];
     return _expiredDate;
 }
 
 @end
+
+
+
+
+
+
+
+
