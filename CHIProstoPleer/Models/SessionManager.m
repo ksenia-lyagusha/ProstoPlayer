@@ -13,11 +13,12 @@
 NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";
 NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
 NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
+NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredDatedefaultsKey";
 
-@interface SessionManager () 
-
+@interface SessionManager ()
 
 @property (nonatomic, strong) NSURLSession *sessionURL;
+@property (nonatomic, strong) NSDate *expiredDate;
 
 @end
 
@@ -190,12 +191,19 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
     
     if (isTokenValid)
     {
-        completion();
+        if (completion)
+        {
+            completion();
+        }
     }
     else
     {
         [self refreshTokenWithComplitionHandler:^(NSString *token, NSError *error) {
-             [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
+            [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
+            if (completion)
+            {
+                completion();
+            }
         }];
     }
 }
@@ -203,8 +211,16 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
 - (BOOL)isTokenValid
 {
     NSDate *date = [NSDate date];
-    NSDate *expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
-    return ![date isEqualToDate:expiredDate];
+    self.expiredDate = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerExpiredDatedefaultsKey];
+    
+    if (self.expiredDate)
+    {
+        return [self.expiredDate compare:date] == NSOrderedDescending;
+    }
+    
+    self.expiredDate = [NSDate dateWithTimeInterval:60 sinceDate:date];
+    [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
+    return  YES;
 }
 
 - (void)refreshTokenWithComplitionHandler:(void(^)(NSString *token, NSError *error))completion
@@ -220,11 +236,20 @@ NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTo
         
         NSString *token = [resultInfo objectForKey:@"access_token"];
         
+
+        
         if (completion)
         {
             completion(token, error);
         }
     }];
+}
+
+- (NSDate *)expiredDate
+{
+    NSDate *date = [NSDate date];
+    _expiredDate = [NSDate dateWithTimeInterval:60 sinceDate:date];
+    return _expiredDate;
 }
 
 @end

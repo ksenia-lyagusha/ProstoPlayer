@@ -76,7 +76,22 @@
                                                                       metrics:metrics
                                                                         views:views]];
     
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[nextTrack]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[nextTrack]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[playButton]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[nextTrack]|"
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
@@ -85,6 +100,12 @@
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[nextTrack]|"
+                                                                      options:0
+                                                                      metrics:metrics
+                                                                        views:views]];
+    
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[pauseButton]|"
                                                                       options:0
