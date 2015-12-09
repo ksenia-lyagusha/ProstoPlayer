@@ -27,7 +27,5 @@
 @property (strong, nonatomic) UIButton *nextTrack;
 @property (strong, nonatomic) UIButton *previousTrack;
 @property (strong, nonatomic) UIButton *pauseButton;
-@property (strong, nonatomic) UILabel  *elapsedTimeLabel;
-@property (strong, nonatomic) UILabel  *remainingTimeLabel;
 
 @end

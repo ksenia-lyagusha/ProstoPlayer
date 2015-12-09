@@ -18,11 +18,14 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 @interface SessionManager ()
 
 @property (nonatomic, strong) NSURLSession *sessionURL;
-@property (nonatomic, strong) NSDate *expiredDate;
+@property (nonatomic, strong) NSDate       *expiredDate;
+@property (nonatomic, strong) NSString     *token;
 
 @end
 
 @implementation SessionManager
+
+@synthesize token = _token;
 
 + (instancetype)sharedInstance
 {
@@ -62,13 +65,17 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
     
     [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSString *token = [resultInfo objectForKey:@"access_token"];
+        self.token = [resultInfo objectForKey:@"access_token"];
         
-        [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
+        [[NSUserDefaults standardUserDefaults] setObject:self.token forKey:SessionManagerAccessTokenDefaultsKey];
+        
+        NSDate *date = [NSDate date];
+        self.expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
+        [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
         
         if (completion)
         {
-            completion(token, error);
+            completion(self.token, error);
         }
     }];
 }
@@ -77,8 +84,7 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 {
     [self checkTokenWithComplitionHandler:^{
         
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=%@", token, text];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_search&query=%@", self.token, text];
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:@"http:api.pleer.com/index.php"]];
         [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -106,9 +112,7 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 {
     [self checkTokenWithComplitionHandler:^{
         
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-     
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", token, page];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", self.token, page];
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
         [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -129,8 +133,8 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 - (void)trackLyricsWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *title, NSError *error))completion
 {
     [self checkTokenWithComplitionHandler:^{
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", token, trackID];
+
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_lyrics&track_id=%@", self.token, trackID];
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
         [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -150,8 +154,8 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion
 {
     [self checkTokenWithComplitionHandler:^{
-        NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", token, trackID];
+
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
         [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -199,7 +203,13 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
     else
     {
         [self refreshTokenWithComplitionHandler:^(NSString *token, NSError *error) {
+            
             [[NSUserDefaults standardUserDefaults] setObject:token forKey:SessionManagerAccessTokenDefaultsKey];
+            
+            NSDate *date = [NSDate date];
+            self.expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
+            [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
+            
             if (completion)
             {
                 completion();
@@ -209,42 +219,52 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 }
 
 - (BOOL)isTokenValid
-{  
-    return [self.expiredDate compare:[NSDate date]] == NSOrderedDescending;
+{
+   return [self.expiredDate compare:[NSDate date]] == NSOrderedDescending;
 }
 
 - (void)refreshTokenWithComplitionHandler:(void(^)(NSString *token, NSError *error))completion
 {
-    NSString *token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
     NSMutableURLRequest *tokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerTokenURL]];
     
-    NSString *requestText = [NSString stringWithFormat:@"refresh_token=%@&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY", token];
+    NSString *requestText = [NSString stringWithFormat:@"refresh_token=%@&grant_type=client_credentials&client_id=eYBMRN4iOdy8KYyoNCpY", self.token];
     [tokenRequest setHTTPMethod:@"POST"];
     [tokenRequest setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
     
     [self dataTaskWithRequest:tokenRequest complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
         
-        NSString *token = [resultInfo objectForKey:@"access_token"];
-        [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
+        self.token = [resultInfo objectForKey:@"access_token"];
+        
         if (completion)
         {
-            completion(token, error);
+            completion(self.token, error);
         }
     }];
 }
 
+#pragma mark - Getters and Setters
+
 - (NSDate *)expiredDate
 {
+    if (_expiredDate)
+    {
+        return _expiredDate;
+    }
+    
     _expiredDate = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerExpiredDatedefaultsKey];
+
+    NSLog(@"expired date %@", _expiredDate);
+    
     return _expiredDate;
 }
 
+-(NSString *)token
+{
+    if (_token) {
+        return _token;
+    }
+    _token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
+    return _token;
+}
+
 @end
-
-
-
-
-
-
-
-

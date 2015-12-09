@@ -6,6 +6,7 @@
 //  Copyright © 2015 CHI Software. All rights reserved.
 //
 
+#import <AVFoundation/AVFoundation.h>
 #import "AppDelegate.h"
 #import "PPLoginViewController.h"
 #import "PPTopSongsListViewController.h"
@@ -37,6 +38,13 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    __block UIBackgroundTaskIdentifier task = 0;
+    task=[application beginBackgroundTaskWithExpirationHandler:^{
+        NSLog(@"Expiration handler called %f",[application backgroundTimeRemaining]);
+        [application endBackgroundTask:task];
+        task=UIBackgroundTaskInvalid;
+    }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

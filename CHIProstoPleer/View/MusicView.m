@@ -38,24 +38,13 @@
         [pauseButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
         [pauseButton addTarget:self action:@selector(pauseAction:) forControlEvents:UIControlEventTouchUpInside];
         pauseButton.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        UILabel *elapsedTimeLabel = [[UILabel alloc] init];
-        elapsedTimeLabel.text = @"00.00";
-        elapsedTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        UILabel *remainingTimeLabel = [[UILabel alloc] init];
-        remainingTimeLabel.text = @"00.00";
-        remainingTimeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
         [self addSubview:playButton];
         [self addSubview:nextTrack];
         [self addSubview:previousTrack];
-        [self addSubview:pauseButton];
-        [self addSubview:elapsedTimeLabel];
-        [self addSubview:remainingTimeLabel];
+        [self addSubview:pauseButton];        
         
-        
-        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton, elapsedTimeLabel, remainingTimeLabel);
+        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton);
         NSDictionary *metrics = @{@"sideSpacing" : @20.0, @"verticalSpacing" : @250.0, @"width" : @50.0, @"hight" : @50};
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[nextTrack(hight)]"
