@@ -13,13 +13,13 @@
 
 #import "MusicView.h"
 
-@interface PPMusicViewController () <PPMusicViewDelegate, AVAudioPlayerDelegate>
+@interface PPMusicViewController () <PPMusicViewDelegate>
 
-@property (nonatomic, strong) AVAudioPlayer *audioPlayer;
-@property (nonatomic, strong) UISlider      *currentTimeSlider;
-@property (nonatomic, strong) NSTimer       *timer;
-@property (nonatomic, strong) UILabel       *playedTime;
-@property (nonatomic, strong) UILabel       *trackTitle;
+@property (nonatomic, strong) AVPlayer *audioPlayer;
+@property (nonatomic, strong) UISlider *currentTimeSlider;
+@property (nonatomic, strong) NSTimer  *timer;
+@property (nonatomic, strong) UILabel  *playedTime;
+@property (nonatomic, strong) UILabel  *trackTitle;
 
 @end
 
@@ -29,14 +29,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.view.backgroundColor = [UIColor grayColor];
+
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
+    self.view.contentMode = UIViewContentModeScaleAspectFit;
+  
     self.parentViewController.tabBarController.title = @"Music player";
-    self.audioPlayer.delegate = self;
     
     self.currentTimeSlider = [[UISlider alloc] init];
     self.currentTimeSlider.minimumValue = 0.0f;
-    self.currentTimeSlider.maximumValue = self.audioPlayer.duration;
+
     self.currentTimeSlider.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.playedTime = [[UILabel alloc] init];
@@ -44,7 +45,6 @@
     
     self.trackTitle = [[UILabel alloc] init];
     self.trackTitle.translatesAutoresizingMaskIntoConstraints = NO;
-//    self.trackTitle.text = [[self.topList objectAtIndex:self.index] stringValue];
     
     MusicView *view = [[MusicView alloc] init];
     [view addSubview:self.currentTimeSlider];
@@ -83,7 +83,7 @@
                                                                       metrics:metrics
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-250-[_trackTitle(50)]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[_trackTitle(50)]"
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
@@ -92,8 +92,8 @@
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
+    [self playAction:nil];
     
-    [self.audioPlayer prepareToPlay];
     
 }
 
@@ -106,25 +106,25 @@
 
 - (void)playAction:(UIView *)view
 {
-    NSDictionary *value = [self.topList objectAtIndex:self.index];
-    NSString *trackID = [value objectForKey:@"id"];
+    NSString *trackID = [self.trackInfo objectForKey:@"id"];
+    [self updateTrackTitle];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-
+    
     [self trackDownloadAction:trackID];
 }
 
 - (void)nextTrackAction:(UIView *)view
 {
-    NSDictionary *value = [self.topList objectAtIndex:self.index + 1];
-    NSString *trackID = [value objectForKey:@"id"];
+    [self updateTrackTitle];
+    NSString *trackID = [self.trackInfo objectForKey:@"id"];
     
     [self trackDownloadAction:trackID];
 }
 
 - (void)previousTrackAction:(UIView *)view
 {
-    NSDictionary *value = [self.topList objectAtIndex:self.index - 1];
-    NSString *trackID = [value objectForKey:@"id"];
+    [self updateTrackTitle];
+    NSString *trackID = [self.trackInfo objectForKey:@"id"];
     
     [self trackDownloadAction:trackID];
 }
@@ -140,29 +140,35 @@
 {
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
-        
+ 
         NSURL *url = [NSURL URLWithString:link];
-        weakSelf.audioPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:url error:nil];
         
+        AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc]initWithURL:url];
+        weakSelf.audioPlayer = [[AVPlayer alloc]initWithPlayerItem:avPlayerItem];
+        [weakSelf.audioPlayer pause];
+        [weakSelf.audioPlayer play];
+
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
         [[AVAudioSession sharedInstance] setActive: YES error: nil];
         [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-        
-        [weakSelf.audioPlayer prepareToPlay];
-        [weakSelf.audioPlayer play];
     }];
 }
 
 - (void)updateTime
 {
-    NSTimeInterval currentTime = self.audioPlayer.currentTime;
+//    CMTime currentTime = [self.audioPlayer currentTime];
     
-    NSInteger minutes = floor(currentTime/60);
-    NSInteger seconds = trunc(currentTime - minutes * 60);
+//    NSInteger minutes = floor(currentTime.timescale/60);
+//    NSInteger seconds = trunc(currentTime.timescale - minutes * 60);
+
+    // Access Current Time
+    NSTimeInterval aCurrentTime = CMTimeGetSeconds(self.audioPlayer.currentTime);
     
-    // update your UI with currentTime;
-    self.playedTime.text = [NSString stringWithFormat:@"%ld:%02ld", (long)minutes, (long)seconds];
-    self.currentTimeSlider.value = self.audioPlayer.currentTime;
+    // Access Duration
+//    NSTimeInterval aDuration = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
+    
+//    update your UI with currentTime;
+    self.playedTime.text = [NSString stringWithFormat:@"%f", aCurrentTime];
 }
 
 - (void)stopTimer
@@ -171,18 +177,11 @@
     self.timer = nil;
 }
 
-#pragma mark - AVAudioPlayerDelegate
-
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+- (void)updateTrackTitle
 {
-    NSLog(@"%s successfully=%@", __PRETTY_FUNCTION__, flag ? @"YES"  : @"NO");
-    [self stopTimer];
-}
-
-- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
-{
-    NSLog(@"%s error=%@", __PRETTY_FUNCTION__, error);
-    [self stopTimer];
+    NSString *artist = [self.trackInfo objectForKey:@"artist"];
+    NSString *track = [self.trackInfo objectForKey:@"track"];
+    self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
 
 

@@ -54,6 +54,9 @@
     
     self.topList = [NSMutableArray array];
     
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    
+    [notificationCenter addObserver:self selector:@selector(internetNotReachable:) name:PPSessionManagerInternetConnectionLost object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -129,10 +132,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
-    musicVC.topList = self.topList;
-    musicVC.index = indexPath.row;
+    musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:musicVC animated:YES];
-    
 }
 
 #pragma mark - UISearchBarDelegate
@@ -214,7 +215,6 @@
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-    
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -243,6 +243,21 @@
         });
     }];
 }
+
+- (void)internetNotReachable:(NSNotification *)notification
+{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"NoInternet", nil)
+                                                                   message:nil
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *closeAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Close", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil];
+    [alert addAction:closeAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 
 @end
 

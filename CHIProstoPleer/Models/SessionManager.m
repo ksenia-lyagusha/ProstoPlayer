@@ -10,16 +10,23 @@
 
 #import "NSURLRequest+cURL.h"
 
+#import <Reachability.h>
+
 NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";
 NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
 NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
 NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredDatedefaultsKey";
+
+NSString * const PPSessionManagerInternetConnectionLost = @"PPSessionManagerInternetConnectionLost";
+NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManagerInternetConnectionAppeared";
 
 @interface SessionManager ()
 
 @property (nonatomic, strong) NSURLSession *sessionURL;
 @property (nonatomic, strong) NSDate       *expiredDate;
 @property (nonatomic, strong, readwrite) NSString     *token;
+@property (strong, nonatomic) Reachability *reachabilityListener;
+
 
 @end
 
@@ -45,6 +52,26 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
         self.sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                         delegate:nil
                                                    delegateQueue:[NSOperationQueue mainQueue]];
+        
+
+        self.reachabilityListener = [Reachability reachabilityForLocalWiFi];
+        self.reachabilityListener.unreachableBlock = ^(Reachability * reachability){
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionLost
+                                                                object:nil];
+        };
+        self.reachabilityListener.reachableBlock = ^(Reachability *reachability){
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionAppeared
+                                                                object:nil];
+        };
+        [self.reachabilityListener startNotifier];
+        
+        if (![self.reachabilityListener isReachableViaWiFi])
+        {
+            NSLog(@"isReachableViaWiFi");
+        }
+
     }
     return self;
 }
@@ -102,7 +129,7 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
 {
     [self checkTokenWithComplitionHandler:^{
         
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", self.token, page];
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=get_top_list&list_type=1&language=en&page=%li", self.token, (long)page];
         
         NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
         [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
@@ -264,4 +291,21 @@ NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredD
     
 }
 
+- (void)checkInternetConnection
+{
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    if (networkStatus == ReachableViaWWAN) {
+        
+        //Code when there is a WAN connection
+        
+    } else if (networkStatus == ReachableViaWiFi) {
+        
+        //Code when there is a WiFi connection
+        
+    } else if (networkStatus == NotReachable) {
+        
+        //Code when there is no connection
+    }
+}
 @end

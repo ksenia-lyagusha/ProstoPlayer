@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString * const PPSessionManagerInternetConnectionLost;
+extern NSString * const PPSessionManagerInternetConnectionAppeared;
+
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
 
 @property (nonatomic, strong, readonly) NSString     *token;

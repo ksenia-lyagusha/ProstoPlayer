@@ -11,3 +11,4 @@
 "IncorrectInput" = "Sorry, but you have empty fields";
 "InvalidData" = "Incorrect login or password. Please, check your input data";
 "No more tracks" = "No more tracks";
+"NoInternet" = "No Internet Connection";

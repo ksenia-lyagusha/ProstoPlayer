@@ -9,10 +9,9 @@
 /* Begin PBXBuildFile section */
 		6709DCE91BF347790089B8CC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCE81BF347790089B8CC /* SessionManager.m */; };
 		6709DCF51BF352A10089B8CC /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCF41BF352A10089B8CC /* Tests.m */; };
-		6709DCFE1BF353E60089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 676444391BF2412500967F5A /* Info.plist */; };
-		6709DCFF1BF3546E0089B8CC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6709DCF61BF352A10089B8CC /* Info.plist */; };
 		6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBDF1C108540005A8385 /* UIAlertController+Category.m */; };
 		6714CBE41C108548005A8385 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBE31C108548005A8385 /* LoginView.m */; };
+		6735DE381C19D495008591CA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6735DE371C19D495008591CA /* SystemConfiguration.framework */; };
 		674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */; };
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
@@ -49,6 +48,7 @@
 		6714CBDF1C108540005A8385 /* UIAlertController+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+Category.m"; sourceTree = "<group>"; };
 		6714CBE21C108548005A8385 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
 		6714CBE31C108548005A8385 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
+		6735DE371C19D495008591CA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		676444081BF2336B00967F5A /* ProstoPleerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProstoPleerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +86,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6735DE381C19D495008591CA /* SystemConfiguration.framework in Frameworks */,
 				D7A1FDFB1C0588D0009EF802 /* AVFoundation.framework in Frameworks */,
 				9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */,
 			);
@@ -97,6 +98,7 @@
 		31AD3D236614CD29CCEF39D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6735DE371C19D495008591CA /* SystemConfiguration.framework */,
 				D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */,
 				805B6B06A735058C4537F79D /* libPods.a */,
 			);
@@ -268,7 +270,7 @@
 		676444001BF2336B00967F5A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "CHI Software";
 				TargetAttributes = {
 					6709DCF11BF352A10089B8CC = {
@@ -304,7 +306,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6709DCFF1BF3546E0089B8CC /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,7 +314,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */,
-				6709DCFE1BF353E60089B8CC /* Info.plist in Resources */,
 				D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */,
 				676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */,
 			);

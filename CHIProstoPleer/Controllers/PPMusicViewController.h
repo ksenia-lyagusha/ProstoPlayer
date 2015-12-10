@@ -10,7 +10,6 @@
 
 @interface PPMusicViewController : UIViewController
 
-@property (strong, nonatomic) NSArray *topList;
-@property NSInteger index;
+@property (strong, nonatomic) NSDictionary *trackInfo;
 
 @end

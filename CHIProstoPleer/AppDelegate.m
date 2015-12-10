@@ -40,10 +40,10 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     __block UIBackgroundTaskIdentifier task = 0;
-    task=[application beginBackgroundTaskWithExpirationHandler:^{
+    task = [application beginBackgroundTaskWithExpirationHandler:^{
         NSLog(@"Expiration handler called %f",[application backgroundTimeRemaining]);
         [application endBackgroundTask:task];
-        task=UIBackgroundTaskInvalid;
+        task = UIBackgroundTaskInvalid;
     }];
 }
 
