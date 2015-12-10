@@ -73,7 +73,7 @@
                                                                       metrics:metrics
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[_currentTimeSlider]-sideSpacing-[_playedTime]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[_currentTimeSlider]-100-[_playedTime]"
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
@@ -141,7 +141,8 @@
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
-        weakSelf.audioPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:[NSURL URLWithString:link] error:nil];
+        NSURL *url = [NSURL URLWithString:link];
+        weakSelf.audioPlayer = [[AVAudioPlayer alloc]initWithContentsOfURL:url error:nil];
         
         [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
         [[AVAudioSession sharedInstance] setActive: YES error: nil];

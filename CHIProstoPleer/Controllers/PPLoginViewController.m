@@ -43,7 +43,7 @@
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
-    if([SessionManager userToken])
+    if([[SessionManager sharedInstance] token])
     {
         [self goToMainMenu];
         

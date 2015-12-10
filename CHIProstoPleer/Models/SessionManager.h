@@ -10,8 +10,9 @@
 
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
 
+@property (nonatomic, strong, readonly) NSString     *token;
+
 + (instancetype)sharedInstance;
-+ (NSString *)userToken;
 
 - (void)sendRequestForTokenWithLogin:(NSString *)login andPassword:(NSString *)password withComplitionHandler:(void(^)(NSString *token, NSError *error))completion;
 
