@@ -42,7 +42,7 @@
 
 - (void)testTopSongsList
 {
-    [[SessionManager sharedInstance] topSongsList:^(NSDictionary *topList, NSError *error) {
+    [[SessionManager sharedInstance] topSongsListForPage:1 withComplitionHandler:^(NSDictionary *topList, NSError *error) {
         XCTAssert(topList, @"Should always receive top list");
         
         [self.expectation fulfill];

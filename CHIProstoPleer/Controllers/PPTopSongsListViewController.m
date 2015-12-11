@@ -12,13 +12,14 @@
 
 #import "UIAlertController+Category.h"
 
-@interface PPTopSongsListViewController ()  <UISearchBarDelegate>
+@interface PPTopSongsListViewController ()  <UISearchBarDelegate, PPTopSongsListViewControllerDelegate>
 
 @property (strong, nonatomic) UISearchBar    *searchBar;
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
 
+@property NSInteger currentIndex;
 @property NSInteger currentPage;
 
 @end
@@ -135,6 +136,8 @@
 {
     PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
     musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
+    musicVC.delegate = self;
+    self.currentIndex = indexPath.row;
     [self.navigationController pushViewController:musicVC animated:YES];
 }
 
@@ -142,9 +145,11 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
-    if ([self.searchBar.text length] > 0) {
+    if ([self.searchBar.text length] > 0)
+    {
         [self doSearch];
-    } else {
+    } else
+    {
         self.filteredList = self.topList;
         [self.tableView reloadData];
     }
@@ -260,6 +265,28 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+- (NSDictionary *)topSongsList:(NSInteger)tag
+{
+    NSDictionary *song;
+    
+    switch (tag) {
+        case 1:
+        {
+            song = [self.topList objectAtIndex:self.currentIndex +1];
+            self.currentIndex += 1;
+            break;
+        }
+        case 2:
+        {
+            song = [self.topList objectAtIndex:self.currentIndex -1];
+            self.currentIndex -= 1;
+            break;
+        }
+        default:
+            break;
+    }
+    return song;
+}
 
 @end
 

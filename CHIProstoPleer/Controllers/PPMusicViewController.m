@@ -7,19 +7,23 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import <MediaPlayer/MediaPlayer.h>
+
 #import "PPMusicViewController.h"
 
 #import "SessionManager.h"
 
 #import "MusicView.h"
 
-@interface PPMusicViewController () <PPMusicViewDelegate, AVAudioPlayerDelegate>
+@interface PPMusicViewController () <PPMusicViewDelegate>
 
 @property (nonatomic, strong) AVPlayer *audioPlayer;
 @property (nonatomic, strong) UISlider *currentTimeSlider;
 @property (nonatomic, strong) NSTimer  *timer;
 @property (nonatomic, strong) UILabel  *playedTime;
 @property (nonatomic, strong) UILabel  *trackTitle;
+@property (nonatomic, strong) NSArray  *topList;
+@property (nonatomic, strong) id        timeObserver;
 
 @end
 
@@ -32,9 +36,8 @@
 
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
     self.view.contentMode = UIViewContentModeScaleAspectFit;
-//    self.audioPlayer.delegate = self;
-
-    self.tabBarController.title = @"Music player";
+    
+    self.title = @"Music player";
     
     self.currentTimeSlider = [[UISlider alloc] init];
     self.currentTimeSlider.minimumValue = 0.0f;
@@ -93,22 +96,65 @@
                                                                       options:0
                                                                       metrics:metrics
                                                                         views:views]];
+
+
+    MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
+    
+    commandCenter.previousTrackCommand.enabled = YES;
+    [commandCenter.previousTrackCommand addTarget:self action:@selector(previousTapped:)];
+    
+    commandCenter.playCommand.enabled = YES;
+    [commandCenter.playCommand addTarget:self action:@selector(playAudio:)];
+    
+    commandCenter.pauseCommand.enabled = YES;
+    [commandCenter.pauseCommand addTarget:self action:@selector(pauseAudio:)];
+    
+    commandCenter.nextTrackCommand.enabled = YES;
+    [commandCenter.nextTrackCommand addTarget:self action:@selector(nextTapped:)];
+    
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    
+    void (^observerBlock)(CMTime time) = ^(CMTime time) {
+        NSString *timeString = [NSString stringWithFormat:@"%02.2f", (float)time.value / (float)time.timescale];
+        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
+            self.trackTitle.text = timeString;
+        } else {
+            NSLog(@"App is backgrounded. Time is: %@", timeString);
+        }
+    };
+    
+    self.timeObserver = [self.audioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(10, 1000)
+                                                                  queue:dispatch_get_main_queue()
+                                                             usingBlock:observerBlock];
+    
     [self playAction:nil];
     
+    self.audioPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[self.audioPlayer currentItem]];
 }
 
-- (void)viewDidUnload
-{
-    [self setCurrentTimeSlider:nil];
+- (void)viewWillAppear {
+    
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    [self becomeFirstResponder];
 }
 
 #pragma mark - Action methods
 
 - (void)playAction:(UIView *)view
 {
+    if (self.audioPlayer) {
+        [self.audioPlayer play];
+    
+        return;
+    }
     NSString *trackID = [self.trackInfo objectForKey:@"id"];
-    [self updateTrackTitle];
+    [self updateTrackTitle:self.trackInfo];
     self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
     
     [self trackDownloadAction:trackID];
@@ -116,16 +162,18 @@
 
 - (void)nextTrackAction:(UIView *)view
 {
-    [self updateTrackTitle];
-    NSString *trackID = [self.trackInfo objectForKey:@"id"];
+    NSDictionary *song = [self.delegate topSongsList:1];
+    [self updateTrackTitle:song];
+    NSString *trackID = [song objectForKey:@"id"];
     
     [self trackDownloadAction:trackID];
 }
 
 - (void)previousTrackAction:(UIView *)view
 {
-    [self updateTrackTitle];
-    NSString *trackID = [self.trackInfo objectForKey:@"id"];
+    NSDictionary *song = [self.delegate topSongsList:2];
+    [self updateTrackTitle:song];
+    NSString *trackID = [song objectForKey:@"id"];
     
     [self trackDownloadAction:trackID];
 }
@@ -133,7 +181,7 @@
 - (void)pauseAction:(UIView *)view
 {
     [self.audioPlayer pause];
-    [self stopTimer];
+//    [self stopTimer];
     [self updateTime];
 }
 
@@ -146,29 +194,17 @@
         
         AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc]initWithURL:url];
         weakSelf.audioPlayer = [[AVPlayer alloc]initWithPlayerItem:avPlayerItem];
-        [weakSelf.audioPlayer pause];
         [weakSelf.audioPlayer play];
 
-        [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
-        [[AVAudioSession sharedInstance] setActive: YES error: nil];
-        [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     }];
 }
 
 - (void)updateTime
 {
-//    CMTime currentTime = [self.audioPlayer currentTime];
-    
-//    NSInteger minutes = floor(currentTime.timescale/60);
-//    NSInteger seconds = trunc(currentTime.timescale - minutes * 60);
-
-    // Access Current Time
+//    Access Current Time
     NSTimeInterval aCurrentTime = CMTimeGetSeconds(self.audioPlayer.currentTime);
     
-    // Access Duration
-//    NSTimeInterval aDuration = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
-    
-//    update your UI with currentTime;
+//    update UI with currentTime;
     self.playedTime.text = [NSString stringWithFormat:@"%li:%li", (long)aCurrentTime/60, (long)aCurrentTime %60];
 }
 
@@ -178,25 +214,40 @@
     self.timer = nil;
 }
 
-- (void)updateTrackTitle
+- (void)updateTrackTitle:(NSDictionary *)song
 {
-    NSString *artist = [self.trackInfo objectForKey:@"artist"];
-    NSString *track = [self.trackInfo objectForKey:@"track"];
+    NSString *artist = [song objectForKey:@"artist"];
+    NSString *track = [song objectForKey:@"track"];
     self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
 
-#pragma mark - AVAudioPlayerDelegate
-
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event
 {
-    NSLog(@"%s successfully=%@", __PRETTY_FUNCTION__, flag ? @"YES"  : @"NO");
-    [self stopTimer];
+    switch (event.subtype) {
+        case UIEventSubtypeRemoteControlPlay:
+            [self.audioPlayer play];
+            break;
+        case UIEventSubtypeRemoteControlPause:
+            [self.audioPlayer pause];
+            break;
+        default:
+            break;
+    }
 }
 
-- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"%s error=%@", __PRETTY_FUNCTION__, error);
-  [self stopTimer];
+    if ([keyPath isEqualToString:@"currentItem"])
+    {
+        AVPlayerItem *item = ((AVPlayer *)object).currentItem;
+        self.trackTitle.text = ((AVURLAsset*)item.asset).URL.pathComponents.lastObject;
+        NSLog(@"New music name: %@", self.trackTitle.text);
+    }
+}
 
+- (void)playerItemDidReachEnd:(NSNotification *)notification
+{
+    AVPlayerItem *playerItem = [notification object];
+    [playerItem seekToTime:kCMTimeZero];
 }
 @end

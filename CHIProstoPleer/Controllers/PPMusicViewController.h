@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PPTopSongsListViewController.h"
 
 @interface PPMusicViewController : UIViewController
 
 @property (strong, nonatomic) NSDictionary *trackInfo;
+@property (weak, nonatomic) id <PPTopSongsListViewControllerDelegate>delegate;
 
 @end
