@@ -82,12 +82,9 @@
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:topSongsListVC];
-    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-    UINavigationController *otherNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteVC];
-    
-    
-    NSArray *controllers = [NSArray arrayWithObjects:navigationController, otherNavigationController, nil];
+    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init]; 
+
+    NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
 
     [self.navigationController pushViewController:tabController animated:YES];

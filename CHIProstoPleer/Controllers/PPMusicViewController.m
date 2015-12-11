@@ -13,7 +13,7 @@
 
 #import "MusicView.h"
 
-@interface PPMusicViewController () <PPMusicViewDelegate>
+@interface PPMusicViewController () <PPMusicViewDelegate, AVAudioPlayerDelegate>
 
 @property (nonatomic, strong) AVPlayer *audioPlayer;
 @property (nonatomic, strong) UISlider *currentTimeSlider;
@@ -32,8 +32,9 @@
 
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
     self.view.contentMode = UIViewContentModeScaleAspectFit;
-  
-    self.parentViewController.tabBarController.title = @"Music player";
+//    self.audioPlayer.delegate = self;
+
+    self.tabBarController.title = @"Music player";
     
     self.currentTimeSlider = [[UISlider alloc] init];
     self.currentTimeSlider.minimumValue = 0.0f;
@@ -168,7 +169,7 @@
 //    NSTimeInterval aDuration = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
     
 //    update your UI with currentTime;
-    self.playedTime.text = [NSString stringWithFormat:@"%f", aCurrentTime];
+    self.playedTime.text = [NSString stringWithFormat:@"%li:%li", (long)aCurrentTime/60, (long)aCurrentTime %60];
 }
 
 - (void)stopTimer
@@ -184,5 +185,18 @@
     self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
 
+#pragma mark - AVAudioPlayerDelegate
 
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag
+{
+    NSLog(@"%s successfully=%@", __PRETTY_FUNCTION__, flag ? @"YES"  : @"NO");
+    [self stopTimer];
+}
+
+- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error
+{
+    NSLog(@"%s error=%@", __PRETTY_FUNCTION__, error);
+  [self stopTimer];
+
+}
 @end

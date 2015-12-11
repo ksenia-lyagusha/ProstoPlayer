@@ -18,9 +18,11 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
+
 @property NSInteger currentPage;
 
 @end
+
 @implementation PPTopSongsListViewController
 
 - (instancetype)init
@@ -61,8 +63,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.parentViewController.tabBarController.title = @"Top songs list";
-    self.parentViewController.tabBarController.navigationItem.hidesBackButton = YES;
+    self.tabBarController.title = @"Top songs list";
+    self.tabBarController.navigationItem.hidesBackButton = YES;
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
