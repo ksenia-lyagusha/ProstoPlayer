@@ -12,10 +12,9 @@
 
 @protocol PPMusicViewDelegate <NSObject>
 
-- (void)playAction:(UIView *)view;
-- (void)nextTrackAction:(UIView *)view;
-- (void)previousTrackAction:(UIView *)view;
-- (void)pauseAction:(UIView *)view;
+- (void)playAction:(id)sender;
+- (void)nextTrackAction;
+- (void)previousTrackAction;
 
 @end
 
@@ -26,6 +25,5 @@
 @property (strong, nonatomic) UIButton *playButton;
 @property (strong, nonatomic) UIButton *nextTrack;
 @property (strong, nonatomic) UIButton *previousTrack;
-@property (strong, nonatomic) UIButton *pauseButton;
 
 @end

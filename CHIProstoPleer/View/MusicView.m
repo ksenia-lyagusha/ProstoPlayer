@@ -20,7 +20,8 @@
     if (self) {
         
         UIButton *playButton = [[UIButton alloc] init];
-        [playButton setImage:[UIImage imageNamed:@"play"]  forState:UIControlStateNormal];
+        [playButton setImage:[UIImage imageNamed:@"play"] forState:UIControlStateNormal];
+        [playButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateSelected];
         [playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
         playButton.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -33,18 +34,12 @@
         [previousTrack setImage:[UIImage imageNamed:@"previous"] forState:UIControlStateNormal];
         [previousTrack addTarget:self action:@selector(previousTrackAction:) forControlEvents:UIControlEventTouchUpInside];
         previousTrack.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        UIButton *pauseButton = [[UIButton alloc] init];
-        [pauseButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateNormal];
-        [pauseButton addTarget:self action:@selector(pauseAction:) forControlEvents:UIControlEventTouchUpInside];
-        pauseButton.translatesAutoresizingMaskIntoConstraints = NO;
     
         [self addSubview:playButton];
         [self addSubview:nextTrack];
         [self addSubview:previousTrack];
-        [self addSubview:pauseButton];        
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, pauseButton);
+        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack);
         NSDictionary *metrics = @{@"sideSpacing" : @20.0, @"verticalSpacing" : @250.0, @"width" : @50.0, @"hight" : @50};
         
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[nextTrack(hight)]"
@@ -62,12 +57,7 @@
                                                                      metrics:metrics
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[pauseButton(hight)]"
-                                                                     options:0
-                                                                     metrics:metrics
-                                                                       views:views]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[previousTrack(width)]-sideSpacing-[playButton(width)]-sideSpacing-[pauseButton(width)]-sideSpacing-[nextTrack(width)]"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[previousTrack(width)]-sideSpacing-[playButton(width)]-sideSpacing-[nextTrack(width)]"
                                                                      options:0
                                                                      metrics:metrics
                                                                        views:views]];
@@ -80,31 +70,23 @@
 {
     if ([self.delegate respondsToSelector:@selector(playAction:)])
     {
-        [self.delegate playAction:self];
+        [self.delegate playAction:sender];
     }
 }
 
 - (void)nextTrackAction:(id)sender
 {
-    if ([self.delegate respondsToSelector:@selector(nextTrackAction:)])
+    if ([self.delegate respondsToSelector:@selector(nextTrackAction)])
     {
-        [self.delegate nextTrackAction:self];
+        [self.delegate nextTrackAction];
     }
 }
 
 - (void)previousTrackAction:(id)sender
 {
-    if ([self.delegate respondsToSelector:@selector(previousTrackAction:)])
+    if ([self.delegate respondsToSelector:@selector(previousTrackAction)])
     {
-        [self.delegate previousTrackAction:self];
-    }
-}
-
-- (void)pauseAction:(id)sender
-{
-    if ([self.delegate respondsToSelector:@selector(pauseAction:)])
-    {
-        [self.delegate pauseAction:self];
+        [self.delegate previousTrackAction];
     }
 }
 
