@@ -40,20 +40,31 @@
     self.title = @"Music player";
     
     self.currentTimeSlider = [[UISlider alloc] init];
+    [self.currentTimeSlider addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
     self.currentTimeSlider.minimumValue = 0.0f;
-
+    self.currentTimeSlider.maximumValue = 1.0;
+    self.currentTimeSlider.continuous = YES;
+    self.currentTimeSlider.value =
     self.currentTimeSlider.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.playedTime = [[UILabel alloc] init];
     self.playedTime.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.trackTitle = [[UILabel alloc] init];
+    self.trackTitle.lineBreakMode = NSLineBreakByWordWrapping;
+    self.trackTitle.numberOfLines = 0;
+    self.trackTitle.textAlignment = NSTextAlignmentCenter;
+    
     self.trackTitle.translatesAutoresizingMaskIntoConstraints = NO;
+    
+    
+//    UIToolbar *toolBar = [self addToolbar];
     
     MusicView *view = [[MusicView alloc] init];
     [view addSubview:self.currentTimeSlider];
     [view addSubview:self.playedTime];
     [view addSubview:self.trackTitle];
+//    [view addSubview:toolBar];
     
     view.delegate = self;
     view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -61,7 +72,7 @@
     [self.view addSubview:view];
     
     NSDictionary *views = NSDictionaryOfVariableBindings(view, _currentTimeSlider, _playedTime, _trackTitle);
-    NSDictionary *metrics = @{@"sideSpacing" : @20.0, @"verticalSpacing" : @320.0};
+    
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[view]|"
                                                                       options:0
                                                                       metrics:nil
@@ -72,32 +83,66 @@
                                                                       metrics:nil
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[_currentTimeSlider]"
+    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:_currentTimeSlider
+                                                                                   attribute:NSLayoutAttributeCenterY
+                                                                                   relatedBy:NSLayoutRelationEqual
+                                                                                      toItem:self.view
+                                                                                   attribute:NSLayoutAttributeBottom
+                                                                                  multiplier:0.6
+                                                                                    constant:0];
+    [self.view addConstraint:horizontalConstraintForSlider];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-30-[_currentTimeSlider]-|"
                                                                       options:0
-                                                                      metrics:metrics
+                                                                      metrics:nil
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[_currentTimeSlider]-100-[_playedTime]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_trackTitle(50)]"
                                                                       options:0
-                                                                      metrics:metrics
+                                                                      metrics:nil
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[_playedTime]"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[_trackTitle]-|"
                                                                       options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-150-[_trackTitle(50)]"
-                                                                      options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-sideSpacing-[_trackTitle]|"
-                                                                      options:0
-                                                                      metrics:metrics
+                                                                      metrics:nil
                                                                         views:views]];
 
-
+    NSLayoutConstraint *verticalConstraintForTime = [NSLayoutConstraint constraintWithItem:_playedTime
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.view
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1
+                                                                          constant:0];
+    [self.view addConstraint:verticalConstraintForTime];
+    
+    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:_playedTime
+                                                                                 attribute:NSLayoutAttributeCenterY
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeBottom
+                                                                                multiplier:0.65
+                                                                                  constant:0];
+    [self.view addConstraint:horizontalConstraintForTime];
+    
+    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:_trackTitle
+                                                                                attribute:NSLayoutAttributeCenterY
+                                                                                relatedBy:NSLayoutRelationEqual
+                                                                                   toItem:self.view
+                                                                                attribute:NSLayoutAttributeCenterY
+                                                                               multiplier:1.0
+                                                                                 constant:0];
+    [self.view addConstraint:yCenterConstraintForTitle];
+    
+    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:_trackTitle
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+    [self.view addConstraint:xCenterConstraintForTitle];
+    
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
     commandCenter.previousTrackCommand.enabled = YES;
@@ -120,11 +165,15 @@
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
+    
+    
+    
 }
 
 - (void)viewWillAppear {
     
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    
 }
 
 - (void)dealloc
@@ -187,6 +236,22 @@
     }];
 }
 
+- (void)sliderAction:(UISlider *)sender
+{
+    float newValue;
+    if ([sender isEqual:self.currentTimeSlider])
+    {
+        newValue = sender.value /10;
+        sender.value = floor(newValue) * 10;
+    }
+    
+//    if(self.currentTimeSlider.value == self.currentTimeSlider.maximumValue)
+//    {
+//        [self stopTimer];
+//    }
+    [self.currentTimeSlider setValue:newValue animated:YES];
+}
+
 - (void)updateTime
 {
 //    Access Current Time
@@ -194,6 +259,7 @@
     
 //    update UI with currentTime;
     self.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
+    
 }
 
 - (void)stopTimer
@@ -252,6 +318,21 @@
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
     [self nextTrackAction];
+}
+#pragma mark - ToolBar
+
+- (UIToolbar *)addToolbar
+{
+    UIBarButtonItem *customItem1 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"previous"] style:UIBarButtonItemStylePlain target:self action:@selector(previousTrackAction)];
+    UIBarButtonItem *customItem2 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"play"]  style:UIBarButtonItemStylePlain target:self action:@selector(playAction:)];
+    UIBarButtonItem *customItem3 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"next"] style:UIBarButtonItemStylePlain target:self action:@selector(nextTrackAction)];
+    
+    NSArray *toolbarItems = [NSArray arrayWithObjects: customItem1, customItem2, customItem3, nil];
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    [toolbar setBarStyle:UIBarStyleDefault];
+    [toolbar setItems:toolbarItems];
+    
+    return toolbar;
 }
 
 @end
