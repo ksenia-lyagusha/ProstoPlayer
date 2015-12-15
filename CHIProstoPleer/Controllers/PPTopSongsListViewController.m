@@ -8,9 +8,9 @@
 
 #import "PPTopSongsListViewController.h"
 #import "PPMusicViewController.h"
-#import "SessionManager.h"
 
 #import "UIAlertController+Category.h"
+#import "SessionManager.h"
 
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate, PPTopSongsListViewControllerDelegate>
 
@@ -18,9 +18,12 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
+@property (strong, nonatomic) AVPlayer       *playback;
 
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
+
+@property (copy) void(^playbackHandler)(AVPlayer *);
 
 @end
 
@@ -66,6 +69,7 @@
 {
     self.tabBarController.title = @"Top songs list";
     self.tabBarController.navigationItem.hidesBackButton = YES;
+    
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -140,6 +144,12 @@
     self.currentIndex = indexPath.row;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     [self.navigationController pushViewController:musicVC animated:YES];
+    
+    musicVC.audioPlayer = self.playback;
+    if (self.playbackHandler) {
+        self.playbackHandler(self.playback);
+    }
+   
 }
 
 #pragma mark - UISearchBarDelegate
@@ -266,6 +276,8 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+#pragma mark - PPTopSongsListViewControllerDelegate
+
 - (NSDictionary *)topSongsList:(NSInteger)tag
 {
     NSDictionary *song;
@@ -289,5 +301,9 @@
     return song;
 }
 
+- (void)stopPlayback:(void (^)(AVPlayer *))playbackBlock
+{
+    self.playbackHandler = playbackBlock;
+}
 @end
 

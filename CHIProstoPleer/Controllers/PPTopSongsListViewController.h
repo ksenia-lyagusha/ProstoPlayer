@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 @protocol PPTopSongsListViewControllerDelegate  <NSObject>
 
 - (NSDictionary *)topSongsList:(NSInteger)tag;
+- (void)stopPlayback:(void (^)(AVPlayer *))playbackBlock;
 
 @end
 

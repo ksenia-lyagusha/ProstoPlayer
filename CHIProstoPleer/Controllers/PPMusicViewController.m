@@ -6,9 +6,6 @@
 //  Copyright © 2015 CHI Software. All rights reserved.
 //
 
-#import <AVFoundation/AVFoundation.h>
-#import <MediaPlayer/MediaPlayer.h>
-
 #import "PPMusicViewController.h"
 
 #import "SessionManager.h"
@@ -17,7 +14,6 @@
 
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
-@property (nonatomic, strong) AVPlayer *audioPlayer;
 @property (nonatomic, strong) UISlider *currentTimeSlider;
 @property (nonatomic, strong) NSTimer  *timer;
 @property (nonatomic, strong) UILabel  *playedTime;
@@ -41,10 +37,7 @@
     
     self.currentTimeSlider = [[UISlider alloc] init];
     [self.currentTimeSlider addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
-    self.currentTimeSlider.minimumValue = 0.0f;
-    self.currentTimeSlider.maximumValue = 1.0;
-    self.currentTimeSlider.continuous = YES;
-    self.currentTimeSlider.value =
+    self.currentTimeSlider.continuous = YES; 
     self.currentTimeSlider.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.playedTime = [[UILabel alloc] init];
@@ -54,7 +47,6 @@
     self.trackTitle.lineBreakMode = NSLineBreakByWordWrapping;
     self.trackTitle.numberOfLines = 0;
     self.trackTitle.textAlignment = NSTextAlignmentCenter;
-    
     self.trackTitle.translatesAutoresizingMaskIntoConstraints = NO;
     
     
@@ -83,7 +75,7 @@
                                                                       metrics:nil
                                                                         views:views]];
     
-    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:_currentTimeSlider
+    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:self.currentTimeSlider
                                                                                    attribute:NSLayoutAttributeCenterY
                                                                                    relatedBy:NSLayoutRelationEqual
                                                                                       toItem:self.view
@@ -107,7 +99,7 @@
                                                                       metrics:nil
                                                                         views:views]];
 
-    NSLayoutConstraint *verticalConstraintForTime = [NSLayoutConstraint constraintWithItem:_playedTime
+    NSLayoutConstraint *verticalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
                                                                          attribute:NSLayoutAttributeCenterX
                                                                          relatedBy:NSLayoutRelationEqual
                                                                             toItem:self.view
@@ -116,7 +108,7 @@
                                                                           constant:0];
     [self.view addConstraint:verticalConstraintForTime];
     
-    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:_playedTime
+    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
                                                                                  attribute:NSLayoutAttributeCenterY
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:self.view
@@ -125,7 +117,7 @@
                                                                                   constant:0];
     [self.view addConstraint:horizontalConstraintForTime];
     
-    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:_trackTitle
+    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
                                                                                 attribute:NSLayoutAttributeCenterY
                                                                                 relatedBy:NSLayoutRelationEqual
                                                                                    toItem:self.view
@@ -134,7 +126,7 @@
                                                                                  constant:0];
     [self.view addConstraint:yCenterConstraintForTitle];
     
-    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:_trackTitle
+    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
                                                                                  attribute:NSLayoutAttributeCenterX
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:self.view
@@ -146,15 +138,16 @@
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
     commandCenter.previousTrackCommand.enabled = YES;
-
+    [commandCenter.previousTrackCommand addTarget:self action:@selector(previousTrackAction)];
     
     commandCenter.playCommand.enabled = YES;
- 
+    [commandCenter.playCommand addTarget:self action:@selector(playControlCenterAction:)];
     
     commandCenter.pauseCommand.enabled = YES;
-  
+    [commandCenter.pauseCommand addTarget:self action:@selector(playControlCenterAction:)];
     
     commandCenter.nextTrackCommand.enabled = YES;
+    [commandCenter.nextTrackCommand addTarget:self action:@selector(nextTrackAction)];
     
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
@@ -166,19 +159,27 @@
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
     
-    
-    
 }
 
-- (void)viewWillAppear {
-    
+- (void)viewWillAppear
+{
+    [super viewWillAppear:YES];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-    
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [self.delegate stopPlayback:^(AVPlayer *playback) {
+        [self.audioPlayer pause];
+        self.audioPlayer = nil;
+    }];
+}
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
 }
 
 #pragma mark - Action methods
@@ -236,30 +237,22 @@
     }];
 }
 
-- (void)sliderAction:(UISlider *)sender
+
+- (void)sliderAction:(UIGestureRecognizer *)sender
 {
-    float newValue;
-    if ([sender isEqual:self.currentTimeSlider])
-    {
-        newValue = sender.value /10;
-        sender.value = floor(newValue) * 10;
-    }
-    
-//    if(self.currentTimeSlider.value == self.currentTimeSlider.maximumValue)
-//    {
-//        [self stopTimer];
-//    }
-    [self.currentTimeSlider setValue:newValue animated:YES];
+
 }
 
 - (void)updateTime
 {
+    self.currentTimeSlider.maximumValue = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
+    [self.currentTimeSlider setValue:CMTimeGetSeconds(self.audioPlayer.currentTime) animated:YES];
+    
 //    Access Current Time
     NSTimeInterval aCurrentTime = CMTimeGetSeconds(self.audioPlayer.currentTime);
     
 //    update UI with currentTime;
     self.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
-    
 }
 
 - (void)stopTimer
@@ -294,25 +287,65 @@
                                                                   usingBlock:observerBlock];
 }
 
+- (void)playControlCenterAction:(MPRemoteCommandCenter *)sender
+{
+ 
+//    if (sender.pauseCommand) {
+//        [self.audioPlayer play];
+//    }
+//    else
+//    {
+        [self.audioPlayer play];
+
+//    }
+    
+
+}
+
 #pragma mark - MPRemoteCommandCenter
 
 - (void)remoteControlReceivedWithEvent:(UIEvent *)event
 {
-    switch (event.subtype) {
-    
-        case UIEventSubtypeRemoteControlPlay:
-            [self.audioPlayer play];
-            break;
-        case UIEventSubtypeRemoteControlPause:
-            [self.audioPlayer pause];
-            break;
-        case UIEventSubtypeRemoteControlNextTrack:
-            break;
-        case UIEventSubtypeRemoteControlPreviousTrack:
-            break;
-        default:
-            break;
+    NSLog(@"received event!");
+    if (event.type == UIEventTypeRemoteControl) {
+        switch (event.subtype) {
+            case UIEventSubtypeRemoteControlTogglePlayPause: {
+                if (self.audioPlayer.rate > 0.0) {
+                    [self.audioPlayer pause];
+                } else {
+                    [self.audioPlayer play];
+                }
+                
+                break;
+            }
+            case UIEventSubtypeRemoteControlPlay: {
+                [self.audioPlayer play];
+                break;
+            }
+            case UIEventSubtypeRemoteControlPause: {
+                [self.audioPlayer pause];
+                break;
+            }
+            default:
+                break;
+        }
     }
+    
+//    switch (event.subtype) {
+//    
+//        case UIEventSubtypeRemoteControlPlay:
+//            [self.audioPlayer play];
+//            break;
+//        case UIEventSubtypeRemoteControlPause:
+//            [self.audioPlayer pause];
+//            break;
+//        case UIEventSubtypeRemoteControlNextTrack:
+//            break;
+//        case UIEventSubtypeRemoteControlPreviousTrack:
+//            break;
+//        default:
+//            break;
+//    }
 }
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification
