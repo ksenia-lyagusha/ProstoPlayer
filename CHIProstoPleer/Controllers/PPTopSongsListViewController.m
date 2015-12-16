@@ -18,12 +18,11 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
-@property (strong, nonatomic) AVPlayer       *playback;
 
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
 
-@property (copy) void(^playbackHandler)(AVPlayer *);
+@property (strong, nonatomic) PPMusicViewController *musicVC;
 
 @end
 
@@ -138,18 +137,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
-    musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
-    musicVC.delegate = self;
+    self.musicVC = [[PPMusicViewController alloc] init];
+    self.musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
+    self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
-    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    [self.navigationController pushViewController:musicVC animated:YES];
-    
-    musicVC.audioPlayer = self.playback;
-    if (self.playbackHandler) {
-        self.playbackHandler(self.playback);
-    }
-   
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
+    [self.navigationController pushViewController:self.musicVC animated:YES];
 }
 
 #pragma mark - UISearchBarDelegate
@@ -301,9 +294,5 @@
     return song;
 }
 
-- (void)stopPlayback:(void (^)(AVPlayer *))playbackBlock
-{
-    self.playbackHandler = playbackBlock;
-}
 @end
 

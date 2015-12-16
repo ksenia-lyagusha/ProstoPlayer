@@ -18,7 +18,7 @@
 
 @end
 
-@interface MusicView : UIView
+@interface MusicView : UIVisualEffectView
 
 @property (weak, nonatomic) id <PPMusicViewDelegate>delegate;
 

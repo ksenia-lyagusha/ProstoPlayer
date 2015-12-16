@@ -20,6 +20,10 @@
 @property (nonatomic, strong) NSArray  *topList;
 @property (nonatomic, strong) id        timeObserver;
 
+@property (nonatomic, strong) MusicView *musicView;
+
+@property (nonatomic) BOOL isSelected;
+
 @end
 
 @implementation PPMusicViewController
@@ -29,9 +33,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    self.view.contentMode = UIViewContentModeScaleAspectFit;
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
-    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.translatesAutoresizingMaskIntoConstraints = NO;
     
     self.title = @"Music player";
     
@@ -48,35 +52,48 @@
     self.trackTitle.numberOfLines = 0;
     self.trackTitle.textAlignment = NSTextAlignmentCenter;
     self.trackTitle.translatesAutoresizingMaskIntoConstraints = NO;
+
+    self.musicView = [[MusicView alloc] init];
+    self.musicView.delegate = self;
+    self.musicView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    
-//    UIToolbar *toolBar = [self addToolbar];
-    
-    MusicView *view = [[MusicView alloc] init];
     [self.view addSubview:imageView];
-    [view addSubview:self.currentTimeSlider];
-    [view addSubview:self.playedTime];
-    [view addSubview:self.trackTitle];
+    [self.view addSubview:self.musicView];
+    [self.view addSubview:self.playedTime];
+    [self.view addSubview:self.trackTitle];
+    [self.view addSubview:self.currentTimeSlider];
+  
     
-//    [view addSubview:toolBar];
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, imageView);
     
-    view.delegate = self;
-    view.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self.view addSubview:view];
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(view, _currentTimeSlider, _playedTime, _trackTitle);
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[view]|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[view]|"
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_musicView(50)]"
                                                                       options:0
                                                                       metrics:nil
                                                                         views:views]];
     
+    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+                                                                                   attribute:NSLayoutAttributeCenterX
+                                                                                   relatedBy:NSLayoutRelationEqual
+                                                                                      toItem:self.view
+                                                                                   attribute:NSLayoutAttributeCenterX
+                                                                                  multiplier:1
+                                                                                    constant:0];
+    [self.view addConstraint:verticalConstraintForView];
+    
+    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+                                                                                     attribute:NSLayoutAttributeCenterY
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.view
+                                                                                     attribute:NSLayoutAttributeBottom
+                                                                                    multiplier:0.8
+                                                                                      constant:0];
+    [self.view addConstraint:horizontalConstraintForView];
+        
     NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:self.currentTimeSlider
                                                                                    attribute:NSLayoutAttributeCenterY
                                                                                    relatedBy:NSLayoutRelationEqual
@@ -137,12 +154,30 @@
                                                                                   constant:0];
     [self.view addConstraint:xCenterConstraintForTitle];
     
+    NSLayoutConstraint *widthForImageView = [NSLayoutConstraint constraintWithItem:imageView
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.view
+                                                                         attribute:NSLayoutAttributeWidth
+                                                                        multiplier:1.0
+                                                                          constant:0];
+    [self.view addConstraint:widthForImageView];
+    
+    NSLayoutConstraint *heightForImageView = [NSLayoutConstraint constraintWithItem:imageView
+                                                                         attribute:NSLayoutAttributeHeight
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.view
+                                                                         attribute:NSLayoutAttributeHeight
+                                                                        multiplier:1.0
+                                                                          constant:0];
+    [self.view addConstraint:heightForImageView];
+    
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
     commandCenter.previousTrackCommand.enabled = YES;
     [commandCenter.previousTrackCommand addTarget:self action:@selector(previousTrackAction)];
     
-    commandCenter.playCommand.enabled = NO;
+    commandCenter.playCommand.enabled = YES;
     [commandCenter.playCommand addTarget:self action:@selector(playControlCenterAction:)];
     
     commandCenter.pauseCommand.enabled = YES;
@@ -154,39 +189,32 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    [self playAction:view.playButton];
+    NSMutableArray *infoTrack = [NSMutableArray array];
+    [infoTrack addObject:[self.trackInfo objectForKey:@"artist"]];
+    [infoTrack addObject:[self.trackInfo objectForKey:@"track"]];
+    
+    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithArray:infoTrack] forKeys:[NSArray arrayWithObjects: MPMediaItemPropertyTitle,MPMediaItemPropertyArtist,nil]];
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:info];
+    
+//    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:nil];
-    
-}
-
-- (void)viewWillAppear
-{
-    [super viewWillAppear:YES];
-    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+                                               object:nil];    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    __weak typeof(self) weakSelf = self;
-    [self.delegate stopPlayback:^(AVPlayer *playback) {
-        
-        [weakSelf.audioPlayer pause];
-        weakSelf.audioPlayer = nil;
-//        weakSelf.currentTimeSlider = nil;
-    }];
-    
     [self.audioPlayer removeTimeObserver:self.timeObserver];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[UIApplication sharedApplication] endReceivingRemoteControlEvents];
+
 }
 
 #pragma mark - Action methods
@@ -205,11 +233,13 @@
     if (sender.selected)
     {
         sender.selected = NO;
+        self.isSelected = NO;
         [self.audioPlayer pause];
     }
     else
     {
         sender.selected = YES;
+        self.isSelected = YES;
         [self.audioPlayer play];
     }
 }
@@ -287,65 +317,21 @@
                                                                   usingBlock:observerBlock];
 }
 
-- (void)playControlCenterAction:(MPRemoteCommandCenter *)sender
-{
- 
-//    if (sender.pauseCommand) {
-//        [self.audioPlayer play];
-//    }
-//    else
-//    {
-        [self.audioPlayer play];
-
-//    }
+- (void)playControlCenterAction:(MPRemoteCommand *)sender
+{    
+    if (self.isSelected)
+    {
+        self.musicView.playButton.selected = NO;
+        [self.audioPlayer pause];
+        self.isSelected = NO;
     
-
-}
-
-#pragma mark - MPRemoteCommandCenter
-
-- (void)remoteControlReceivedWithEvent:(UIEvent *)event
-{
-    NSLog(@"received event!");
-    if (event.type == UIEventTypeRemoteControl) {
-        switch (event.subtype) {
-            case UIEventSubtypeRemoteControlTogglePlayPause: {
-                if (self.audioPlayer.rate > 0.0) {
-                    [self.audioPlayer pause];
-                } else {
-                    [self.audioPlayer play];
-                }
-                
-                break;
-            }
-            case UIEventSubtypeRemoteControlPlay: {
-                [self.audioPlayer play];
-                break;
-            }
-            case UIEventSubtypeRemoteControlPause: {
-                [self.audioPlayer pause];
-                break;
-            }
-            default:
-                break;
-        }
     }
-    
-//    switch (event.subtype) {
-//    
-//        case UIEventSubtypeRemoteControlPlay:
-//            [self.audioPlayer play];
-//            break;
-//        case UIEventSubtypeRemoteControlPause:
-//            [self.audioPlayer pause];
-//            break;
-//        case UIEventSubtypeRemoteControlNextTrack:
-//            break;
-//        case UIEventSubtypeRemoteControlPreviousTrack:
-//            break;
-//        default:
-//            break;
-//    }
+    else
+    {
+        self.musicView.playButton.selected = YES;
+        [self.audioPlayer play];
+        self.isSelected = YES;
+    }
 }
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification

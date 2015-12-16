@@ -24,25 +24,27 @@
         [playButton setImage:[UIImage imageNamed:@"pause"] forState:UIControlStateSelected];
         [playButton addTarget:self action:@selector(playAction:) forControlEvents:UIControlEventTouchUpInside];
         playButton.translatesAutoresizingMaskIntoConstraints = NO;
-        playButton.backgroundColor = [UIColor colorWithRed:255/251 green:255/250 blue:0 alpha:1];
         
         UIButton *nextTrack = [[UIButton alloc] init];
         [nextTrack setImage:[UIImage imageNamed:@"next"] forState:UIControlStateNormal];
         [nextTrack addTarget:self action:@selector(nextTrackAction:) forControlEvents:UIControlEventTouchUpInside];
         nextTrack.translatesAutoresizingMaskIntoConstraints = NO;
-        nextTrack.backgroundColor = [UIColor colorWithRed:255/251 green:255/250 blue:0 alpha:1];
         
         UIButton *previousTrack = [[UIButton alloc] init];
         [previousTrack setImage:[UIImage imageNamed:@"previous"] forState:UIControlStateNormal];
         [previousTrack addTarget:self action:@selector(previousTrackAction:) forControlEvents:UIControlEventTouchUpInside];
         previousTrack.translatesAutoresizingMaskIntoConstraints = NO;
-        previousTrack.backgroundColor = [UIColor colorWithRed:255/251 green:255/250 blue:0 alpha:1];
         
+        UIBlurEffect *blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
+        UIVisualEffectView *effectView = [[UIVisualEffectView alloc] initWithEffect:blur];
+        effectView.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [self addSubview:effectView];
         [self addSubview:playButton];
         [self addSubview:nextTrack];
         [self addSubview:previousTrack];
         
-        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack);
+        NSDictionary *views = NSDictionaryOfVariableBindings(playButton, nextTrack, previousTrack, effectView);
         NSDictionary *metrics = @{@"verticalSpacing" : @80.0, @"hight" : @50};
         
         NSLayoutConstraint *xCenterConstraint = [NSLayoutConstraint constraintWithItem:playButton
@@ -56,41 +58,37 @@
         [self addConstraint:xCenterConstraint];
         
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[nextTrack(hight)]-verticalSpacing-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[nextTrack(hight)]|"
                                                                      options:0
                                                                      metrics:metrics
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[playButton(hight)]-verticalSpacing-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[playButton(hight)]|"
                                                                      options:0
                                                                      metrics:metrics
                                                                        views:views]];
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousTrack(hight)]-verticalSpacing-|"
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[previousTrack(hight)]|"
                                                                      options:0
                                                                      metrics:metrics
                                                                        views:views]];
         
-        NSLayoutConstraint *previousTrackWidth = [NSLayoutConstraint constraintWithItem:previousTrack
-                                                                              attribute:NSLayoutAttributeCenterX
-                                                                              relatedBy:NSLayoutRelationEqual
-                                                                                 toItem:self
-                                                                              attribute:NSLayoutAttributeTrailingMargin
-                                                                             multiplier:0.25
-                                                                               constant:0];
-     
-        [self addConstraint:previousTrackWidth];
         
-        NSLayoutConstraint *nextTrackWidth = [NSLayoutConstraint constraintWithItem:nextTrack
-                                                                          attribute:NSLayoutAttributeCenterX
-                                                                          relatedBy:NSLayoutRelationEqual
-                                                                             toItem:self
-                                                                          attribute:NSLayoutAttributeTrailingMargin
-                                                                         multiplier:0.75
-                                                                           constant:0];
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[previousTrack][playButton][nextTrack]|"
+                                                                     options:0
+                                                                     metrics:metrics
+                                                                       views:views]];
         
-         [self addConstraint:nextTrackWidth];
-     
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[effectView]|"
+                                                                     options:0
+                                                                     metrics:metrics
+                                                                       views:views]];
+        
+        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[effectView]|"
+                                                                     options:0
+                                                                     metrics:metrics
+                                                                       views:views]];
+        
     }
     
     return self;
