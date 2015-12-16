@@ -15,7 +15,6 @@
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
 @property (nonatomic, strong) UISlider *currentTimeSlider;
-@property (nonatomic, strong) NSTimer  *timer;
 @property (nonatomic, strong) UILabel  *playedTime;
 @property (nonatomic, strong) UILabel  *trackTitle;
 @property (nonatomic, strong) NSArray  *topList;
@@ -30,8 +29,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background.png"]];
-    self.view.contentMode = UIViewContentModeScaleAspectFit;
+//    self.view.contentMode = UIViewContentModeScaleAspectFit;
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
     
     self.title = @"Music player";
     
@@ -53,9 +53,11 @@
 //    UIToolbar *toolBar = [self addToolbar];
     
     MusicView *view = [[MusicView alloc] init];
+    [self.view addSubview:imageView];
     [view addSubview:self.currentTimeSlider];
     [view addSubview:self.playedTime];
     [view addSubview:self.trackTitle];
+    
 //    [view addSubview:toolBar];
     
     view.delegate = self;
@@ -140,7 +142,7 @@
     commandCenter.previousTrackCommand.enabled = YES;
     [commandCenter.previousTrackCommand addTarget:self action:@selector(previousTrackAction)];
     
-    commandCenter.playCommand.enabled = YES;
+    commandCenter.playCommand.enabled = NO;
     [commandCenter.playCommand addTarget:self action:@selector(playControlCenterAction:)];
     
     commandCenter.pauseCommand.enabled = YES;
@@ -171,10 +173,15 @@
 {
     [super viewWillDisappear:animated];
     
+    __weak typeof(self) weakSelf = self;
     [self.delegate stopPlayback:^(AVPlayer *playback) {
-        [self.audioPlayer pause];
-        self.audioPlayer = nil;
+        
+        [weakSelf.audioPlayer pause];
+        weakSelf.audioPlayer = nil;
+//        weakSelf.currentTimeSlider = nil;
     }];
+    
+    [self.audioPlayer removeTimeObserver:self.timeObserver];
 }
 - (void)dealloc
 {
@@ -190,7 +197,6 @@
     {
         NSString *trackID = [self.trackInfo objectForKey:@"id"];
         [self updateTrackTitle:self.trackInfo];
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
         
         [self trackDownloadAction:trackID];
         return;
@@ -253,12 +259,6 @@
     
 //    update UI with currentTime;
     self.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
-}
-
-- (void)stopTimer
-{
-    [self.timer invalidate];
-    self.timer = nil;
 }
 
 - (void)updateTrackTitle:(NSDictionary *)song
