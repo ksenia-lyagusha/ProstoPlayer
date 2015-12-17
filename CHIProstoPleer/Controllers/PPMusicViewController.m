@@ -14,15 +14,14 @@
 
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
-@property (nonatomic, strong) UISlider *currentTimeSlider;
-@property (nonatomic, strong) UILabel  *playedTime;
-@property (nonatomic, strong) UILabel  *trackTitle;
-@property (nonatomic, strong) NSArray  *topList;
-@property (nonatomic, strong) id        timeObserver;
+@property (nonatomic, strong) UISlider    *currentTimeSlider;
+@property (nonatomic, strong) UILabel     *playedTime;
+@property (nonatomic, strong) UILabel     *trackTitle;
+@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) NSArray     *topList;
+@property (nonatomic, strong) id          timeObserver;
 
-@property (nonatomic, strong) MusicView *musicView;
-
-@property (nonatomic) BOOL isSelected;
+@property (nonatomic, strong) MusicView   *musicView;
 
 @end
 
@@ -33,9 +32,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
-    imageView.contentMode = UIViewContentModeScaleAspectFill;
-    imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
+    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+    self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.imageView.layer.masksToBounds = YES;
     
     self.title = @"Music player";
     
@@ -57,120 +57,13 @@
     self.musicView.delegate = self;
     self.musicView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self.view addSubview:imageView];
+    [self.view addSubview:self.imageView];
     [self.view addSubview:self.musicView];
     [self.view addSubview:self.playedTime];
     [self.view addSubview:self.trackTitle];
     [self.view addSubview:self.currentTimeSlider];
   
-    
-    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, imageView);
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_musicView(50)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
-                                                                                   attribute:NSLayoutAttributeCenterX
-                                                                                   relatedBy:NSLayoutRelationEqual
-                                                                                      toItem:self.view
-                                                                                   attribute:NSLayoutAttributeCenterX
-                                                                                  multiplier:1
-                                                                                    constant:0];
-    [self.view addConstraint:verticalConstraintForView];
-    
-    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
-                                                                                     attribute:NSLayoutAttributeCenterY
-                                                                                     relatedBy:NSLayoutRelationEqual
-                                                                                        toItem:self.view
-                                                                                     attribute:NSLayoutAttributeBottom
-                                                                                    multiplier:0.8
-                                                                                      constant:0];
-    [self.view addConstraint:horizontalConstraintForView];
-        
-    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:self.currentTimeSlider
-                                                                                   attribute:NSLayoutAttributeCenterY
-                                                                                   relatedBy:NSLayoutRelationEqual
-                                                                                      toItem:self.view
-                                                                                   attribute:NSLayoutAttributeBottom
-                                                                                  multiplier:0.6
-                                                                                    constant:0];
-    [self.view addConstraint:horizontalConstraintForSlider];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-30-[_currentTimeSlider]-|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_trackTitle(50)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[_trackTitle]-|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-
-    NSLayoutConstraint *verticalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.view
-                                                                         attribute:NSLayoutAttributeCenterX
-                                                                        multiplier:1
-                                                                          constant:0];
-    [self.view addConstraint:verticalConstraintForTime];
-    
-    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
-                                                                                 attribute:NSLayoutAttributeCenterY
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeBottom
-                                                                                multiplier:0.65
-                                                                                  constant:0];
-    [self.view addConstraint:horizontalConstraintForTime];
-    
-    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
-                                                                                attribute:NSLayoutAttributeCenterY
-                                                                                relatedBy:NSLayoutRelationEqual
-                                                                                   toItem:self.view
-                                                                                attribute:NSLayoutAttributeCenterY
-                                                                               multiplier:1.0
-                                                                                 constant:0];
-    [self.view addConstraint:yCenterConstraintForTitle];
-    
-    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                multiplier:1.0
-                                                                                  constant:0];
-    [self.view addConstraint:xCenterConstraintForTitle];
-    
-    NSLayoutConstraint *widthForImageView = [NSLayoutConstraint constraintWithItem:imageView
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.view
-                                                                         attribute:NSLayoutAttributeWidth
-                                                                        multiplier:1.0
-                                                                          constant:0];
-    [self.view addConstraint:widthForImageView];
-    
-    NSLayoutConstraint *heightForImageView = [NSLayoutConstraint constraintWithItem:imageView
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                         relatedBy:NSLayoutRelationEqual
-                                                                            toItem:self.view
-                                                                         attribute:NSLayoutAttributeHeight
-                                                                        multiplier:1.0
-                                                                          constant:0];
-    [self.view addConstraint:heightForImageView];
+    [self setupConstraints];
     
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
@@ -189,12 +82,11 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
+    
     NSMutableArray *infoTrack = [NSMutableArray array];
+    
     [infoTrack addObject:[self.trackInfo objectForKey:@"artist"]];
     [infoTrack addObject:[self.trackInfo objectForKey:@"track"]];
-    
-    NSMutableDictionary *info = [NSMutableDictionary dictionaryWithObjects:[NSArray arrayWithArray:infoTrack] forKeys:[NSArray arrayWithObjects: MPMediaItemPropertyTitle,MPMediaItemPropertyArtist,nil]];
-    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:info];
     
 //    [self playAction:self.musicView.playButton];
     
@@ -208,13 +100,13 @@
 {
     [super viewWillDisappear:animated];
     
-    [self.audioPlayer removeTimeObserver:self.timeObserver];
+    if (self.timeObserver)
+    {
+        [self.audioPlayer removeTimeObserver:self.timeObserver];
+        self.timeObserver = nil;
+    }
+   
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)dealloc
-{
-
 }
 
 #pragma mark - Action methods
@@ -230,16 +122,14 @@
         return;
     }
     
-    if (sender.selected)
+    if (self.musicView.playButton.selected)
     {
-        sender.selected = NO;
-        self.isSelected = NO;
+        self.musicView.playButton.selected = NO;
         [self.audioPlayer pause];
     }
     else
     {
-        sender.selected = YES;
-        self.isSelected = YES;
+        self.musicView.playButton.selected = YES;
         [self.audioPlayer play];
     }
 }
@@ -273,11 +163,28 @@
     }];
 }
 
-
-- (void)sliderAction:(UIGestureRecognizer *)sender
+- (void)sliderAction:(UISlider *)sender
 {
-
+    [self.currentTimeSlider setValue:sender.value animated:YES];
+    [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(sender.value, 1)];
 }
+
+- (void)playControlCenterAction:(MPRemoteCommand *)sender
+{
+    if (self.musicView.playButton.selected)
+    {
+        self.musicView.playButton.selected = NO;
+        [self.audioPlayer pause];
+        
+    }
+    else
+    {
+        self.musicView.playButton.selected = YES;
+        [self.audioPlayer play];
+    }
+}
+
+#pragma mark - 
 
 - (void)updateTime
 {
@@ -289,13 +196,135 @@
     
 //    update UI with currentTime;
     self.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
+    
+    NSArray *dividedString = [self.trackTitle.text componentsSeparatedByString:@"-"];
+    
+    NSDictionary *info = @{MPNowPlayingInfoPropertyElapsedPlaybackTime : self.playedTime.text,
+                                  MPMediaItemPropertyPlaybackDuration  : @(self.currentTimeSlider.maximumValue),
+                                              MPMediaItemPropertyTitle : [dividedString objectAtIndex:0],
+                                             MPMediaItemPropertyArtist : [dividedString objectAtIndex:1]
+                           };
+    [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:info];
 }
 
 - (void)updateTrackTitle:(NSDictionary *)song
 {
     NSString *artist = [song objectForKey:@"artist"];
     NSString *track = [song objectForKey:@"track"];
+    
     self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
+}
+
+- (void)setupConstraints
+{
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView);
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_musicView(50)]"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+    
+    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                multiplier:1
+                                                                                  constant:0];
+    [self.view addConstraint:verticalConstraintForView];
+    
+    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+                                                                                   attribute:NSLayoutAttributeCenterY
+                                                                                   relatedBy:NSLayoutRelationEqual
+                                                                                      toItem:self.view
+                                                                                   attribute:NSLayoutAttributeBottom
+                                                                                  multiplier:0.8
+                                                                                    constant:0];
+    [self.view addConstraint:horizontalConstraintForView];
+    
+    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:self.currentTimeSlider
+                                                                                     attribute:NSLayoutAttributeCenterY
+                                                                                     relatedBy:NSLayoutRelationEqual
+                                                                                        toItem:self.view
+                                                                                     attribute:NSLayoutAttributeBottom
+                                                                                    multiplier:0.6
+                                                                                      constant:0];
+    [self.view addConstraint:horizontalConstraintForSlider];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-30-[_currentTimeSlider]-|"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_trackTitle(50)]"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[_trackTitle]-|"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+    
+    NSLayoutConstraint *verticalConstraintForTime =  [NSLayoutConstraint constraintWithItem:self.playedTime
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                  relatedBy:NSLayoutRelationEqual
+                                                                                     toItem:self.view
+                                                                                  attribute:NSLayoutAttributeCenterX
+                                                                                 multiplier:1
+                                                                                   constant:0];
+    [self.view addConstraint:verticalConstraintForTime];
+    
+    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
+                                                                                   attribute:NSLayoutAttributeCenterY
+                                                                                   relatedBy:NSLayoutRelationEqual
+                                                                                      toItem:self.view
+                                                                                   attribute:NSLayoutAttributeBottom
+                                                                                  multiplier:0.65
+                                                                                    constant:0];
+    [self.view addConstraint:horizontalConstraintForTime];
+    
+    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
+                                                                                 attribute:NSLayoutAttributeCenterY
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeCenterY
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+    [self.view addConstraint:yCenterConstraintForTitle];
+    
+    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeCenterX
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+    [self.view addConstraint:xCenterConstraintForTitle];
+    
+    NSLayoutConstraint *widthForImageView =         [NSLayoutConstraint constraintWithItem:self.imageView
+                                                                                 attribute:NSLayoutAttributeWidth
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeWidth
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+    [self.view addConstraint:widthForImageView];
+    
+    NSLayoutConstraint *heightForImageView =        [NSLayoutConstraint constraintWithItem:self.imageView
+                                                                                 attribute:NSLayoutAttributeHeight
+                                                                                 relatedBy:NSLayoutRelationEqual
+                                                                                    toItem:self.view
+                                                                                 attribute:NSLayoutAttributeHeight
+                                                                                multiplier:1.0
+                                                                                  constant:0];
+    [self.view addConstraint:heightForImageView];
+
 }
 
 - (void)createPlayerWithURL:(NSURL *)url
@@ -303,6 +332,8 @@
     AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc] initWithURL:url];
     self.audioPlayer = [[AVPlayer alloc] initWithPlayerItem:avPlayerItem];
     [self.audioPlayer play];
+    
+    self.musicView.playButton.selected = YES;
     
     __weak typeof(self) weakSelf = self;
     void (^observerBlock)(CMTime time) = ^(CMTime time) {
@@ -317,27 +348,11 @@
                                                                   usingBlock:observerBlock];
 }
 
-- (void)playControlCenterAction:(MPRemoteCommand *)sender
-{    
-    if (self.isSelected)
-    {
-        self.musicView.playButton.selected = NO;
-        [self.audioPlayer pause];
-        self.isSelected = NO;
-    
-    }
-    else
-    {
-        self.musicView.playButton.selected = YES;
-        [self.audioPlayer play];
-        self.isSelected = YES;
-    }
-}
-
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
     [self nextTrackAction];
 }
+
 #pragma mark - ToolBar
 
 - (UIToolbar *)addToolbar

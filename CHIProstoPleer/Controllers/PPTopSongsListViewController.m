@@ -44,7 +44,8 @@
 {
     [super viewDidLoad];
     
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, screenRect.size.width, 40)];
     self.searchBar.delegate = self;
     self.tableView.tableHeaderView = self.searchBar;
     self.tableView.tableFooterView = [[UIView alloc] init];
