@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
+@property (strong, nonatomic) NSMutableArray *favoritesList;
 
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
@@ -103,7 +104,16 @@
     cell.textLabel.text = [value objectForKey:@"artist"];
     cell.detailTextLabel.text = [value objectForKey:@"track"];
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.selectionStyle = UITableViewCellSelectionStyleGray;
+    
+    UIButton *favoriteButton = [[UIButton alloc] init];
+    [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
+    [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
+    
+    [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
+    
+//    cell.imageView.image = [UIImage imageNamed:@"favorite-outline"];
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -294,6 +304,13 @@
     }
     return song;
 }
+
+
+- (void)addToFavoritesAction:(UIButton *)sender
+{
+    
+}
+
 
 @end
 
