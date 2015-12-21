@@ -13,6 +13,8 @@
 		6714CBE41C108548005A8385 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBE31C108548005A8385 /* LoginView.m */; };
 		6735DE381C19D495008591CA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6735DE371C19D495008591CA /* SystemConfiguration.framework */; };
 		674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */; };
+		675BDBF31C2802700016938A /* CoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 675BDBF21C2802700016938A /* CoreDataManager.m */; };
+		675BDBF51C285F990016938A /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675BDBF41C285F990016938A /* CoreData.framework */; };
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
 		676444431BF2412500967F5A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444371BF2412500967F5A /* MainViewController.m */; };
@@ -54,6 +56,9 @@
 		6735DE371C19D495008591CA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
+		675BDBF11C2802700016938A /* CoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataManager.h; sourceTree = "<group>"; };
+		675BDBF21C2802700016938A /* CoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataManager.m; sourceTree = "<group>"; };
+		675BDBF41C285F990016938A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		676444081BF2336B00967F5A /* ProstoPleerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProstoPleerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6764442F1BF2412500967F5A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		676444301BF2412500967F5A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -94,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				675BDBF51C285F990016938A /* CoreData.framework in Frameworks */,
 				6735DE381C19D495008591CA /* SystemConfiguration.framework in Frameworks */,
 				D7A1FDFB1C0588D0009EF802 /* AVFoundation.framework in Frameworks */,
 				9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */,
@@ -106,6 +112,7 @@
 		31AD3D236614CD29CCEF39D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				675BDBF41C285F990016938A /* CoreData.framework */,
 				6735DE371C19D495008591CA /* SystemConfiguration.framework */,
 				D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */,
 				805B6B06A735058C4537F79D /* libPods.a */,
@@ -123,6 +130,8 @@
 				6709DCE71BF347790089B8CC /* SessionManager.h */,
 				6709DCE81BF347790089B8CC /* SessionManager.m */,
 				D7BCF1881C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld */,
+				675BDBF11C2802700016938A /* CoreDataManager.h */,
+				675BDBF21C2802700016938A /* CoreDataManager.m */,
 			);
 			path = Models;
 			sourceTree = SOURCE_ROOT;
@@ -407,6 +416,7 @@
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
 				6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
+				675BDBF31C2802700016938A /* CoreDataManager.m in Sources */,
 				6714CBE41C108548005A8385 /* LoginView.m in Sources */,
 				676444431BF2412500967F5A /* MainViewController.m in Sources */,
 			);
@@ -546,7 +556,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CHI.ProstoPleerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -560,7 +570,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = CHI.ProstoPleerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -15,6 +15,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Insert code here to declare functionality of your managed object subclass
 
+- (Track *)trackWithTitle:(NSString *)title
+               withArtist:(NSString *)artist
+              withTrackID:(NSString *)trackID
+             withDuration:(NSNumber *)duration
+               withTextID:(NSString *)text_id;
+
 @end
 
 NS_ASSUME_NONNULL_END

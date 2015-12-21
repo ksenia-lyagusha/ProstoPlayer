@@ -11,6 +11,8 @@
 
 #import "UIAlertController+Category.h"
 #import "SessionManager.h"
+#import "Track.h"
+#import "CoreDataManager.h"
 
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate, PPTopSongsListViewControllerDelegate>
 
@@ -106,13 +108,18 @@
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     cell.selectionStyle = UITableViewCellSelectionStyleGray;
     
-    UIButton *favoriteButton = [[UIButton alloc] init];
+    UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
     
     [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
+    favoriteButton.tag = indexPath.row;
+    [cell.contentView addSubview:favoriteButton];
     
-//    cell.imageView.image = [UIImage imageNamed:@"favorite-outline"];
+    cell.userInteractionEnabled = YES;
+    favoriteButton.userInteractionEnabled = YES;
+    
+    cell.imageView.image = [UIImage imageNamed:@"favorite-outline"];
 
 }
 
@@ -308,7 +315,13 @@
 
 - (void)addToFavoritesAction:(UIButton *)sender
 {
+    NSDictionary *value = [self.topList objectAtIndex:sender.tag];
     
+    Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    
+    [trackObj trackWithTitle:[value objectForKey:@"track"] withArtist:[value objectForKey:@"artist"] withTrackID:[value objectForKey:@"id"] withDuration:[value objectForKey:@"bitrate"] withTextID:[value objectForKey:@"text_id"]];
+    
+    [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
 
 
