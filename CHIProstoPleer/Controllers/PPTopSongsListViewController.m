@@ -20,7 +20,7 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
-@property (strong, nonatomic) NSMutableArray *favoritesList;
+@property (strong, nonatomic) NSArray        *DBobjects;
 
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
@@ -63,15 +63,15 @@
     
     self.topList = [NSMutableArray array];
     
-    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetNotReachable:) name:PPSessionManagerInternetConnectionLost object:nil];
     
-    [notificationCenter addObserver:self selector:@selector(internetNotReachable:) name:PPSessionManagerInternetConnectionLost object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     self.tabBarController.title = @"Top songs list";
     self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.DBobjects = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
     
 }
 
@@ -102,25 +102,24 @@
         value = [self.topList objectAtIndex:indexPath.row];
 
     }
-    
-    cell.textLabel.text = [value objectForKey:@"artist"];
-    cell.detailTextLabel.text = [value objectForKey:@"track"];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    cell.selectionStyle = UITableViewCellSelectionStyleGray;
-    
     UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
-    
     [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryView = favoriteButton;
     favoriteButton.tag = indexPath.row;
-    [cell.contentView addSubview:favoriteButton];
-    
-    cell.userInteractionEnabled = YES;
     favoriteButton.userInteractionEnabled = YES;
     
-    cell.imageView.image = [UIImage imageNamed:@"favorite-outline"];
-
+    cell.textLabel.text = [value objectForKey:@"artist"];
+    cell.detailTextLabel.text = [value objectForKey:@"track"];
+    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
+    cell.userInteractionEnabled = YES;
+    
+    if ([self.DBobjects containsObject:value])
+    {
+        favoriteButton.selected = YES;
+    }
+    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -315,13 +314,29 @@
 
 - (void)addToFavoritesAction:(UIButton *)sender
 {
-    NSDictionary *value = [self.topList objectAtIndex:sender.tag];
-    
-    Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    
-    [trackObj trackWithTitle:[value objectForKey:@"track"] withArtist:[value objectForKey:@"artist"] withTrackID:[value objectForKey:@"id"] withDuration:[value objectForKey:@"bitrate"] withTextID:[value objectForKey:@"text_id"]];
-    
-    [[CoreDataManager sharedInstanceCoreData] saveContext];
+    if (sender.selected)
+    {
+        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:[self.topList objectAtIndex:sender.tag]];
+        sender.selected = NO;
+    }
+    else
+    {
+        NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+        NSDictionary *currentObj = [self.topList objectAtIndex:sender.tag];
+        if ([result containsObject:[currentObj objectForKey:@"id"]])
+        {
+            UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
+            [self presentViewController:alert animated:YES completion:nil];
+            return;
+        }
+        Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+        NSDictionary *value = [self.topList objectAtIndex:sender.tag];
+        [trackObj trackWithTitle:[value objectForKey:@"track"] withArtist:[value objectForKey:@"artist"] withTrackID:[value objectForKey:@"id"] withDuration:[value objectForKey:@"bitrate"] withTextID:[value objectForKey:@"text_id"]];
+        
+        sender.selected = YES;
+   
+    }
+     [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
 
 

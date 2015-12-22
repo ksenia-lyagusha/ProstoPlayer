@@ -71,7 +71,7 @@
 
 - (NSManagedObjectContext *)managedObjectContext {
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
-    if (_managedObjectContext != nil) {
+    if (_managedObjectContext) {
         return _managedObjectContext;
     }
     
@@ -97,6 +97,27 @@
             abort();
         }
     }
+}
+
+- (NSArray *)fetchObjects
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    [fetchRequest setEntity:entity];
+    NSError *error = nil;
+    NSArray *result = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    
+    if (error)
+    {
+        NSLog(@"Unable to execute fetch request.");
+        NSLog(@"%@, %@", error, error.localizedDescription);
+        
+    } else
+    {
+        NSLog(@"%@", result);
+    }
+    return result;
 }
 
 @end

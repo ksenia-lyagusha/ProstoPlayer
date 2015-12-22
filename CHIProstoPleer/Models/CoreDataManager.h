@@ -18,5 +18,6 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 + (instancetype)sharedInstanceCoreData;
+- (NSArray *)fetchObjects;
 
 @end

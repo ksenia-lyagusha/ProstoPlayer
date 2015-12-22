@@ -12,3 +12,5 @@
 "InvalidData" = "Incorrect login or password. Please, check your input data";
 "No more tracks" = "No more tracks";
 "NoInternet" = "No Internet Connection";
+"SuccessfullyAdded" = "Track successfully added to favourites";
+"AlreadyAdded" = "Track is already added to favourites";

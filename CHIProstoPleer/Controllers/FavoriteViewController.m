@@ -26,7 +26,8 @@
         UITabBarItem *favoriteTabBar = [[UITabBarItem alloc]initWithTabBarSystemItem:UITabBarSystemItemFavorites tag:1];
         
         self.tabBarItem = favoriteTabBar;
-        self.navigationItem.leftBarButtonItem  = self.editButtonItem;
+     
+        self.tabBarController.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     return self;
 }
@@ -50,7 +51,7 @@
 
 - (NSFetchedResultsController *)fetchedResultsController
 {
-    if (_fetchedResultsController != nil)
+    if (_fetchedResultsController)
         return _fetchedResultsController;
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
@@ -76,7 +77,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
 {
-    return self.fetchedResultsController.sections.count;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex
@@ -84,6 +85,7 @@
     id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[sectionIndex];
     return section.numberOfObjects;
 }
+
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -105,8 +107,7 @@
     theCell.detailTextLabel.text = object.title;
 }
 
-- (BOOL)tableView:(UITableView*)tableView
-canEditRowAtIndexPath:(NSIndexPath*)indexPath
+- (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
     return YES;
 }
@@ -115,9 +116,15 @@ canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete)
     {
-//        FavoriteViewController *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//        [object deleteObject:object];
+        Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:object];
     }
+     [[CoreDataManager sharedInstanceCoreData] saveContext];
+}
+
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    return [[UIView alloc] init];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

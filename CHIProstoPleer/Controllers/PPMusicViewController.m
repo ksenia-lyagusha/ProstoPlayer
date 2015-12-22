@@ -7,10 +7,13 @@
 //
 
 #import "PPMusicViewController.h"
-
+#import "UIAlertController+Category.h"
 #import "SessionManager.h"
 
 #import "MusicView.h"
+
+#import "Track.h"
+#import "CoreDataManager.h"
 
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
@@ -93,7 +96,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:nil];    
+                                               object:nil];
+    
+    self.navigationItem.rightBarButtonItem =  [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addToFavorites:)];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -351,6 +356,28 @@
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
     [self nextTrackAction];
+}
+
+- (void)addToFavorites:(UIButton *)sender
+{
+    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+    
+    if ([result containsObject:[self.trackInfo objectForKey:@"id"]])
+    {
+        UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
+    }
+    
+    Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    
+    [trackObj trackWithTitle:[self.trackInfo objectForKey:@"track"] withArtist:[self.trackInfo objectForKey:@"artist"] withTrackID:[self.trackInfo objectForKey:@"id"] withDuration:[self.trackInfo objectForKey:@"bitrate"] withTextID:[self.trackInfo objectForKey:@"text_id"]];
+    
+    [[CoreDataManager sharedInstanceCoreData] saveContext];
+    
+    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"SuccessfullyAdded", nil)];
+    [self presentViewController:alert animated:YES completion:nil];
+
 }
 
 #pragma mark - ToolBar

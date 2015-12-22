@@ -81,8 +81,8 @@
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init]; 
-
+    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+    
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
 
