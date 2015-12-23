@@ -19,6 +19,7 @@
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
 		676444451BF2412500967F5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6764443A1BF2412500967F5A /* main.m */; };
+		6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */; };
 		677B2F691C17040D00298947 /* MusicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 677B2F681C17040C00298947 /* MusicView.m */; };
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
 		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
@@ -67,6 +68,8 @@
 		676444321BF2412500967F5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		676444391BF2412500967F5A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6764443A1BF2412500967F5A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		6774C8E71C2AF9C6000B3F00 /* TrackInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackInfo.h; sourceTree = "<group>"; };
+		6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackInfo.m; sourceTree = "<group>"; };
 		677B2F671C17040C00298947 /* MusicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicView.h; sourceTree = "<group>"; };
 		677B2F681C17040C00298947 /* MusicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicView.m; sourceTree = "<group>"; };
 		6EF7B4F42A59AACC8BA4D5F8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -132,6 +135,8 @@
 				D7BCF1881C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld */,
 				675BDBF11C2802700016938A /* CoreDataManager.h */,
 				675BDBF21C2802700016938A /* CoreDataManager.m */,
+				6774C8E71C2AF9C6000B3F00 /* TrackInfo.h */,
+				6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */,
 			);
 			path = Models;
 			sourceTree = SOURCE_ROOT;
@@ -411,6 +416,7 @@
 				D7BCF18A1C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld in Sources */,
 				D7F4BA091C27D27C00BB10B9 /* Track+CoreDataProperties.m in Sources */,
 				677B2F691C17040D00298947 /* MusicView.m in Sources */,
+				6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
 				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,

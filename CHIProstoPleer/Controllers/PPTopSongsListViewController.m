@@ -112,10 +112,10 @@
     
     cell.textLabel.text = [value objectForKey:@"artist"];
     cell.detailTextLabel.text = [value objectForKey:@"track"];
-    cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-    cell.userInteractionEnabled = YES;
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if ([self.DBobjects containsObject:value])
+    Track *trackObj = [Track objectWithTrackID:[value objectForKey:@"id"]];
+    if ([self.DBobjects containsObject:trackObj])
     {
         favoriteButton.selected = YES;
     }
@@ -142,14 +142,9 @@
         self.currentPage += 1;
         [self refreshTableView:self.currentPage withComplitionHandler:nil];
     }
-    
-    // for ios 8 and later
-    if ([cell respondsToSelector:@selector(setPreservesSuperviewLayoutMargins:)]) {
-        [cell setPreservesSuperviewLayoutMargins:NO];
-        [cell setLayoutMargins:UIEdgeInsetsZero];
-    }
-    // for ios 7
-    [cell setSeparatorInset:UIEdgeInsetsZero];
+    [cell setPreservesSuperviewLayoutMargins:NO];
+    [cell setLayoutMargins:UIEdgeInsetsZero];
+
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -158,6 +153,7 @@
     self.musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
+    
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationController pushViewController:self.musicVC animated:YES];
 }
@@ -314,23 +310,17 @@
 
 - (void)addToFavoritesAction:(UIButton *)sender
 {
+    NSDictionary *value = [self.topList objectAtIndex:sender.tag];
+    Track *trackObj = [Track objectWithTrackID:[value objectForKey:@"id"]];
     if (sender.selected)
     {
-        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:[self.topList objectAtIndex:sender.tag]];
+        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:trackObj];
         sender.selected = NO;
     }
     else
     {
-        NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
-        NSDictionary *currentObj = [self.topList objectAtIndex:sender.tag];
-        if ([result containsObject:[currentObj objectForKey:@"id"]])
-        {
-            UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
-            [self presentViewController:alert animated:YES completion:nil];
-            return;
-        }
         Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-        NSDictionary *value = [self.topList objectAtIndex:sender.tag];
+        
         [trackObj trackWithTitle:[value objectForKey:@"track"] withArtist:[value objectForKey:@"artist"] withTrackID:[value objectForKey:@"id"] withDuration:[value objectForKey:@"bitrate"] withTextID:[value objectForKey:@"text_id"]];
         
         sender.selected = YES;

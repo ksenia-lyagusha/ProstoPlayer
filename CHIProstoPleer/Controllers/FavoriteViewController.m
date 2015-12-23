@@ -7,12 +7,15 @@
 //
 
 #import "FavoriteViewController.h"
+#import "PPMusicViewController.h"
+
 #import "CoreDataManager.h"
 #import "Track.h"
 
 @interface FavoriteViewController () <NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+@property (strong, nonatomic) PPMusicViewController      *musicVC;
 
 @end
 
@@ -75,15 +78,9 @@
 
 #pragma mark - TableViewDataSource and TableViewDelegate
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView*)tableView
-{
-    return 1;
-}
-
 - (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
-    id<NSFetchedResultsSectionInfo> section = self.fetchedResultsController.sections[sectionIndex];
-    return section.numberOfObjects;
+    return [[self.fetchedResultsController fetchedObjects] count];
 }
 
 
@@ -95,6 +92,8 @@
     {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
     }
+    [cell setPreservesSuperviewLayoutMargins:NO];
+    [cell setLayoutMargins:UIEdgeInsetsZero];
     
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
@@ -125,6 +124,16 @@
 - (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     return [[UIView alloc] init];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.musicVC = [[PPMusicViewController alloc] init];
+//    self.musicVC.trackInfo = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+    
+//    self.currentIndex = indexPath.row;
+    self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
+    [self.navigationController pushViewController:self.musicVC animated:YES];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

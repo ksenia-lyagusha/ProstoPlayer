@@ -12,20 +12,20 @@
 
 #import <Reachability.h>
 
-NSString * const SessionManagerURL         = @"http://api.pleer.com/resource.php";
-NSString * const SessionManagerTokenURL    = @"http://api.pleer.com/token.php";
+NSString * const SessionManagerURL                    = @"http://api.pleer.com/resource.php";
+NSString * const SessionManagerTokenURL               = @"http://api.pleer.com/token.php";
 NSString * const SessionManagerAccessTokenDefaultsKey = @"SessionManagerAccessTokenDefaultsKey";
 NSString * const SessionManagerExpiredDatedefaultsKey = @"SessionManagerExpiredDatedefaultsKey";
 
-NSString * const PPSessionManagerInternetConnectionLost = @"PPSessionManagerInternetConnectionLost";
+NSString * const PPSessionManagerInternetConnectionLost     = @"PPSessionManagerInternetConnectionLost";
 NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManagerInternetConnectionAppeared";
 
 @interface SessionManager ()
 
-@property (nonatomic, strong) NSURLSession *sessionURL;
-@property (nonatomic, strong) NSDate       *expiredDate;
-@property (nonatomic, strong, readwrite) NSString     *token;
-@property (strong, nonatomic) Reachability *reachabilityListener;
+@property (nonatomic, strong) NSURLSession        *sessionURL;
+@property (nonatomic, strong) NSDate              *expiredDate;
+@property (nonatomic, strong, readwrite) NSString *token;
+@property (strong, nonatomic) Reachability        *reachabilityListener;
 
 
 @end

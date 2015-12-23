@@ -13,7 +13,7 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
 
-@property (nonatomic, strong, readonly) NSString     *token;
+@property (nonatomic, strong, readonly) NSString *token;
 
 + (instancetype)sharedInstance;
 

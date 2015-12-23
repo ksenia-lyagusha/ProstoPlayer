@@ -16,24 +16,27 @@
 - (instancetype)trackWithTitle:(NSString *)title withArtist:(NSString *)artist withTrackID:(NSString *)trackID withDuration:(NSNumber *)duration withTextID:(NSString *)text_id
 {
     
-    self.title = title;
-    self.artist = artist;
+    self.title    = title;
+    self.artist   = artist;
     self.track_id = trackID;
     self.duration = [[NSNumberFormatter alloc] numberFromString:(NSString *)duration];
-    self.text_id = ([text_id isKindOfClass:[NSNull class]]) ?  @"" : text_id;
+    self.text_id  = ([text_id isKindOfClass:[NSNull class]]) ?  @"" : text_id;
     
     return self;
 }
 
-- (instancetype)objectWithTrackID:(NSString *)trackID
++ (instancetype)objectWithTrackID:(NSString *)trackID
 {
     Track *track;
-    
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Track"];
-    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"track_id" ascending:YES];
-    [fetchRequest setSortDescriptors:@[sortDescriptor]];
-    
-    NSArray *tmpData = [self.managedObjectContext executeFetchRequest:fetchRequest error:nil];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"track_id == %@", trackID];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setFetchLimit:1];
+    NSArray *filtered = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:nil];
+    if (filtered.count > 0) {
+         track = [filtered objectAtIndex:0];
+    }
+   
     return track;
 }
 

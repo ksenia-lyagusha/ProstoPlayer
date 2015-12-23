@@ -23,7 +23,8 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) NSArray     *topList;
 @property (nonatomic, strong) id          timeObserver;
-
+@property (nonatomic, strong) UIButton    *download;
+@property (nonatomic, strong) UIButton    *favorite;
 @property (nonatomic, strong) MusicView   *musicView;
 
 @end
@@ -60,6 +61,16 @@
     self.musicView.delegate = self;
     self.musicView.translatesAutoresizingMaskIntoConstraints = NO;
     
+    self.download = [[UIButton alloc] init];
+    [self.download setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
+    [self.download addTarget:self action:@selector(downloadTrackAction:) forControlEvents:UIControlEventTouchUpInside];
+    self.download.frame = CGRectMake(0, 0, 40, 40);
+    
+    self.favorite = [[UIButton alloc] init];
+    [self.favorite setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
+    [self.favorite addTarget:self action:@selector(addToFavorites:) forControlEvents:UIControlEventTouchUpInside];
+    self.favorite.frame = CGRectMake(0, 0, 40, 40);
+    
     [self.view addSubview:self.imageView];
     [self.view addSubview:self.musicView];
     [self.view addSubview:self.playedTime];
@@ -91,16 +102,20 @@
     [infoTrack addObject:[self.trackInfo objectForKey:@"artist"]];
     [infoTrack addObject:[self.trackInfo objectForKey:@"track"]];
     
-//    [self playAction:self.musicView.playButton];
+    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
     
-    self.navigationItem.rightBarButtonItem =  [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addToFavorites:)];
+    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithCustomView:self.favorite];
+    
+    UIBarButtonItem *downloadButton          = [[UIBarButtonItem alloc] initWithCustomView:self.download];
+    
+    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:favouriteButton, downloadButton, nil];
+    
 }
-
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -189,6 +204,11 @@
     }
 }
 
+- (void)downloadTrackAction:(UIButton *)sender
+{
+    
+}
+
 #pragma mark - 
 
 - (void)updateTime
@@ -222,7 +242,7 @@
 
 - (void)setupConstraints
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView, _download);
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
                                                                       options:0
@@ -234,7 +254,7 @@
                                                                       metrics:nil
                                                                         views:views]];
     
-    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:self.musicView
                                                                                  attribute:NSLayoutAttributeCenterX
                                                                                  relatedBy:NSLayoutRelationEqual
                                                                                     toItem:self.view
@@ -243,7 +263,7 @@
                                                                                   constant:0];
     [self.view addConstraint:verticalConstraintForView];
     
-    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:_musicView
+    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:self.musicView
                                                                                    attribute:NSLayoutAttributeCenterY
                                                                                    relatedBy:NSLayoutRelationEqual
                                                                                       toItem:self.view
@@ -329,7 +349,7 @@
                                                                                 multiplier:1.0
                                                                                   constant:0];
     [self.view addConstraint:heightForImageView];
-
+    
 }
 
 - (void)createPlayerWithURL:(NSURL *)url
@@ -361,15 +381,16 @@
 - (void)addToFavorites:(UIButton *)sender
 {
     NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+    Track *trackObj = [Track objectWithTrackID:[self.trackInfo objectForKey:@"id"]];
     
-    if ([result containsObject:[self.trackInfo objectForKey:@"id"]])
+    if ([result containsObject:trackObj])
     {
         UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
-    Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     
     [trackObj trackWithTitle:[self.trackInfo objectForKey:@"track"] withArtist:[self.trackInfo objectForKey:@"artist"] withTrackID:[self.trackInfo objectForKey:@"id"] withDuration:[self.trackInfo objectForKey:@"bitrate"] withTextID:[self.trackInfo objectForKey:@"text_id"]];
     
