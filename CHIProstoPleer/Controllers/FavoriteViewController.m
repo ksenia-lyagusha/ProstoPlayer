@@ -12,10 +12,13 @@
 #import "CoreDataManager.h"
 #import "Track.h"
 
-@interface FavoriteViewController () <NSFetchedResultsControllerDelegate>
+#import "ProstoPleerProtocols.h"
+
+@interface FavoriteViewController () <NSFetchedResultsControllerDelegate, PPTrackInfoProtocol, PPTopSongsListViewControllerDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) PPMusicViewController      *musicVC;
+@property NSInteger currentIndex;
 
 @end
 
@@ -44,11 +47,16 @@
     self.view.backgroundColor = [UIColor lightGrayColor];
     
     NSError *error;
-    if (![self.fetchedResultsController performFetch:&error]) {
+    if (![self.fetchedResultsController performFetch:&error])
+    {
         // Update to handle the error appropriately.
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         exit(-1);  // Fail
     }
+    
+    UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
+    self.tableView.contentInset = adjustForTabbarInsets;
+    self.tableView.scrollIndicatorInsets = adjustForTabbarInsets;
     
 }
 
@@ -68,7 +76,6 @@
     NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
-    
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
@@ -82,7 +89,6 @@
 {
     return [[self.fetchedResultsController fetchedObjects] count];
 }
-
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
@@ -129,9 +135,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.musicVC = [[PPMusicViewController alloc] init];
-//    self.musicVC.trackInfo = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+    self.musicVC.info = [[[CoreDataManager sharedInstanceCoreData] fetchObjects] objectAtIndex:indexPath.row];
     
-//    self.currentIndex = indexPath.row;
+    self.currentIndex = indexPath.row;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationController pushViewController:self.musicVC animated:YES];
 }
@@ -205,5 +211,33 @@
 {
     // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tableView endUpdates];
+}
+
+#pragma mark - PPTrackInfoProtocol
+
+
+#pragma mark - PPTopSongsListViewControllerDelegate
+
+- (NSDictionary *)topSongsList:(NSInteger)tag
+{
+    NSDictionary *song;
+    
+    switch (tag) {
+        case 1:
+        {
+            song = [[self.fetchedResultsController fetchedObjects] objectAtIndex:self.currentIndex +1];
+            self.currentIndex += 1;
+            break;
+        }
+        case 2:
+        {
+            song = [[self.fetchedResultsController fetchedObjects] objectAtIndex:self.currentIndex -1];
+            self.currentIndex -= 1;
+            break;
+        }
+        default:
+            break;
+    }
+    return song;
 }
 @end

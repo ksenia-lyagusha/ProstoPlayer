@@ -96,13 +96,7 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    
-    NSMutableArray *infoTrack = [NSMutableArray array];
-    
-    [infoTrack addObject:[self.trackInfo objectForKey:@"artist"]];
-    [infoTrack addObject:[self.trackInfo objectForKey:@"track"]];
-    
-    [self playAction:self.musicView.playButton];
+//    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
@@ -135,8 +129,8 @@
 {
     if (!self.audioPlayer)
     {
-        NSString *trackID = [self.trackInfo objectForKey:@"id"];
-        [self updateTrackTitle:self.trackInfo];
+        NSString *trackID = self.info.ID;
+        [self updateTrackTitle:self.info];
         
         [self trackDownloadAction:trackID];
         return;
@@ -232,10 +226,10 @@
     [[MPNowPlayingInfoCenter defaultCenter] setNowPlayingInfo:info];
 }
 
-- (void)updateTrackTitle:(NSDictionary *)song
+- (void)updateTrackTitle:(id <PPTrackInfoProtocol>)song
 {
-    NSString *artist = [song objectForKey:@"artist"];
-    NSString *track = [song objectForKey:@"track"];
+    NSString *artist = song.trackArtist ;
+    NSString *track = song.trackTitle;
     
     self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
@@ -381,7 +375,7 @@
 - (void)addToFavorites:(UIButton *)sender
 {
     NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
-    Track *trackObj = [Track objectWithTrackID:[self.trackInfo objectForKey:@"id"]];
+    Track *trackObj = [Track objectWithTrackID:self.info.ID];
     
     if ([result containsObject:trackObj])
     {
@@ -392,7 +386,7 @@
     
     trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     
-    [trackObj trackWithTitle:[self.trackInfo objectForKey:@"track"] withArtist:[self.trackInfo objectForKey:@"artist"] withTrackID:[self.trackInfo objectForKey:@"id"] withDuration:[self.trackInfo objectForKey:@"bitrate"] withTextID:[self.trackInfo objectForKey:@"text_id"]];
+    [trackObj trackWithTitle:self.info.trackTitle withArtist:self.info.trackArtist withTrackID:self.info.ID withDuration:self.info.trackDuration withTextID:self.info.textID];
     
     [[CoreDataManager sharedInstanceCoreData] saveContext];
     

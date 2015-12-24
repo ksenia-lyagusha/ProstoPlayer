@@ -8,29 +8,28 @@
 
 #import "TrackInfo.h"
 
-@interface TrackInfo ()
-
-@property (nonatomic, strong) NSString *trackTitle;
-@property (nonatomic, strong) NSString *trackArtist;
-@property (nonatomic, strong) NSString *ID;
-@property (nonatomic, strong) NSString *textID;
-@property (nonatomic, strong)NSNumber *trackDuratio;
+@interface TrackInfo () <PPTrackInfoProtocol>
 
 @end
 
 @implementation TrackInfo
 
-- (instancetype)trackWithTitle:(NSString *)title withArtist:(NSString *)artist withTrackID:(NSString *)trackID withDuration:(NSNumber *)duration withTextID:(NSString *)text_id
++ (NSArray *)trackDescription:(NSDictionary *)trackDict
 {
-    TrackInfo *trackInfo = [[TrackInfo alloc] init];
-    
-    self.trackTitle = title;
-    self.trackArtist = artist;
-    self.ID = trackID;
-    self.textID = text_id;
-    self.trackDuratio = duration;
-    
-    return trackInfo;
+    NSMutableArray *tracksObj = [NSMutableArray array];
+    TrackInfo *track = [[TrackInfo alloc] init];
+
+    for (NSDictionary *trackInfo in trackDict) {
+        track.trackTitle    = [trackInfo objectForKey:@"track"];
+        track.trackArtist   = [trackInfo objectForKey:@"artist"];
+        track.ID            = [trackInfo objectForKey:@"id"];
+        track.textID        = [trackInfo objectForKey:@"text_id"];
+        track.trackDuration = [trackInfo objectForKey:@"bitrate"];
+        
+        [tracksObj addObject:track];
+    }
+   
+    return tracksObj;
 }
 
 @end

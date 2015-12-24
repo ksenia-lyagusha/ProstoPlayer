@@ -10,8 +10,11 @@
 #import "PPMusicViewController.h"
 
 #import "UIAlertController+Category.h"
+#import "ProstoPleerProtocols.h"
+
 #import "SessionManager.h"
 #import "Track.h"
+#import "TrackInfo.h"
 #import "CoreDataManager.h"
 
 @interface PPTopSongsListViewController ()  <UISearchBarDelegate, PPTopSongsListViewControllerDelegate>
@@ -92,7 +95,7 @@
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *value;
+    id <PPTrackInfoProtocol>value;
     if (self.filteredList)
     {
        value = [self.filteredList objectAtIndex:indexPath.row];
@@ -110,11 +113,11 @@
     favoriteButton.tag = indexPath.row;
     favoriteButton.userInteractionEnabled = YES;
     
-    cell.textLabel.text = [value objectForKey:@"artist"];
-    cell.detailTextLabel.text = [value objectForKey:@"track"];
+    cell.textLabel.text = value.trackArtist;
+    cell.detailTextLabel.text = value.trackTitle;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    Track *trackObj = [Track objectWithTrackID:[value objectForKey:@"id"]];
+    Track *trackObj = [Track objectWithTrackID:value.ID];
     if ([self.DBobjects containsObject:trackObj])
     {
         favoriteButton.selected = YES;
@@ -150,7 +153,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.musicVC = [[PPMusicViewController alloc] init];
-    self.musicVC.trackInfo = [self.topList objectAtIndex:indexPath.row];
+    self.musicVC.info = [self.topList objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
     
@@ -244,18 +247,18 @@
         dispatch_async(dispatch_get_main_queue(), ^{
         
             NSDictionary *values = [topList objectForKey:@"data"];
-            NSArray *innerArray = [values allValues];
-            
+           
+            NSArray *tracks = [TrackInfo trackDescription:values];
+           
             self.count = [topList objectForKey:@"count"];
             
             if (weakSelf.topList)
             {
-                [weakSelf.topList addObjectsFromArray:innerArray];
-                
+                [weakSelf.topList addObject:tracks];
             }
             else
             {
-                weakSelf.topList = [[NSMutableArray arrayWithArray:innerArray] mutableCopy];
+                weakSelf.topList = [NSMutableArray arrayWithObject:tracks];
                 
                 if(complitionHandler)
                 {
@@ -328,6 +331,12 @@
     }
      [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
+
+//#pragma mark - PPTrackInfoProtocol
+//- (id<PPTrackInfoProtocol>)trackInfo
+//{
+//    self.
+//}
 
 
 @end

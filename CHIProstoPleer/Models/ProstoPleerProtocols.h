@@ -1,15 +1,15 @@
 //
-//  TrackInfo.h
+//  ProstoPleerProtocols.h
 //  ProstoPleerApp
 //
-//  Created by CHI Software on 12/23/15.
+//  Created by CHI Software on 12/24/15.
 //  Copyright © 2015 CHI Software. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "ProstoPleerProtocols.h"
+#ifndef ProstoPleerProtocols_h
+#define ProstoPleerProtocols_h
 
-@interface TrackInfo : NSObject 
+@protocol PPTrackInfoProtocol <NSObject>
 
 @property (nonatomic, strong) NSString *trackTitle;
 @property (nonatomic, strong) NSString *trackArtist;
@@ -17,6 +17,6 @@
 @property (nonatomic, strong) NSString *textID;
 @property (nonatomic, strong) NSNumber *trackDuration;
 
-+ (NSArray *)trackDescription:(NSDictionary *)trackInfo;
-
 @end
+
+#endif /* ProstoPleerProtocols_h */
