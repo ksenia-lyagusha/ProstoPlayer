@@ -129,7 +129,7 @@
 {
     if (!self.audioPlayer)
     {
-        NSString *trackID = self.info.ID;
+        NSString *trackID = self.info.track_id;
         [self updateTrackTitle:self.info];
         
         [self trackDownloadAction:trackID];
@@ -150,18 +150,18 @@
 
 - (void)nextTrackAction
 {
-    NSDictionary *song = [self.delegate topSongsList:1];
+    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:1];
     [self updateTrackTitle:song];
-    NSString *trackID = [song objectForKey:@"id"];
+    NSString *trackID = song.track_id;
     
     [self trackDownloadAction:trackID];
 }
 
 - (void)previousTrackAction
 {
-    NSDictionary *song = [self.delegate topSongsList:2];
+    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:2];
     [self updateTrackTitle:song];
-    NSString *trackID = [song objectForKey:@"id"];
+    NSString *trackID = song.track_id;
     
     [self trackDownloadAction:trackID];
 }
@@ -200,14 +200,15 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
-    
+
 }
 
-#pragma mark - 
+#pragma mark - Methods for Installing and Establishing
 
 - (void)updateTime
 {
     self.currentTimeSlider.maximumValue = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
+//    NSLog(@"max slider value %f ----------   min value = %f", self.currentTimeSlider.maximumValue, self.currentTimeSlider.minimumValue); 
     [self.currentTimeSlider setValue:CMTimeGetSeconds(self.audioPlayer.currentTime) animated:YES];
     
 //    Access Current Time
@@ -228,8 +229,8 @@
 
 - (void)updateTrackTitle:(id <PPTrackInfoProtocol>)song
 {
-    NSString *artist = song.trackArtist ;
-    NSString *track = song.trackTitle;
+    NSString *artist = song.artist;
+    NSString *track = song.title;
     
     self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
@@ -375,7 +376,7 @@
 - (void)addToFavorites:(UIButton *)sender
 {
     NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
-    Track *trackObj = [Track objectWithTrackID:self.info.ID];
+    Track *trackObj = [Track objectWithTrackID:self.info.text_id];
     
     if ([result containsObject:trackObj])
     {
@@ -386,7 +387,7 @@
     
     trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     
-    [trackObj trackWithTitle:self.info.trackTitle withArtist:self.info.trackArtist withTrackID:self.info.ID withDuration:self.info.trackDuration withTextID:self.info.textID];
+    [trackObj trackWithTitle:self.info.title withArtist:self.info.artist withTrackID:self.info.text_id withDuration:self.info.duration withTextID:self.info.text_id];
     
     [[CoreDataManager sharedInstanceCoreData] saveContext];
     

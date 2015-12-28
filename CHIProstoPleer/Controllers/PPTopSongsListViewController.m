@@ -46,6 +46,8 @@
     return self;
 }
 
+#pragma mark - Lifecycle methods
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -113,11 +115,11 @@
     favoriteButton.tag = indexPath.row;
     favoriteButton.userInteractionEnabled = YES;
     
-    cell.textLabel.text = value.trackArtist;
-    cell.detailTextLabel.text = value.trackTitle;
+    cell.textLabel.text = value.artist;
+    cell.detailTextLabel.text = value.title;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    Track *trackObj = [Track objectWithTrackID:value.ID];
+    Track *trackObj = [Track objectWithTrackID:value.track_id];
     if ([self.DBobjects containsObject:trackObj])
     {
         favoriteButton.selected = YES;
@@ -153,7 +155,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.musicVC = [[PPMusicViewController alloc] init];
-    self.musicVC.info = [self.topList objectAtIndex:indexPath.row];
+    self.musicVC.info = self.filteredList ? [self.filteredList objectAtIndex:indexPath.row] : [self.topList objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
     
@@ -209,6 +211,8 @@
     [self.tableView reloadData];
 }
 
+#pragma mark - Private methods
+
 - (void)refresh:(id)sender
 {
     if (self.refreshControl)
@@ -254,11 +258,11 @@
             
             if (weakSelf.topList)
             {
-                [weakSelf.topList addObject:tracks];
+                [weakSelf.topList addObjectsFromArray:tracks];
             }
             else
             {
-                weakSelf.topList = [NSMutableArray arrayWithObject:tracks];
+                weakSelf.topList = [tracks mutableCopy];
                 
                 if(complitionHandler)
                 {
@@ -270,6 +274,8 @@
         });
     }];
 }
+
+#pragma mark - Reachability
 
 - (void)internetNotReachable:(NSNotification *)notification
 {
@@ -287,34 +293,46 @@
 
 #pragma mark - PPTopSongsListViewControllerDelegate
 
-- (NSDictionary *)topSongsList:(NSInteger)tag
+- (id <PPTrackInfoProtocol>)topSongsList:(NSInteger)tag
 {
-    NSDictionary *song;
+   id <PPTrackInfoProtocol>song;
+    NSArray *choise = self.filteredList ? self.filteredList : self.topList;
     
     switch (tag) {
         case 1:
         {
-            song = [self.topList objectAtIndex:self.currentIndex +1];
+            if (choise.count -1 == self.currentIndex) {
+                song = [choise firstObject];
+                self.currentIndex = 0;
+                break;
+            }
+            song = [choise objectAtIndex:self.currentIndex +1];
             self.currentIndex += 1;
             break;
         }
         case 2:
         {
-            song = [self.topList objectAtIndex:self.currentIndex -1];
+            if (self.currentIndex == 0) {
+                song = [choise firstObject];
+                break;
+            }
+            song = [choise objectAtIndex:self.currentIndex -1];
             self.currentIndex -= 1;
             break;
         }
         default:
             break;
     }
+   
     return song;
 }
 
+#pragma mark - Actions methods
 
 - (void)addToFavoritesAction:(UIButton *)sender
 {
-    NSDictionary *value = [self.topList objectAtIndex:sender.tag];
-    Track *trackObj = [Track objectWithTrackID:[value objectForKey:@"id"]];
+    id <PPTrackInfoProtocol>value = [self.topList objectAtIndex:sender.tag];
+    Track *trackObj = [Track objectWithTrackID:value.track_id];
     if (sender.selected)
     {
         [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:trackObj];
@@ -324,20 +342,13 @@
     {
         Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
         
-        [trackObj trackWithTitle:[value objectForKey:@"track"] withArtist:[value objectForKey:@"artist"] withTrackID:[value objectForKey:@"id"] withDuration:[value objectForKey:@"bitrate"] withTextID:[value objectForKey:@"text_id"]];
+        [trackObj trackWithTitle:value.title withArtist:value.artist withTrackID:value.track_id withDuration:value.duration  withTextID:value.text_id];
         
         sender.selected = YES;
-   
+        
     }
-     [[CoreDataManager sharedInstanceCoreData] saveContext];
+    [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
-
-//#pragma mark - PPTrackInfoProtocol
-//- (id<PPTrackInfoProtocol>)trackInfo
-//{
-//    self.
-//}
-
 
 @end
 

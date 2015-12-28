@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Track : NSManagedObject
+@interface Track : NSManagedObject <PPTrackInfoProtocol>
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -23,12 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
                     withTextID:(NSString *)text_id;
 
 + (instancetype)objectWithTrackID:(NSString *)trackID;
-
-@property (nonatomic, strong) NSString *trackTitle;
-@property (nonatomic, strong) NSString *trackArtist;
-@property (nonatomic, strong) NSString *ID;
-@property (nonatomic, strong) NSString *textID;
-@property (nonatomic, strong) NSNumber *trackDuration;
 
 @end
 

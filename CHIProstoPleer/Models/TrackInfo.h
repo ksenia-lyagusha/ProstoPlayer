@@ -9,14 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "ProstoPleerProtocols.h"
 
-@interface TrackInfo : NSObject 
+@interface TrackInfo : NSObject <PPTrackInfoProtocol>
 
-@property (nonatomic, strong) NSString *trackTitle;
-@property (nonatomic, strong) NSString *trackArtist;
-@property (nonatomic, strong) NSString *ID;
-@property (nonatomic, strong) NSString *textID;
-@property (nonatomic, strong) NSNumber *trackDuration;
+@property (nullable, nonatomic) NSString *artist;
+@property (nullable, nonatomic) NSNumber *duration;
+@property (nullable, nonatomic) NSString *text_id;
+@property (nullable, nonatomic) NSString *title;
+@property (nullable, nonatomic) NSString *track_id;
 
-+ (NSArray *)trackDescription:(NSDictionary *)trackInfo;
++ ( NSArray * _Nonnull )trackDescription:( NSDictionary * _Nonnull )trackInfo;
 
 @end

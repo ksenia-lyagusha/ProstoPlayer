@@ -9,11 +9,11 @@
 #import "Track.h"
 #import "CoreDataManager.h"
 
-@interface Track () <PPTrackInfoProtocol>
-
-@end
+#import "Track+CoreDataProperties.h"
 
 @implementation Track
+
+
 
 // Insert code here to add functionality to your managed object subclass
 

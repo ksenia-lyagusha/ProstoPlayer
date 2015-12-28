@@ -8,12 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-
-@protocol PPTopSongsListViewControllerDelegate  <NSObject>
-
-- (NSDictionary *)topSongsList:(NSInteger)tag;
-
-@end
+#import "ProstoPleerProtocols.h"
 
 @interface PPTopSongsListViewController : UITableViewController
 

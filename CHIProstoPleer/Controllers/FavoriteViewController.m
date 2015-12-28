@@ -14,10 +14,10 @@
 
 #import "ProstoPleerProtocols.h"
 
-@interface FavoriteViewController () <NSFetchedResultsControllerDelegate, PPTrackInfoProtocol, PPTopSongsListViewControllerDelegate>
+@interface FavoriteViewController () <NSFetchedResultsControllerDelegate, PPTopSongsListViewControllerDelegate>
 
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) PPMusicViewController      *musicVC;
+
 @property NSInteger currentIndex;
 
 @end
@@ -134,12 +134,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.musicVC = [[PPMusicViewController alloc] init];
-    self.musicVC.info = [[[CoreDataManager sharedInstanceCoreData] fetchObjects] objectAtIndex:indexPath.row];
-    
+    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
+    musicVC.info = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
+    musicVC.delegate = self;
     self.currentIndex = indexPath.row;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
-    [self.navigationController pushViewController:self.musicVC animated:YES];
+    [self.navigationController pushViewController:musicVC animated:YES];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -213,24 +213,30 @@
     [self.tableView endUpdates];
 }
 
-#pragma mark - PPTrackInfoProtocol
-
-
 #pragma mark - PPTopSongsListViewControllerDelegate
 
-- (NSDictionary *)topSongsList:(NSInteger)tag
+- (id <PPTrackInfoProtocol>)topSongsList:(NSInteger)tag
 {
-    NSDictionary *song;
+    id <PPTrackInfoProtocol>song;
     
     switch (tag) {
         case 1:
         {
+            if (self.currentIndex == [[self.fetchedResultsController fetchedObjects] count] - 1) {
+                self.currentIndex = 0;
+                song = [[self.fetchedResultsController fetchedObjects] firstObject];
+                break;
+            }
             song = [[self.fetchedResultsController fetchedObjects] objectAtIndex:self.currentIndex +1];
             self.currentIndex += 1;
             break;
         }
         case 2:
         {
+            if (self.currentIndex == 0) {
+                song = [[self.fetchedResultsController fetchedObjects] firstObject];
+                break;
+            }
             song = [[self.fetchedResultsController fetchedObjects] objectAtIndex:self.currentIndex -1];
             self.currentIndex -= 1;
             break;
