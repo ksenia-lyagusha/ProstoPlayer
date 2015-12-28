@@ -2,7 +2,7 @@
 //  Track+CoreDataProperties.h
 //  
 //
-//  Created by Оксана on 21.12.15.
+//  Created by CHI Software on 12/28/15.
 //
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *text_id;
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *track_id;
+@property (nullable, nonatomic, retain) NSData   *download;
 
 @end
 

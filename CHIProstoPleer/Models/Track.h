@@ -2,17 +2,17 @@
 //  Track.h
 //  
 //
-//  Created by Оксана on 21.12.15.
+//  Created by CHI Software on 12/28/15.
 //
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "ProstoPleerProtocols.h"
+#import "TrackInfo.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Track : NSManagedObject <PPTrackInfoProtocol>
+@interface Track : NSManagedObject
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -22,7 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
                   withDuration:(NSNumber *)duration
                     withTextID:(NSString *)text_id;
 
+- (instancetype)createTrackWithTrackInfoObject:(TrackInfo *)trackInfo;
+
 + (instancetype)objectWithTrackID:(NSString *)trackID;
+
+- (void)saveTrackInExternalFile:(NSData *)recievedData;
 
 @end
 

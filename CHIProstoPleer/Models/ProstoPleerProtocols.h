@@ -9,6 +9,7 @@
 #ifndef ProstoPleerProtocols_h
 #define ProstoPleerProtocols_h
 
+
 @protocol PPTrackInfoProtocol <NSObject>
 
 @property (nullable, nonatomic) NSString *artist;
@@ -21,7 +22,11 @@
 
 @protocol PPTopSongsListViewControllerDelegate  <NSObject>
 
-- (_Nonnull id <PPTrackInfoProtocol>) topSongsList:(NSInteger)tag;
+typedef NS_ENUM (NSUInteger, PPTrackDirection) {
+    PPTrackDirectionFastForward ,
+    PPTrackDirectionFastRewind
+};
+- (_Nonnull id <PPTrackInfoProtocol>) topSongsList:(PPTrackDirection)direction;
 
 @end
 

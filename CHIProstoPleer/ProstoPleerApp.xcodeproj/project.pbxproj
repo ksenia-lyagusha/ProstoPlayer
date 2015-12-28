@@ -19,6 +19,7 @@
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
 		676444451BF2412500967F5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6764443A1BF2412500967F5A /* main.m */; };
 		6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */; };
+		677AA4F11C3183ED005007FD /* ProstoPleerApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 677AA4EF1C3183ED005007FD /* ProstoPleerApp.xcdatamodeld */; };
 		677B2F691C17040D00298947 /* MusicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 677B2F681C17040C00298947 /* MusicView.m */; };
 		9E8405042BC2CC79BC0E943C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 805B6B06A735058C4537F79D /* libPods.a */; };
 		D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D717805F1BFA67E6005246B3 /* Assets.xcassets */; };
@@ -27,7 +28,6 @@
 		D7A1FDFB1C0588D0009EF802 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D7A1FDFA1C0588D0009EF802 /* AVFoundation.framework */; };
 		D7A1FE011C0591CD009EF802 /* PPMusicViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D7A1FE001C0591CD009EF802 /* PPMusicViewController.m */; };
 		D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */; };
-		D7BCF18A1C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D7BCF1881C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld */; };
 		D7F4BA081C27D27C00BB10B9 /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = D7F4BA051C27D27C00BB10B9 /* Track.m */; };
 		D7F4BA091C27D27C00BB10B9 /* Track+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = D7F4BA071C27D27C00BB10B9 /* Track+CoreDataProperties.m */; };
 /* End PBXBuildFile section */
@@ -68,6 +68,7 @@
 		6764443A1BF2412500967F5A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6774C8E71C2AF9C6000B3F00 /* TrackInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackInfo.h; sourceTree = "<group>"; };
 		6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackInfo.m; sourceTree = "<group>"; };
+		677AA4F01C3183ED005007FD /* ProstoPleerApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProstoPleerApp.xcdatamodel; sourceTree = "<group>"; };
 		677B2F671C17040C00298947 /* MusicView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicView.h; sourceTree = "<group>"; };
 		677B2F681C17040C00298947 /* MusicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicView.m; sourceTree = "<group>"; };
 		6EF7B4F42A59AACC8BA4D5F8 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -81,7 +82,6 @@
 		D7A1FDFF1C0591CD009EF802 /* PPMusicViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PPMusicViewController.h; sourceTree = "<group>"; };
 		D7A1FE001C0591CD009EF802 /* PPMusicViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PPMusicViewController.m; sourceTree = "<group>"; };
 		D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
-		D7BCF1891C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProstoPleerApp.xcdatamodel; sourceTree = "<group>"; };
 		D7F4BA041C27D27C00BB10B9 /* Track.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Track.h; sourceTree = "<group>"; };
 		D7F4BA051C27D27C00BB10B9 /* Track.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Track.m; sourceTree = "<group>"; };
 		D7F4BA061C27D27C00BB10B9 /* Track+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Track+CoreDataProperties.h"; sourceTree = "<group>"; };
@@ -130,7 +130,6 @@
 				D7F4BA071C27D27C00BB10B9 /* Track+CoreDataProperties.m */,
 				6709DCE71BF347790089B8CC /* SessionManager.h */,
 				6709DCE81BF347790089B8CC /* SessionManager.m */,
-				D7BCF1881C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld */,
 				675BDBF11C2802700016938A /* CoreDataManager.h */,
 				675BDBF21C2802700016938A /* CoreDataManager.m */,
 				6774C8E71C2AF9C6000B3F00 /* TrackInfo.h */,
@@ -233,6 +232,7 @@
 		6764443C1BF2412500967F5A /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				677AA4EF1C3183ED005007FD /* ProstoPleerApp.xcdatamodeld */,
 				D717805F1BFA67E6005246B3 /* Assets.xcassets */,
 			);
 			path = Resource;
@@ -410,12 +410,12 @@
 				676444401BF2412500967F5A /* AppDelegate.m in Sources */,
 				D7A1FE011C0591CD009EF802 /* PPMusicViewController.m in Sources */,
 				D7F4BA081C27D27C00BB10B9 /* Track.m in Sources */,
-				D7BCF18A1C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld in Sources */,
 				D7F4BA091C27D27C00BB10B9 /* Track+CoreDataProperties.m in Sources */,
 				677B2F691C17040D00298947 /* MusicView.m in Sources */,
 				6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
 				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
+				677AA4F11C3183ED005007FD /* ProstoPleerApp.xcdatamodeld in Sources */,
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
 				6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */,
 				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
@@ -613,12 +613,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		D7BCF1881C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodeld */ = {
+		677AA4EF1C3183ED005007FD /* ProstoPleerApp.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				D7BCF1891C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodel */,
+				677AA4F01C3183ED005007FD /* ProstoPleerApp.xcdatamodel */,
 			);
-			currentVersion = D7BCF1891C2429E500EBC0F2 /* ProstoPleerApp.xcdatamodel */;
+			currentVersion = 677AA4F01C3183ED005007FD /* ProstoPleerApp.xcdatamodel */;
 			path = ProstoPleerApp.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

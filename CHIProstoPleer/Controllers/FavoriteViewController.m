@@ -44,8 +44,6 @@
 {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [UIColor lightGrayColor];
-    
     NSError *error;
     if (![self.fetchedResultsController performFetch:&error])
     {
@@ -101,15 +99,11 @@
     [cell setPreservesSuperviewLayoutMargins:NO];
     [cell setLayoutMargins:UIEdgeInsetsZero];
     
-    [self configureCell:cell atIndexPath:indexPath];
-    return cell;
-}
-
-- (void)configureCell:(UITableViewCell *)theCell atIndexPath:(NSIndexPath *)indexPath
-{
     Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    theCell.textLabel.text = object.artist;
-    theCell.detailTextLabel.text = object.title;
+    cell.textLabel.text = object.artist;
+    cell.detailTextLabel.text = object.title;
+    
+    return cell;
 }
 
 - (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
@@ -170,8 +164,7 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            
-            [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath];
+            [tableView cellForRowAtIndexPath:indexPath];
             [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
@@ -215,12 +208,12 @@
 
 #pragma mark - PPTopSongsListViewControllerDelegate
 
-- (id <PPTrackInfoProtocol>)topSongsList:(NSInteger)tag
+- (id <PPTrackInfoProtocol>)topSongsList:(PPTrackDirection)direction
 {
     id <PPTrackInfoProtocol>song;
     
-    switch (tag) {
-        case 1:
+    switch (direction) {
+        case PPTrackDirectionFastForward:
         {
             if (self.currentIndex == [[self.fetchedResultsController fetchedObjects] count] - 1) {
                 self.currentIndex = 0;
@@ -231,7 +224,7 @@
             self.currentIndex += 1;
             break;
         }
-        case 2:
+        case PPTrackDirectionFastRewind:
         {
             if (self.currentIndex == 0) {
                 song = [[self.fetchedResultsController fetchedObjects] firstObject];

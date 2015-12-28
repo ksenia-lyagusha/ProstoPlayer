@@ -2,7 +2,7 @@
 //  Track+CoreDataProperties.m
 //  
 //
-//  Created by Оксана on 21.12.15.
+//  Created by CHI Software on 12/28/15.
 //
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -18,5 +18,6 @@
 @dynamic text_id;
 @dynamic title;
 @dynamic track_id;
+@dynamic download;
 
 @end

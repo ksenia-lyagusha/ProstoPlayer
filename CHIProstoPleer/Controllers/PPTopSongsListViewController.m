@@ -77,6 +77,7 @@
     self.tabBarController.title = @"Top songs list";
     self.tabBarController.navigationItem.hidesBackButton = YES;
     self.DBobjects = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
+    [self.tableView reloadData];
     
 }
 
@@ -95,18 +96,25 @@
     
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
+    
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
+    }
     id <PPTrackInfoProtocol>value;
     if (self.filteredList)
     {
-       value = [self.filteredList objectAtIndex:indexPath.row];
+        value = [self.filteredList objectAtIndex:indexPath.row];
     }
     else
     {
         value = [self.topList objectAtIndex:indexPath.row];
-
+        
     }
+    
     UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
     [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
@@ -124,19 +132,9 @@
     {
         favoriteButton.selected = YES;
     }
-    
-}
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
-    
-    if (!cell)
-    {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
-    }
-    
-    [self configureCell:cell atIndexPath:indexPath];
+    [cell setPreservesSuperviewLayoutMargins:NO];
+    [cell setLayoutMargins:UIEdgeInsetsZero];
     
     return cell;
 }
@@ -147,9 +145,6 @@
         self.currentPage += 1;
         [self refreshTableView:self.currentPage withComplitionHandler:nil];
     }
-    [cell setPreservesSuperviewLayoutMargins:NO];
-    [cell setLayoutMargins:UIEdgeInsetsZero];
-
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -293,13 +288,13 @@
 
 #pragma mark - PPTopSongsListViewControllerDelegate
 
-- (id <PPTrackInfoProtocol>)topSongsList:(NSInteger)tag
+- (id <PPTrackInfoProtocol>)topSongsList:(PPTrackDirection)direction
 {
    id <PPTrackInfoProtocol>song;
     NSArray *choise = self.filteredList ? self.filteredList : self.topList;
     
-    switch (tag) {
-        case 1:
+    switch (direction) {
+        case PPTrackDirectionFastForward:
         {
             if (choise.count -1 == self.currentIndex) {
                 song = [choise firstObject];
@@ -310,7 +305,7 @@
             self.currentIndex += 1;
             break;
         }
-        case 2:
+        case PPTrackDirectionFastRewind:
         {
             if (self.currentIndex == 0) {
                 song = [choise firstObject];
@@ -340,9 +335,8 @@
     }
     else
     {
-        Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-        
-        [trackObj trackWithTitle:value.title withArtist:value.artist withTrackID:value.track_id withDuration:value.duration  withTextID:value.text_id];
+        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
+        [trackObj createTrackWithTrackInfoObject:value];
         
         sender.selected = YES;
         

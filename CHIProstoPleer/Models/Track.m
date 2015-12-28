@@ -2,7 +2,7 @@
 //  Track.m
 //  
 //
-//  Created by Оксана on 21.12.15.
+//  Created by CHI Software on 12/28/15.
 //
 //
 
@@ -12,8 +12,6 @@
 #import "Track+CoreDataProperties.h"
 
 @implementation Track
-
-
 
 // Insert code here to add functionality to your managed object subclass
 
@@ -29,6 +27,17 @@
     return self;
 }
 
+- (instancetype)createTrackWithTrackInfoObject:(TrackInfo *)trackInfo
+{
+    self.title    = trackInfo.title;
+    self.artist   = trackInfo.artist;
+    self.track_id = trackInfo.track_id;
+    self.duration = [[NSNumberFormatter alloc] numberFromString:(NSString *)trackInfo.duration];
+    self.text_id  = ([trackInfo.text_id isKindOfClass:[NSNull class]]) ?  @"" : trackInfo.text_id;
+    
+    return self;
+}
+
 + (instancetype)objectWithTrackID:(NSString *)trackID
 {
     Track *track;
@@ -38,10 +47,15 @@
     [fetchRequest setFetchLimit:1];
     NSArray *filtered = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:nil];
     if (filtered.count > 0) {
-         track = [filtered objectAtIndex:0];
+        track = [filtered objectAtIndex:0];
     }
-   
+    
     return track;
+}
+
+- (void)saveTrackInExternalFile:(NSData *)recievedData
+{
+    self.download = recievedData;
 }
 
 @end

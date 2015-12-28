@@ -11,7 +11,7 @@
 extern NSString * const PPSessionManagerInternetConnectionLost;
 extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
-@interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate>
+@interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong, readonly) NSString *token;
 
@@ -26,5 +26,7 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 - (void)trackLyricsWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *title, NSError *error))completion;
 
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion;
+
+- (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSData *))block;
 
 @end

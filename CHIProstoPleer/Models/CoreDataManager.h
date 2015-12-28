@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+#import "Track.h"
+
 @interface CoreDataManager : NSObject
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext       *managedObjectContext;
@@ -19,5 +21,6 @@
 - (NSURL *)applicationDocumentsDirectory;
 + (instancetype)sharedInstanceCoreData;
 - (NSArray *)fetchObjects;
+- (Track *)addNewTrack;
 
 @end

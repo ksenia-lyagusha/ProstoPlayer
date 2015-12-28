@@ -8,6 +8,8 @@
 
 #import "PPMusicViewController.h"
 #import "UIAlertController+Category.h"
+#import <MBProgressHUD.h>
+
 #import "SessionManager.h"
 
 #import "MusicView.h"
@@ -150,7 +152,7 @@
 
 - (void)nextTrackAction
 {
-    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:1];
+    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastForward];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
     
@@ -159,7 +161,7 @@
 
 - (void)previousTrackAction
 {
-    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:2];
+    id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastRewind];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
     
@@ -170,7 +172,8 @@
 {
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
- 
+        
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         NSURL *url = [NSURL URLWithString:link];
         [weakSelf createPlayerWithURL:url];
         
@@ -200,7 +203,15 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
-
+    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSData *recievedData) {
+        
+        Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+        
+        [trackObj saveTrackInExternalFile:recievedData];
+        
+        [[CoreDataManager sharedInstanceCoreData] saveContext];
+    }];
+   
 }
 
 #pragma mark - Methods for Installing and Establishing
@@ -360,6 +371,9 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf updateTime];
+           
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            
         });
     };
     
@@ -387,7 +401,7 @@
     
     trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     
-    [trackObj trackWithTitle:self.info.title withArtist:self.info.artist withTrackID:self.info.text_id withDuration:self.info.duration withTextID:self.info.text_id];
+    [trackObj createTrackWithTrackInfoObject:self.info];
     
     [[CoreDataManager sharedInstanceCoreData] saveContext];
     

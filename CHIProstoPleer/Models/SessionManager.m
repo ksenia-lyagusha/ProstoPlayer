@@ -26,8 +26,8 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 @property (nonatomic, strong) NSDate              *expiredDate;
 @property (nonatomic, strong, readwrite) NSString *token;
 @property (strong, nonatomic) Reachability        *reachabilityListener;
-
-
+@property (strong, nonatomic) NSMutableData       *receivedData;
+@property (copy)              void(^complitionHandler)(NSData *);
 @end
 
 @implementation SessionManager
@@ -71,7 +71,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         {
             NSLog(@"isReachableViaWiFi");
         }
-
+        self.receivedData = [NSMutableData data];
     }
     return self;
 }
@@ -308,4 +308,38 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         //Code when there is no connection
     }
 }
+
+- (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSData *))block
+{
+    __weak typeof(self) weakSelf = self;
+    [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
+
+        NSURLSession *url = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                                          delegate:self
+                                                     delegateQueue:[NSOperationQueue mainQueue]];
+        NSURLSessionDataTask *dataTask = [url dataTaskWithURL:[NSURL URLWithString:link]];
+        
+        weakSelf.complitionHandler = block;
+        [dataTask resume];
+    }];
+}
+
+#pragma mark - NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
+{
+    [self.receivedData appendData:data];
+    
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)errorURLSession
+{
+    if (errorURLSession) {
+        NSLog(@"%@", errorURLSession.description);
+    }
+    if (self.complitionHandler) {
+        self.complitionHandler(self.receivedData);
+    }
+}
+
 @end
