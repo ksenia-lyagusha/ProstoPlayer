@@ -164,7 +164,6 @@
             break;
             
         case NSFetchedResultsChangeUpdate:
-            [tableView cellForRowAtIndexPath:indexPath];
             [tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
             break;
             
