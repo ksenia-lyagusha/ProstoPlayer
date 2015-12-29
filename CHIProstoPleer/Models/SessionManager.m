@@ -26,8 +26,8 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 @property (nonatomic, strong) NSDate              *expiredDate;
 @property (nonatomic, strong, readwrite) NSString *token;
 @property (strong, nonatomic) Reachability        *reachabilityListener;
-@property (strong, nonatomic) NSData              *receivedData;
-@property (copy)              void(^complitionHandler)(NSData *);
+@property (strong, nonatomic) NSString            *receivedLocation;
+
 @end
 
 @implementation SessionManager
@@ -71,7 +71,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         {
             NSLog(@"isReachableViaWiFi");
         }
-        self.receivedData = [NSMutableData data];
+        self.receivedLocation = [NSString string];
     }
     return self;
 }
@@ -190,12 +190,12 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     }];
 }
 
-- (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSData *))block
+- (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *))block
 {
     [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
         if (block) {
-            block(self.receivedData);
+            block(self.receivedLocation);
         }
     }];
     
@@ -205,9 +205,42 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 
 - (void)dataTaskWithRequest:(NSMutableURLRequest *)request complitionHandler:(void(^)(NSDictionary *, NSError *))completion
 {
-    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+    NSURLSessionDownloadTask *downloadTask;
+    
+    if (self.isDownload)
+    {
+         downloadTask = [self.sessionURL downloadTaskWithRequest:request completionHandler:^(NSURL * _Nullable location, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            
+            if (error) {
+                NSLog(@"downloadTaskWithRequest failed: %@", error);
+                return;
+            }
+            
+        NSString *url = [location absoluteString];
+        self.receivedLocation = url;
         
-        self.receivedData = data;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
+        NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
+        NSError *moveError;
+             
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+//        NSString *documentsDirectory = [paths objectAtIndex:0];
+             
+        NSLog(@"documentsDirectory - %@", paths);
+        
+        
+        if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
+            NSLog(@"moveItemAtURL failed: %@", moveError);
+            return;
+        }
+             [fileManager removeItemAtURL:fileURL error:&moveError];
+             
+             self.isDownload = NO;
+        }];
+    }
+     
+    NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
         NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
         
@@ -217,7 +250,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             completion(result, error);
         }
     }];
-    
+    [downloadTask resume];
     [dataTask resume];
 }
 

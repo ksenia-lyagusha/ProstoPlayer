@@ -203,15 +203,15 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
-
-    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSData *recievedData) {
+    [[SessionManager sharedInstance] setIsDownload:YES];
+    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *recievedLocation) {
         
         Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
         
-        [trackObj saveTrackInExternalFile:recievedData];
+        [trackObj saveTrackInExternalFileWithLocation:recievedLocation];
         
         [[CoreDataManager sharedInstanceCoreData] saveContext];
-        NSLog(@"Track is downloaded successfully %li", trackObj.download.length);
+        NSLog(@"Track is downloaded successfully %@", trackObj.download);
   
     }];
    

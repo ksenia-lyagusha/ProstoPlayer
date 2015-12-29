@@ -16,17 +16,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Insert code here to declare functionality of your managed object subclass
 
-- (instancetype)trackWithTitle:(NSString *)title
-                    withArtist:(NSString *)artist
-                   withTrackID:(NSString *)trackID
-                  withDuration:(NSNumber *)duration
-                    withTextID:(NSString *)text_id;
-
 - (instancetype)createTrackWithTrackInfoObject:(TrackInfo *)trackInfo;
 
 + (instancetype)objectWithTrackID:(NSString *)trackID;
 
-- (void)saveTrackInExternalFile:(NSData *)recievedData;
+- (void)saveTrackInExternalFileWithLocation:(NSString *)location;
 
 @end
 

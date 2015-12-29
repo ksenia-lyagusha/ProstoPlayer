@@ -10,6 +10,12 @@
 
 @implementation TrackInfo
 
+@synthesize artist = _artist;
+@synthesize duration = _duration;
+@synthesize text_id = _text_id;
+@synthesize title = _title;
+@synthesize track_id = _track_id;
+
 + (NSArray *)trackDescription:(NSDictionary *)trackDict
 {
     NSMutableArray *tracksObj = [NSMutableArray array];

@@ -10,7 +10,7 @@
 #import <CoreData/CoreData.h>
 
 #import "Track.h"
-
+#import "User.h"
 @interface CoreDataManager : NSObject
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext       *managedObjectContext;
@@ -22,5 +22,6 @@
 + (instancetype)sharedInstanceCoreData;
 - (NSArray *)fetchObjects;
 - (Track *)addNewTrack;
+- (User *)addNewUser;
 
 @end

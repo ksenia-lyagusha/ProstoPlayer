@@ -13,6 +13,9 @@
 
 #import "SessionManager.h"
 #import "UIAlertController+Category.h"
+#import "CoreDataManager.h"
+
+#import "User.h"
 
 @interface PPLoginViewController () <PPLoginViewDelegate>
 
@@ -64,8 +67,13 @@
     
     [[SessionManager sharedInstance] sendRequestForTokenWithLogin:view.loginTextField.text andPassword:view.passwordTextField.text withComplitionHandler:^(NSString *token, NSError *error) {
         
-        if (token) {
-            [weakSelf goToMainMenu];
+        if (token)
+        {
+            User *userObj = [[CoreDataManager sharedInstanceCoreData] addNewUser];
+            [userObj addUserWithLogin:view.loginTextField.text];
+            [[CoreDataManager sharedInstanceCoreData] saveContext];
+            
+             [weakSelf goToMainMenu];
         }
         else
         {

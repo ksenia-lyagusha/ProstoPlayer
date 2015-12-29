@@ -127,4 +127,9 @@
     return track;
 }
 
+- (User *)addNewUser
+{
+    User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    return user;
+}
 @end

@@ -14,6 +14,7 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong, readonly) NSString *token;
+@property (nonatomic, readwrite)         BOOL isDownload;
 
 + (instancetype)sharedInstance;
 
@@ -27,6 +28,6 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion;
 
-- (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSData *))block;
+- (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSString *))block;
 
 @end

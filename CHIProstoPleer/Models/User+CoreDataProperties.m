@@ -1,5 +1,5 @@
 //
-//  Track+CoreDataProperties.m
+//  User+CoreDataProperties.m
 //  ProstoPleerApp
 //
 //  Created by CHI Software on 12/29/15.
@@ -9,16 +9,11 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Track+CoreDataProperties.h"
+#import "User+CoreDataProperties.h"
 
-@implementation Track (CoreDataProperties)
+@implementation User (CoreDataProperties)
 
-@dynamic artist;
-@dynamic download;
-@dynamic duration;
-@dynamic text_id;
-@dynamic title;
-@dynamic track_id;
-@dynamic user;
+@dynamic login;
+@dynamic tracks;
 
 @end

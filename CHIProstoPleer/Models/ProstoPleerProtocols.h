@@ -23,7 +23,7 @@
 @protocol PPTopSongsListViewControllerDelegate  <NSObject>
 
 typedef NS_ENUM (NSUInteger, PPTrackDirection) {
-    PPTrackDirectionFastForward ,
+    PPTrackDirectionFastForward,
     PPTrackDirectionFastRewind
 };
 - (_Nonnull id <PPTrackInfoProtocol>) topSongsList:(PPTrackDirection)direction;
