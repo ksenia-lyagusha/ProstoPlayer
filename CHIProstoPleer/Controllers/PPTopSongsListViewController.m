@@ -23,7 +23,6 @@
 @property (strong, nonatomic) NSMutableArray *topList;
 @property (strong, nonatomic) NSMutableArray *filteredList;
 @property (strong, nonatomic) NSNumber       *count;
-@property (strong, nonatomic) NSArray        *DBobjects;
 
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
@@ -76,9 +75,7 @@
 {
     self.tabBarController.title = @"Top songs list";
     self.tabBarController.navigationItem.hidesBackButton = YES;
-    self.DBobjects = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
     [self.tableView reloadData];
-    
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -128,10 +125,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
     Track *trackObj = [Track objectWithTrackID:value.track_id];
-    if ([self.DBobjects containsObject:trackObj])
-    {
-        favoriteButton.selected = YES;
-    }
+    
+    favoriteButton.selected = trackObj != nil;
 
     [cell setPreservesSuperviewLayoutMargins:NO];
     [cell setLayoutMargins:UIEdgeInsetsZero];

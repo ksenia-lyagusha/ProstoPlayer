@@ -25,8 +25,6 @@
 @property (nonatomic, strong) UIImageView *imageView;
 @property (nonatomic, strong) NSArray     *topList;
 @property (nonatomic, strong) id          timeObserver;
-@property (nonatomic, strong) UIButton    *download;
-@property (nonatomic, strong) UIButton    *favorite;
 @property (nonatomic, strong) MusicView   *musicView;
 
 @end
@@ -63,16 +61,6 @@
     self.musicView.delegate = self;
     self.musicView.translatesAutoresizingMaskIntoConstraints = NO;
     
-    self.download = [[UIButton alloc] init];
-    [self.download setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
-    [self.download addTarget:self action:@selector(downloadTrackAction:) forControlEvents:UIControlEventTouchUpInside];
-    self.download.frame = CGRectMake(0, 0, 40, 40);
-    
-    self.favorite = [[UIButton alloc] init];
-    [self.favorite setImage:[UIImage imageNamed:@"add"] forState:UIControlStateNormal];
-    [self.favorite addTarget:self action:@selector(addToFavorites:) forControlEvents:UIControlEventTouchUpInside];
-    self.favorite.frame = CGRectMake(0, 0, 40, 40);
-    
     [self.view addSubview:self.imageView];
     [self.view addSubview:self.musicView];
     [self.view addSubview:self.playedTime];
@@ -105,9 +93,9 @@
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
     
-    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithCustomView:self.favorite];
+    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavorites:)];
     
-    UIBarButtonItem *downloadButton          = [[UIBarButtonItem alloc] initWithCustomView:self.download];
+    UIBarButtonItem *downloadButton          = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadTrackAction:)];
     
     self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:favouriteButton, downloadButton, nil];
     
@@ -251,7 +239,7 @@
 
 - (void)setupConstraints
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView, _download);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView);
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
                                                                       options:0

@@ -9,7 +9,7 @@
 "CHIPleer" = "CHIProstoPleer";
 "OK" = "OK";
 "IncorrectInput" = "Sorry, but you have empty fields";
-"InvalidData" = "Incorrect login or password. Please, check your input data";
+"InvalidData" = "Server error";
 "No more tracks" = "No more tracks";
 "NoInternet" = "No Internet Connection";
 "SuccessfullyAdded" = "Track successfully added to favourites";

@@ -216,35 +216,48 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                 return;
             }
             
-        NSString *url = [location absoluteString];
-        self.receivedLocation = url;
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
-        NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
-        NSError *moveError;
+            NSString *url = [location absoluteString];
+            self.receivedLocation = url;
+            
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
+            NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
+            NSError *moveError;
+                 
+    //        NSString *documentsDirectory = [paths objectAtIndex:0];
+                 
+            NSLog(@"documentsDirectory - %@", fileURL);
+            
+            
+            if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
+                NSLog(@"moveItemAtURL failed: %@", moveError);
+                return;
+            }
              
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-//        NSString *documentsDirectory = [paths objectAtIndex:0];
-             
-        NSLog(@"documentsDirectory - %@", paths);
-        
-        
-        if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
-            NSLog(@"moveItemAtURL failed: %@", moveError);
-            return;
-        }
-             [fileManager removeItemAtURL:fileURL error:&moveError];
-             
-             self.isDownload = NO;
+            self.isDownload = NO;
         }];
     }
      
     NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
-        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        NSError *parseError;
+        NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&parseError];
         
-        NSLog(@"response %@, error %@", result, error);
+        if(parseError)
+        {
+            NSLog(@"Parse error %@", parseError);
+            NSString *parseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+            NSLog(@"Response text %@", parseString);
+        
+        }
+        
+        if (error)
+        {
+            NSLog(@"Request error %@", error);
+        }
+        
+        NSLog(@"Response %@", result);
+        
         if (completion)
         {
             completion(result, error);
