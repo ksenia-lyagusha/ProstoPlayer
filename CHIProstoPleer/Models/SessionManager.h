@@ -14,7 +14,6 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 @interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDataDelegate>
 
 @property (nonatomic, strong, readonly) NSString *token;
-@property (nonatomic, readwrite)         BOOL isDownload;
 
 + (instancetype)sharedInstance;
 

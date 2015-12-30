@@ -20,7 +20,8 @@
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 + (instancetype)sharedInstanceCoreData;
-- (NSArray *)fetchObjects;
+- (NSArray *)fetchTrackObjects;
+- (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login;
 - (Track *)addNewTrack;
 - (User *)addNewUser;
 

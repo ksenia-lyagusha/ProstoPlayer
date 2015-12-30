@@ -10,4 +10,6 @@
 
 @interface FavoriteViewController : UITableViewController
 
+@property (nonatomic, strong) NSArray *userTracks;
+
 @end

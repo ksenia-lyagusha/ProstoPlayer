@@ -99,12 +99,34 @@
     }
 }
 
-- (NSArray *)fetchObjects
+- (NSArray *)fetchTrackObjects
 {
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     [fetchRequest setEntity:entity];
+    NSError *error = nil;
+    NSArray *result = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:&error];
+    
+    if (error)
+    {
+        NSLog(@"Unable to execute fetch request.");
+        NSLog(@"%@, %@", error, error.localizedDescription);
+        
+    } else
+    {
+        NSLog(@"%@", result);
+    }
+    return result;
+}
+
+- (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login
+{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"User"];
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"login == %@", login];
+    [fetchRequest setPredicate:predicate];
+
     NSError *error = nil;
     NSArray *result = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:&error];
     
@@ -132,4 +154,5 @@
     User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     return user;
 }
+
 @end

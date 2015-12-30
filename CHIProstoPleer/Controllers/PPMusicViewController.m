@@ -86,7 +86,7 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-//    [self playAction:self.musicView.playButton];
+    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
@@ -143,7 +143,7 @@
     id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastForward];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
-    
+    self.info.track_id = song.track_id;
     [self trackDownloadAction:trackID];
 }
 
@@ -152,7 +152,7 @@
     id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastRewind];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
-    
+    self.info.track_id = song.track_id;
     [self trackDownloadAction:trackID];
 }
 
@@ -191,12 +191,11 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
-    [[SessionManager sharedInstance] setIsDownload:YES];
-    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *recievedLocation) {
+    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location) {
         
         Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
         
-        [trackObj saveTrackInExternalFileWithLocation:recievedLocation];
+        [trackObj saveTrackInExternalFileWithLocation:location];
         
         [[CoreDataManager sharedInstanceCoreData] saveContext];
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
@@ -380,8 +379,9 @@
 
 - (void)addToFavorites:(UIButton *)sender
 {
-    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchObjects];
-    Track *trackObj = [Track objectWithTrackID:self.info.text_id];
+    Track *trackObj = [Track objectWithTrackID:self.info.track_id];
+    
+    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchTrackObjects];
     
     if ([result containsObject:trackObj])
     {
@@ -398,7 +398,7 @@
     
     UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"SuccessfullyAdded", nil)];
     [self presentViewController:alert animated:YES completion:nil];
-
+    
 }
 
 #pragma mark - ToolBar

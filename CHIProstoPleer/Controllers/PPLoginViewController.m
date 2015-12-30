@@ -14,8 +14,11 @@
 #import "SessionManager.h"
 #import "UIAlertController+Category.h"
 #import "CoreDataManager.h"
-
 #import "User.h"
+
+#import <MBProgressHUD.h>
+
+
 
 @interface PPLoginViewController () <PPLoginViewDelegate>
 
@@ -47,8 +50,7 @@
                                                                         views:views]];
     if([[SessionManager sharedInstance] token])
     {
-        [self goToMainMenu];
-        
+        [self goToMainMenuWithLogin:view.loginTextField.text];
     }
 }
 
@@ -56,6 +58,8 @@
 
 - (void)signInAction:(LoginView *)view
 {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
     if ([view.loginTextField.text isEqualToString:@""] || [view.passwordTextField.text isEqualToString:@""])
     {
         UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"IncorrectInput", nil)];
@@ -73,7 +77,7 @@
             [userObj addUserWithLogin:view.loginTextField.text];
             [[CoreDataManager sharedInstanceCoreData] saveContext];
             
-             [weakSelf goToMainMenu];
+             [weakSelf goToMainMenuWithLogin:view.loginTextField.text];
         }
         else
         {
@@ -84,17 +88,18 @@
     }];    
 }
 
-- (void)goToMainMenu
+- (void)goToMainMenuWithLogin:(NSString *)login
 {
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
     FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-    
+    favoriteVC.userTracks = [[CoreDataManager sharedInstanceCoreData] fetchObjectsForUserWithLogin:login];
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
 
     [self.navigationController pushViewController:tabController animated:YES];
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 
 @end

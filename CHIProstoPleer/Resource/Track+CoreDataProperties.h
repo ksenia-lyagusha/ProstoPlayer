@@ -10,7 +10,6 @@
 //
 
 #import "Track.h"
-#import "User.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSString *text_id;
 @property (nullable, nonatomic, retain) NSString *title;
 @property (nullable, nonatomic, retain) NSString *track_id;
-@property (nullable, nonatomic, retain) NSSet    <User *> *user;
+@property (nullable, nonatomic, retain) NSSet<User *> *user;
 
 @end
 
