@@ -112,21 +112,21 @@
         
     }
     
-    UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
-    [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
-    [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
-    [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryView = favoriteButton;
-    favoriteButton.tag = indexPath.row;
-    favoriteButton.userInteractionEnabled = YES;
+//    UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
+//    [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
+//    [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
+//    [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
+//    cell.accessoryView = favoriteButton;
+//    favoriteButton.tag = indexPath.row;
+//    favoriteButton.userInteractionEnabled = YES;
     
     cell.textLabel.text = value.artist;
     cell.detailTextLabel.text = value.title;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    Track *trackObj = [Track objectWithTrackID:value.track_id];
+//    Track *trackObj = [Track objectWithTrackID:value.track_id];
     
-    favoriteButton.selected = trackObj != nil;
+//    favoriteButton.selected = trackObj != nil;
 
     [cell setPreservesSuperviewLayoutMargins:NO];
     [cell setLayoutMargins:UIEdgeInsetsZero];
@@ -147,7 +147,9 @@
     self.musicVC = [[PPMusicViewController alloc] init];
     self.musicVC.info = self.filteredList ? [self.filteredList objectAtIndex:indexPath.row] : [self.topList objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
-    self.currentIndex = indexPath.row;
+    self.musicVC.index = indexPath.row;
+    
+    self.currentIndex  = indexPath.row;
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationController pushViewController:self.musicVC animated:YES];
@@ -319,30 +321,32 @@
 
 #pragma mark - Actions methods
 
-- (void)addToFavoritesAction:(UIButton *)sender
-{
-    id <PPTrackInfoProtocol>value = [self.topList objectAtIndex:sender.tag];
-    Track *trackObj = [Track objectWithTrackID:value.track_id];
-    if (sender.selected)
-    {
-        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:trackObj];
-        sender.selected = NO;
-    }
-    else
-    {
-        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
-        [trackObj createTrackWithTrackInfoObject:value];
-        
-        sender.selected = YES;
-        
-    }
-    NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-    User *currentUser = [User objectWithLogin:login];
-    [currentUser addTracksObject:trackObj];
-//    [[CoreDataManager sharedInstanceCoreData] addTrackForCurrentUser:trackObj];
-    
-    [[CoreDataManager sharedInstanceCoreData] saveContext];
-}
+//- (void)addToFavoritesAction:(UIButton *)sender
+//{
+//    id <PPTrackInfoProtocol>value = [self.topList objectAtIndex:sender.tag];
+//    Track *trackObj = [Track objectWithTrackID:value.track_id];
+//    
+//    NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+//    User *currentUser = [User objectWithLogin:login];
+//    
+//    if (sender.selected)
+//    {
+//        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:trackObj];
+//        sender.selected = NO;
+//    }
+//    else
+//    {
+//        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
+//        [trackObj createTrackWithTrackInfoObject:value];
+//
+//        [currentUser addTracksObject:trackObj];
+//        
+//        sender.selected = YES;
+//        
+//    }
+//
+//    [[CoreDataManager sharedInstanceCoreData] saveContext];
+//}
 
 @end
 

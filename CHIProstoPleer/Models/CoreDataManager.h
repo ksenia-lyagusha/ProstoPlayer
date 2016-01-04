@@ -25,7 +25,6 @@
 - (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login;
 - (Track *)addNewTrack;
 - (User *)addNewUser;
-- (void)addTrackForCurrentUser:(Track *)trackInfo;
 
 - (NSString *)currentUserLogin;
 - (void)setCurrentUserLogin:(NSString *)login;

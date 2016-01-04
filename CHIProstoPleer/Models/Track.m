@@ -22,7 +22,7 @@
     self.track_id = trackInfo.track_id;
     self.duration = [[NSNumberFormatter alloc] numberFromString:(NSString *)trackInfo.duration];
     self.text_id  = ([trackInfo.text_id isKindOfClass:[NSNull class]]) ?  @"" : trackInfo.text_id;
-    
+
     return self;
 }
 

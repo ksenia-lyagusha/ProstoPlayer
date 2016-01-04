@@ -48,7 +48,9 @@
                                                                         views:views]];
     if([[SessionManager sharedInstance] token])
     {
-        [self goToMainMenuWithLogin:view.loginTextField.text];
+        [self goToMainMenu];
+        
+        NSLog(@"Current LOG = %@", [[CoreDataManager sharedInstanceCoreData] currentUserLogin]);
     }
 }
 
@@ -77,7 +79,7 @@
             
             [[CoreDataManager sharedInstanceCoreData] setCurrentUserLogin:view.loginTextField.text];
             
-             [weakSelf goToMainMenuWithLogin:view.loginTextField.text];
+             [weakSelf goToMainMenu];
         }
         else
         {
@@ -88,13 +90,12 @@
     }];    
 }
 
-- (void)goToMainMenuWithLogin:(NSString *)login
+- (void)goToMainMenu
 {
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
     FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-//    favoriteVC.userTracks = [[CoreDataManager sharedInstanceCoreData] fetchObjectsForUserWithLogin:login];
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
 

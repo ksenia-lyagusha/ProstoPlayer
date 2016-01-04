@@ -18,5 +18,6 @@
 @property (strong, nonatomic) id <PPTrackInfoProtocol>info;
 @property (weak, nonatomic)   id <PPTopSongsListViewControllerDelegate>delegate;
 @property (strong, nonatomic) AVPlayer *audioPlayer;
+@property (nonatomic)         NSInteger index;
 
 @end

@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property NSInteger currentIndex;
+@property (strong, nonatomic) PPMusicViewController *musicVC;
 
 @end
 
@@ -51,11 +52,11 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         exit(-1);  // Fail
     }
+    NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
     
     UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
     self.tableView.contentInset = adjustForTabbarInsets;
     self.tableView.scrollIndicatorInsets = adjustForTabbarInsets;
-    
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -106,6 +107,7 @@
     cell.textLabel.text = object.artist;
     cell.detailTextLabel.text = object.title;
     
+    NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
     return cell;
 }
 
@@ -131,12 +133,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
-    musicVC.info = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
-    musicVC.delegate = self;
+    self.musicVC = [[PPMusicViewController alloc] init];
+    self.musicVC.info = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
+    self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
-    [self.navigationController pushViewController:musicVC animated:YES];
+    [self.navigationController pushViewController:self.musicVC animated:YES];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate

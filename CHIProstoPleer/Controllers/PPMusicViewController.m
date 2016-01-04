@@ -86,18 +86,18 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    [self playAction:self.musicView.playButton];
+//    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
     
-    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavorites:)];
+//    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavorites:)];
     
     UIBarButtonItem *downloadButton          = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadTrackAction:)];
     
-    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:favouriteButton, downloadButton, nil];
+    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:downloadButton, nil];
     
 }
 - (void)viewWillDisappear:(BOOL)animated
@@ -158,6 +158,16 @@
 
 - (void)trackDownloadAction:(NSString *)trackID
 {
+    Track *trackObj = [Track objectWithTrackID:self.info.track_id];
+
+    if (trackObj)
+    {
+        
+        [self createPlayerWithURL:[NSURL URLWithString:trackObj.download]];
+        NSLog(@"trackObj - instancetype %@", trackObj);
+        
+        return;
+    }
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
@@ -193,9 +203,16 @@
 {
     [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location) {
         
-        Track *trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
         
         [trackObj saveTrackInExternalFileWithLocation:location];
+        
+        [trackObj createTrackWithTrackInfoObject:self.info];
+        NSLog(@"%@", trackObj);
+        
+        NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+        User *currentUser = [User objectWithLogin:login];
+        [currentUser addTracksObject:trackObj];
         
         [[CoreDataManager sharedInstanceCoreData] saveContext];
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
@@ -204,7 +221,7 @@
    
 }
 
-#pragma mark - Methods for Installing and Establishing
+#pragma mark - Methods for Installing and Creating
 
 - (void)updateTime
 {
@@ -377,29 +394,29 @@
     [self nextTrackAction];
 }
 
-- (void)addToFavorites:(UIButton *)sender
-{
-    Track *trackObj = [Track objectWithTrackID:self.info.track_id];
-    
-    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchTrackObjects];
-    
-    if ([result containsObject:trackObj])
-    {
-        UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
-        [self presentViewController:alert animated:YES completion:nil];
-        return;
-    }
-    
-    trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    
-    [trackObj createTrackWithTrackInfoObject:self.info];
-    
-    [[CoreDataManager sharedInstanceCoreData] saveContext];
-    
-    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"SuccessfullyAdded", nil)];
-    [self presentViewController:alert animated:YES completion:nil];
-    
-}
+//- (void)addToFavorites:(UIButton *)sender
+//{
+//    Track *trackObj = [Track objectWithTrackID:self.info.track_id];
+//    
+//    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchTrackObjects];
+//    
+//    if ([result containsObject:trackObj])
+//    {
+//        UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
+//        [self presentViewController:alert animated:YES completion:nil];
+//        return;
+//    }
+//    
+//    trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+//    
+//    [trackObj createTrackWithTrackInfoObject:self.info];
+//    
+//    [[CoreDataManager sharedInstanceCoreData] saveContext];
+//    
+//    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"SuccessfullyAdded", nil)];
+//    [self presentViewController:alert animated:YES completion:nil];
+//    
+//}
 
 #pragma mark - ToolBar
 

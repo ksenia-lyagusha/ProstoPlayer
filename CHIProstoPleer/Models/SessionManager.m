@@ -212,10 +212,12 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             NSString *locationStr = [fileURL absoluteString];
             NSError *moveError;
             
+            NSLog(@"previouseLocation - %@", location);
             NSLog(@"documentsDirectory - %@", fileURL);
             
             
             if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
+                // catch error (show alert if need ??)
                 NSLog(@"moveItemAtURL failed: %@", moveError);
                 return;
             }

@@ -157,12 +157,7 @@ NSString * const kCurrentUser = @"currentUser";
     return user;
 }
 
-- (void)addTrackForCurrentUser:(Track *)trackInfo;
-{
-
-}
-
-#pragma mark - Current user
+#pragma mark - Current user's login
 
 - (NSString *)currentUserLogin
 {
