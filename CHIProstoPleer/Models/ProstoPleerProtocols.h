@@ -9,7 +9,6 @@
 #ifndef ProstoPleerProtocols_h
 #define ProstoPleerProtocols_h
 
-
 @protocol PPTrackInfoProtocol <NSObject>
 
 @property (nullable, nonatomic) NSString *artist;

@@ -18,8 +18,6 @@
 
 #import <MBProgressHUD.h>
 
-
-
 @interface PPLoginViewController () <PPLoginViewDelegate>
 
 @end
@@ -74,8 +72,10 @@
         if (token)
         {
             User *userObj = [[CoreDataManager sharedInstanceCoreData] addNewUser];
-            [userObj addUserWithLogin:view.loginTextField.text];
+            userObj.login = view.loginTextField.text;
             [[CoreDataManager sharedInstanceCoreData] saveContext];
+            
+            [[CoreDataManager sharedInstanceCoreData] setCurrentUserLogin:view.loginTextField.text];
             
              [weakSelf goToMainMenuWithLogin:view.loginTextField.text];
         }
@@ -94,7 +94,7 @@
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
     FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-    favoriteVC.userTracks = [[CoreDataManager sharedInstanceCoreData] fetchObjectsForUserWithLogin:login];
+//    favoriteVC.userTracks = [[CoreDataManager sharedInstanceCoreData] fetchObjectsForUserWithLogin:login];
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
 

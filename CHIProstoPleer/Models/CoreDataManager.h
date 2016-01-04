@@ -11,6 +11,7 @@
 
 #import "Track.h"
 #import "User.h"
+
 @interface CoreDataManager : NSObject
 
 @property (readonly, strong, nonatomic) NSManagedObjectContext       *managedObjectContext;
@@ -24,5 +25,9 @@
 - (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login;
 - (Track *)addNewTrack;
 - (User *)addNewUser;
+- (void)addTrackForCurrentUser:(Track *)trackInfo;
+
+- (NSString *)currentUserLogin;
+- (void)setCurrentUserLogin:(NSString *)login;
 
 @end

@@ -336,6 +336,11 @@
         sender.selected = YES;
         
     }
+    NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+    User *currentUser = [User objectWithLogin:login];
+    [currentUser addTracksObject:trackObj];
+//    [[CoreDataManager sharedInstanceCoreData] addTrackForCurrentUser:trackObj];
+    
     [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
 

@@ -8,6 +8,8 @@
 
 #import "CoreDataManager.h"
 
+NSString * const kCurrentUser = @"currentUser";
+
 @implementation CoreDataManager
 
 #pragma mark - Core Data stack
@@ -153,6 +155,24 @@
 {
     User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
     return user;
+}
+
+- (void)addTrackForCurrentUser:(Track *)trackInfo;
+{
+
+}
+
+#pragma mark - Current user
+
+- (NSString *)currentUserLogin
+{
+    NSString *login = [[NSUserDefaults standardUserDefaults] objectForKey:kCurrentUser];
+    return login;
+}
+
+- (void)setCurrentUserLogin:(NSString *)login
+{
+    [[NSUserDefaults standardUserDefaults] setObject:login forKey:kCurrentUser];
 }
 
 @end
