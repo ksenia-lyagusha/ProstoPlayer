@@ -27,6 +27,7 @@
 @property (nonatomic, strong) id              timeObserver;
 @property (nonatomic, strong) MusicView       *musicView;
 @property (nonatomic, strong) UIBarButtonItem *downloadButton;
+@property (nonatomic, strong) MBProgressHUD   *HUD;
 
 @end
 
@@ -87,22 +88,19 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-    [self playAction:self.musicView.playButton];
+    self.downloadButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"favorite"]
+                                                           style:UIBarButtonItemStylePlain
+                                                          target:self
+                                                          action:@selector(downloadTrackAction:)];
     
+    self.navigationItem.rightBarButtonItem = self.downloadButton;
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:YES];
     
-    self.downloadButton          = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"favorite"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadTrackAction:)];
-    
-    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:self.downloadButton, nil];
-
+    [self playAction:self.musicView.playButton];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -167,17 +165,19 @@
 
     if (trackObj)
     {
-        NSString *rebasedFilePath = [SessionManager rebasePathToCurrentDocumentPath:trackObj.download];
-        [self createPlayerWithURL:[NSURL URLWithString:rebasedFilePath]];
+        NSURL *rebasedFilePath = [SessionManager pathToCurrentDirectory:trackObj.download];
+        [self createPlayerWithURL:rebasedFilePath];
 
         NSLog(@"trackObj - instancetype %@", trackObj);
         
         return;
     }
     __weak typeof(self) weakSelf = self;
+    
+    self.HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
-        [MBProgressHUD showHUDAddedTo:weakSelf.view animated:YES];
         NSURL *url = [NSURL URLWithString:link];
         [weakSelf createPlayerWithURL:url];
         
@@ -186,8 +186,7 @@
 
 - (void)sliderAction:(UISlider *)sender
 {
-    [self.currentTimeSlider setValue:sender.value animated:YES];
-    [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(sender.value, 1)];
+    [self.audioPlayer seekToTime:CMTimeMakeWithSeconds(roundf(sender.value), 1)];
 }
 
 - (void)playControlCenterAction:(MPRemoteCommand *)sender
@@ -216,7 +215,7 @@
         {
             UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
             [self presentViewController:alert animated:YES completion:nil];
-            [self stopHUD];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
             return;
         }
         
@@ -234,7 +233,7 @@
         [[CoreDataManager sharedInstanceCoreData] saveContext];
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
  
-        [self stopHUD];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
         [self.downloadButton setEnabled:NO];
         [self.downloadButton setTintColor:[UIColor clearColor]];
     }];
@@ -403,11 +402,13 @@
     void (^observerBlock)(CMTime time) = ^(CMTime time) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
+            
             [weakSelf updateTime];
+            [weakSelf.HUD hide:YES];
+            weakSelf.HUD = nil;
         });
         
     };
-    [self stopHUD];
     self.timeObserver = [self.audioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
                                                                        queue:dispatch_queue_create("CHI.ProstoPleerApp.avplayer", NULL)
                                                                   usingBlock:observerBlock];
@@ -432,13 +433,6 @@
     [toolbar setItems:toolbarItems];
     
     return toolbar;
-}
-
-- (void)stopHUD
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    });
 }
 
 @end

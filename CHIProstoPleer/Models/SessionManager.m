@@ -208,21 +208,11 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                 }
                 return;
             }
-            
-            NSLog(@"Temporary file = %@",location);
-            
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
-            
-            NSString *locationStr = [response suggestedFilename];
-            NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
-
-            
-            NSLog(@"previouseLocation - %@", location);
-            NSLog(@"documentsDirectory - %@", fileURL);
-            
+   
+            NSString *fileName = [response suggestedFilename];
+            NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
             NSError *moveError;
-            if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
+            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
     
                 NSLog(@"moveItemAtURL failed: %@", moveError);
                 
@@ -235,7 +225,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
      
             if (block)
             {
-                block(locationStr, nil);
+                block(fileName, nil);
             }
         }];
         
@@ -378,16 +368,15 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     }
 }
 
-+ (NSString *)rebasePathToCurrentDocumentPath:(NSString *)currentFilePath
++ (NSURL *)pathToCurrentDirectory:(NSString *)currentFileName
 {
-    NSString *fileComponent = [currentFilePath lastPathComponent];
-    NSArray *currentDocumentDir = NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *currentDocumentPath = [currentDocumentDir objectAtIndex: 0];
-    NSString *rebasedFilePath = [currentDocumentPath stringByAppendingPathComponent:fileComponent];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *currentDocumentDir = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+
+    NSURL *documentsURL = [currentDocumentDir firstObject];
+    NSURL *URL = [documentsURL URLByAppendingPathComponent:currentFileName];
     
-    NSLog(@"Full Path - %@", rebasedFilePath);
-    
-    return rebasedFilePath;
+    return URL;
 }
 
 @end
