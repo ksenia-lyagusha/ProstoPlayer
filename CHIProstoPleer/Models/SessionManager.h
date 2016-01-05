@@ -29,4 +29,6 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
 - (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSString *, NSError *))block;
 
++ (NSString *)rebasePathToCurrentDocumentPath:(NSString *)currentFilePath;
+
 @end

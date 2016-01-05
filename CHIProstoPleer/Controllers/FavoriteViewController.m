@@ -33,8 +33,6 @@
         UITabBarItem *favoriteTabBar = [[UITabBarItem alloc]initWithTabBarSystemItem:UITabBarSystemItemFavorites tag:1];
         
         self.tabBarItem = favoriteTabBar;
-     
-        self.tabBarController.navigationItem.rightBarButtonItem = self.editButtonItem;
     }
     return self;
 }
@@ -52,11 +50,11 @@
         NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
         exit(-1);  // Fail
     }
-    NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
-    
     UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
     self.tableView.contentInset = adjustForTabbarInsets;
     self.tableView.scrollIndicatorInsets = adjustForTabbarInsets;
+    
+     NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
 }
 
 - (NSFetchedResultsController *)fetchedResultsController
@@ -107,7 +105,6 @@
     cell.textLabel.text = object.artist;
     cell.detailTextLabel.text = object.title;
     
-    NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
     return cell;
 }
 
@@ -128,7 +125,6 @@
         
         if (error)
         {
-            NSLog(@"Unable to delete object from Directory");
             NSLog(@"%@", error);
         }
     }
@@ -147,6 +143,7 @@
     self.musicVC.info = [[self.fetchedResultsController fetchedObjects] objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
     self.currentIndex = indexPath.row;
+    NSLog(@"Favorite object%@", self.musicVC.info);
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationController pushViewController:self.musicVC animated:YES];
 }

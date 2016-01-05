@@ -213,16 +213,17 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
-            NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
-            NSString *locationStr = [fileURL absoluteString];
             
+            NSString *locationStr = [response suggestedFilename];
+            NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
+
             
             NSLog(@"previouseLocation - %@", location);
             NSLog(@"documentsDirectory - %@", fileURL);
             
             NSError *moveError;
             if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
-                // catch error (show alert if need ??)
+    
                 NSLog(@"moveItemAtURL failed: %@", moveError);
                 
                 if (block)
@@ -375,6 +376,18 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         
         //Code when there is no connection
     }
+}
+
++ (NSString *)rebasePathToCurrentDocumentPath:(NSString *)currentFilePath
+{
+    NSString *fileComponent = [currentFilePath lastPathComponent];
+    NSArray *currentDocumentDir = NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *currentDocumentPath = [currentDocumentDir objectAtIndex: 0];
+    NSString *rebasedFilePath = [currentDocumentPath stringByAppendingPathComponent:fileComponent];
+    
+    NSLog(@"Full Path - %@", rebasedFilePath);
+    
+    return rebasedFilePath;
 }
 
 @end

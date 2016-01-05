@@ -148,7 +148,7 @@
     self.musicVC.info = self.filteredList ? [self.filteredList objectAtIndex:indexPath.row] : [self.topList objectAtIndex:indexPath.row];
     self.musicVC.delegate = self;
     self.musicVC.index = indexPath.row;
-    
+    NSLog(@"TopSongs object%@", self.musicVC.info);
     self.currentIndex  = indexPath.row;
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];

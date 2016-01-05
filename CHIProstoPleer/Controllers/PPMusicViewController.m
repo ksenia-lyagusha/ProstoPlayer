@@ -19,13 +19,14 @@
 
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
-@property (nonatomic, strong) UISlider    *currentTimeSlider;
-@property (nonatomic, strong) UILabel     *playedTime;
-@property (nonatomic, strong) UILabel     *trackTitle;
-@property (nonatomic, strong) UIImageView *imageView;
-@property (nonatomic, strong) NSArray     *topList;
-@property (nonatomic, strong) id          timeObserver;
-@property (nonatomic, strong) MusicView   *musicView;
+@property (nonatomic, strong) UISlider        *currentTimeSlider;
+@property (nonatomic, strong) UILabel         *playedTime;
+@property (nonatomic, strong) UILabel         *trackTitle;
+@property (nonatomic, strong) UIImageView     *imageView;
+@property (nonatomic, strong) NSArray         *topList;
+@property (nonatomic, strong) id              timeObserver;
+@property (nonatomic, strong) MusicView       *musicView;
+@property (nonatomic, strong) UIBarButtonItem *downloadButton;
 
 @end
 
@@ -86,20 +87,24 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     
-//    [self playAction:self.musicView.playButton];
+    [self playAction:self.musicView.playButton];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
                                                object:nil];
-    
-//    UIBarButtonItem *favouriteButton         = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"add"] style:UIBarButtonItemStylePlain target:self action:@selector(addToFavorites:)];
-    
-    UIBarButtonItem *downloadButton          = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"download"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadTrackAction:)];
-    
-    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:downloadButton, nil];
-    
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    self.downloadButton          = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"favorite"] style:UIBarButtonItemStylePlain target:self action:@selector(downloadTrackAction:)];
+    
+    self.navigationItem.rightBarButtonItems  = [NSArray arrayWithObjects:self.downloadButton, nil];
+
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -162,8 +167,9 @@
 
     if (trackObj)
     {
-        
-        [self createPlayerWithURL:[NSURL URLWithString:trackObj.download]];
+        NSString *rebasedFilePath = [SessionManager rebasePathToCurrentDocumentPath:trackObj.download];
+        [self createPlayerWithURL:[NSURL URLWithString:rebasedFilePath]];
+
         NSLog(@"trackObj - instancetype %@", trackObj);
         
         return;
@@ -171,7 +177,7 @@
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
-        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        [MBProgressHUD showHUDAddedTo:weakSelf.view animated:YES];
         NSURL *url = [NSURL URLWithString:link];
         [weakSelf createPlayerWithURL:url];
         
@@ -201,20 +207,24 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
+    [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    
+    __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location, NSError *error) {
         
         if (error)
         {
             UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
             [self presentViewController:alert animated:YES completion:nil];
-            return ;
+            [self stopHUD];
+            return;
         }
         
         Track *trackObj = [Track addNewTrack];
         
         [trackObj saveTrackInExternalFileWithLocation:location];
         
-        [trackObj createTrackWithTrackInfoObject:self.info];
+        [trackObj createTrackWithTrackInfoObject:weakSelf.info];
         NSLog(@"%@", trackObj);
         
         NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
@@ -223,7 +233,10 @@
         
         [[CoreDataManager sharedInstanceCoreData] saveContext];
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
-  
+ 
+        [self stopHUD];
+        [self.downloadButton setEnabled:NO];
+        [self.downloadButton setTintColor:[UIColor clearColor]];
     }];
    
 }
@@ -365,7 +378,22 @@
 
 - (void)createPlayerWithURL:(NSURL *)url
 {
+    Track *track = [Track objectWithTrackID:self.info.track_id];
+    if (track)
+    {
+        [self.downloadButton setEnabled:NO];
+        [self.downloadButton setTintColor:[UIColor clearColor]];
+        NSLog(@"downloadButton NOT enabled");
+    }
+    else
+    {
+        [self.downloadButton setEnabled:YES];
+        [self.downloadButton setTintColor:nil];
+        NSLog(@"downloadButton  ENABLED");
+    }
+    
     AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc] initWithURL:url];
+    
     self.audioPlayer = [[AVPlayer alloc] initWithPlayerItem:avPlayerItem];
     [self.audioPlayer play];
     
@@ -376,12 +404,10 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf updateTime];
-           
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            
         });
+        
     };
-    
+    [self stopHUD];
     self.timeObserver = [self.audioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
                                                                        queue:dispatch_queue_create("CHI.ProstoPleerApp.avplayer", NULL)
                                                                   usingBlock:observerBlock];
@@ -391,30 +417,6 @@
 {
     [self nextTrackAction];
 }
-
-//- (void)addToFavorites:(UIButton *)sender
-//{
-//    Track *trackObj = [Track objectWithTrackID:self.info.track_id];
-//    
-//    NSArray *result = [[CoreDataManager sharedInstanceCoreData] fetchTrackObjects];
-//    
-//    if ([result containsObject:trackObj])
-//    {
-//        UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"AlreadyAdded", nil)];
-//        [self presentViewController:alert animated:YES completion:nil];
-//        return;
-//    }
-//    
-//    trackObj = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-//    
-//    [trackObj createTrackWithTrackInfoObject:self.info];
-//    
-//    [[CoreDataManager sharedInstanceCoreData] saveContext];
-//    
-//    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"SuccessfullyAdded", nil)];
-//    [self presentViewController:alert animated:YES completion:nil];
-//    
-//}
 
 #pragma mark - ToolBar
 
@@ -430,6 +432,13 @@
     [toolbar setItems:toolbarItems];
     
     return toolbar;
+}
+
+- (void)stopHUD
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
 }
 
 @end
