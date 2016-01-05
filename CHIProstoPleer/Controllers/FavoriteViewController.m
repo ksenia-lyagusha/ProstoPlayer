@@ -122,7 +122,17 @@
     {
         Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
         [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:object];
+        
+        NSError *error;
+        [[NSFileManager defaultManager] removeItemAtURL:[NSURL URLWithString:object.download] error:&error];
+        
+        if (error)
+        {
+            NSLog(@"Unable to delete object from Directory");
+            NSLog(@"%@", error);
+        }
     }
+    
      [[CoreDataManager sharedInstanceCoreData] saveContext];
 }
 

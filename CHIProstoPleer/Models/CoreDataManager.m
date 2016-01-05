@@ -144,19 +144,6 @@ NSString * const kCurrentUser = @"currentUser";
     return result;
 }
 
-- (Track *)addNewTrack
-{
-    Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    
-    return track;
-}
-
-- (User *)addNewUser
-{
-    User *user = [NSEntityDescription insertNewObjectForEntityForName:@"User" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    return user;
-}
-
 #pragma mark - Current user's login
 
 - (NSString *)currentUserLogin

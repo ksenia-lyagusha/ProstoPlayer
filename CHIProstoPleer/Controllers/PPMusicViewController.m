@@ -143,7 +143,7 @@
     id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastForward];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
-    self.info.track_id = song.track_id;
+    self.info = song;
     [self trackDownloadAction:trackID];
 }
 
@@ -152,7 +152,7 @@
     id <PPTrackInfoProtocol>song = [self.delegate topSongsList:PPTrackDirectionFastRewind];
     [self updateTrackTitle:song];
     NSString *trackID = song.track_id;
-    self.info.track_id = song.track_id;
+    self.info = song;
     [self trackDownloadAction:trackID];
 }
 
@@ -201,9 +201,16 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
-    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location) {
+    [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location, NSError *error) {
         
-        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
+        if (error)
+        {
+            UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
+            [self presentViewController:alert animated:YES completion:nil];
+            return ;
+        }
+        
+        Track *trackObj = [Track addNewTrack];
         
         [trackObj saveTrackInExternalFileWithLocation:location];
         
@@ -255,7 +262,7 @@
 
 - (void)setupConstraints
 {
-    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _playedTime, _trackTitle, _imageView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _trackTitle, _imageView);
     
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
                                                                       options:0
@@ -345,24 +352,15 @@
                                                                                   constant:0];
     [self.view addConstraint:xCenterConstraintForTitle];
     
-    NSLayoutConstraint *widthForImageView =         [NSLayoutConstraint constraintWithItem:self.imageView
-                                                                                 attribute:NSLayoutAttributeWidth
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeWidth
-                                                                                multiplier:1.0
-                                                                                  constant:0];
-    [self.view addConstraint:widthForImageView];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_imageView]|"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
     
-    NSLayoutConstraint *heightForImageView =        [NSLayoutConstraint constraintWithItem:self.imageView
-                                                                                 attribute:NSLayoutAttributeHeight
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeHeight
-                                                                                multiplier:1.0
-                                                                                  constant:0];
-    [self.view addConstraint:heightForImageView];
-    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView]|"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
 }
 
 - (void)createPlayerWithURL:(NSURL *)url

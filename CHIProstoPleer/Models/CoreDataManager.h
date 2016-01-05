@@ -23,8 +23,6 @@
 + (instancetype)sharedInstanceCoreData;
 - (NSArray *)fetchTrackObjects;
 - (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login;
-- (Track *)addNewTrack;
-- (User *)addNewUser;
 
 - (NSString *)currentUserLogin;
 - (void)setCurrentUserLogin:(NSString *)login;

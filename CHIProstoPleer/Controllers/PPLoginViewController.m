@@ -73,7 +73,7 @@
         
         if (token)
         {
-            User *userObj = [[CoreDataManager sharedInstanceCoreData] addNewUser];
+            User *userObj = [User addNewUser];
             userObj.login = view.loginTextField.text;
             [[CoreDataManager sharedInstanceCoreData] saveContext];
             

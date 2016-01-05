@@ -191,7 +191,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     }];
 }
 
-- (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *))block
+- (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *, NSError *))block
 {
     [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
@@ -201,6 +201,11 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             
             if (error) {
                 NSLog(@"downloadTaskWithRequest failed: %@", error);
+                
+                if (block)
+                {
+                    block(nil, error);
+                }
                 return;
             }
             
@@ -210,23 +215,28 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             NSURL *documentsURL = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask][0];
             NSURL *fileURL = [documentsURL URLByAppendingPathComponent:[response suggestedFilename]];
             NSString *locationStr = [fileURL absoluteString];
-            NSError *moveError;
+            
             
             NSLog(@"previouseLocation - %@", location);
             NSLog(@"documentsDirectory - %@", fileURL);
             
-            
+            NSError *moveError;
             if (![fileManager moveItemAtURL:location toURL:fileURL error:&moveError]) {
                 // catch error (show alert if need ??)
                 NSLog(@"moveItemAtURL failed: %@", moveError);
+                
+                if (block)
+                {
+                    block(nil, moveError);
+                }
                 return;
             }
      
             if (block)
             {
-                block(locationStr);
+                block(locationStr, nil);
             }
-          }];
+        }];
         
         [downloadTask resume];
         

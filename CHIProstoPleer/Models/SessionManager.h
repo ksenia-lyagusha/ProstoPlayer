@@ -27,6 +27,6 @@ extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion;
 
-- (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSString *))block;
+- (void)downloadTrackWithTrackID:(NSString *)link withComplitionHandler:(void (^)(NSString *, NSError *))block;
 
 @end
