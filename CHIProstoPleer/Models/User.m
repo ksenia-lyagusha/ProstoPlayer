@@ -23,7 +23,8 @@
 
     NSArray *filtered = [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] executeFetchRequest:fetchRequest error:nil];
     
-    if (filtered.count > 0) {
+    if (filtered.count > 0)
+    {
         user = [filtered firstObject];
     }
     

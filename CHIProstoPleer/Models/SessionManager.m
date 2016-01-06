@@ -7,9 +7,6 @@
 //
 
 #import "SessionManager.h"
-
-#import "NSURLRequest+cURL.h"
-
 #import <Reachability.h>
 
 NSString * const SessionManagerURL                    = @"http://api.pleer.com/resource.php";
@@ -26,7 +23,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 @property (nonatomic, strong) NSDate              *expiredDate;
 @property (nonatomic, strong, readwrite) NSString *token;
 @property (strong, nonatomic) Reachability        *reachabilityListener;
-@property (strong, nonatomic) NSString            *receivedLocation;
 
 @end
 
@@ -71,7 +67,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         {
             NSLog(@"isReachableViaWiFi");
         }
-        self.receivedLocation = [NSString string];
     }
     return self;
 }
@@ -230,9 +225,19 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         }];
         
         [downloadTask resume];
-        
     }];
     
+}
+
++ (NSURL *)pathToCurrentDirectory:(NSString *)currentFileName
+{
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSArray *currentDocumentDir = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
+    
+    NSURL *documentsURL = [currentDocumentDir firstObject];
+    NSURL *URL = [documentsURL URLByAppendingPathComponent:currentFileName];
+    
+    return URL;
 }
 
 #pragma mark - Private methods
@@ -348,35 +353,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     self.expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
     [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
     
-}
-
-- (void)checkInternetConnection
-{
-    Reachability *reachability = [Reachability reachabilityForInternetConnection];
-    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
-    if (networkStatus == ReachableViaWWAN) {
-        
-        //Code when there is a WAN connection
-        
-    } else if (networkStatus == ReachableViaWiFi) {
-        
-        //Code when there is a WiFi connection
-        
-    } else if (networkStatus == NotReachable) {
-        
-        //Code when there is no connection
-    }
-}
-
-+ (NSURL *)pathToCurrentDirectory:(NSString *)currentFileName
-{
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *currentDocumentDir = [fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
-
-    NSURL *documentsURL = [currentDocumentDir firstObject];
-    NSURL *URL = [documentsURL URLByAppendingPathComponent:currentFileName];
-    
-    return URL;
 }
 
 @end

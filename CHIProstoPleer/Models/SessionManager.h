@@ -11,7 +11,7 @@
 extern NSString * const PPSessionManagerInternetConnectionLost;
 extern NSString * const PPSessionManagerInternetConnectionAppeared;
 
-@interface SessionManager : NSObject <NSURLSessionDataDelegate, NSURLSessionDelegate, NSURLSessionDataDelegate>
+@interface SessionManager : NSObject 
 
 @property (nonatomic, strong, readonly) NSString *token;
 

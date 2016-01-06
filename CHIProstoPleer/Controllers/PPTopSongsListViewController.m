@@ -27,8 +27,6 @@
 @property NSInteger currentIndex;
 @property NSInteger currentPage;
 
-@property (strong, nonatomic) PPMusicViewController *musicVC;
-
 @end
 
 @implementation PPTopSongsListViewController
@@ -74,7 +72,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     self.tabBarController.title = @"Top songs list";
-    self.tabBarController.navigationItem.hidesBackButton = YES;
+    self.tabBarController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"logout"]
+                                                                                              style:UIBarButtonItemStylePlain
+                                                                                             target:self
+                                                                                             action:@selector(logoutAction:)];
     [self.tableView reloadData];
 }
 
@@ -112,14 +113,6 @@
         
     }
     
-//    UIButton *favoriteButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 31, 43)];
-//    [favoriteButton setImage:[UIImage imageNamed:@"favorite-outline"] forState:UIControlStateNormal];
-//    [favoriteButton setImage:[UIImage imageNamed:@"favorite"] forState:UIControlStateSelected];
-//    [favoriteButton addTarget:self action:@selector(addToFavoritesAction:) forControlEvents:UIControlEventTouchUpInside];
-//    cell.accessoryView = favoriteButton;
-//    favoriteButton.tag = indexPath.row;
-//    favoriteButton.userInteractionEnabled = YES;
-    
     cell.textLabel.text = value.artist;
     cell.detailTextLabel.text = value.title;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -144,15 +137,16 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.musicVC = [[PPMusicViewController alloc] init];
-    self.musicVC.info = self.filteredList ? [self.filteredList objectAtIndex:indexPath.row] : [self.topList objectAtIndex:indexPath.row];
-    self.musicVC.delegate = self;
-    self.musicVC.index = indexPath.row;
-    NSLog(@"TopSongs object%@", self.musicVC.info);
+    PPMusicViewController *musicVC = [[PPMusicViewController alloc] init];
+    musicVC.info = self.filteredList ? [self.filteredList objectAtIndex:indexPath.row] : [self.topList objectAtIndex:indexPath.row];
+    musicVC.delegate = self;
+    musicVC.index = indexPath.row;
+    NSLog(@"TopSongs object%@", musicVC.info);
+    
     self.currentIndex  = indexPath.row;
     
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
-    [self.navigationController pushViewController:self.musicVC animated:YES];
+    [self.navigationController pushViewController:musicVC animated:YES];
 }
 
 #pragma mark - UISearchBarDelegate
@@ -321,32 +315,10 @@
 
 #pragma mark - Actions methods
 
-//- (void)addToFavoritesAction:(UIButton *)sender
-//{
-//    id <PPTrackInfoProtocol>value = [self.topList objectAtIndex:sender.tag];
-//    Track *trackObj = [Track objectWithTrackID:value.track_id];
-//    
-//    NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-//    User *currentUser = [User objectWithLogin:login];
-//    
-//    if (sender.selected)
-//    {
-//        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:trackObj];
-//        sender.selected = NO;
-//    }
-//    else
-//    {
-//        Track *trackObj = [[CoreDataManager sharedInstanceCoreData] addNewTrack];
-//        [trackObj createTrackWithTrackInfoObject:value];
-//
-//        [currentUser addTracksObject:trackObj];
-//        
-//        sender.selected = YES;
-//        
-//    }
-//
-//    [[CoreDataManager sharedInstanceCoreData] saveContext];
-//}
+- (void)logoutAction:(UIBarButtonItem *)sender
+{
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 
 @end
 

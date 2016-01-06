@@ -9,6 +9,7 @@
 #import "LoginView.h"
 
 @interface LoginView () <UITextFieldDelegate>
+
 @property (nonatomic, strong, readwrite) UITextField *loginTextField;
 @property (nonatomic, strong, readwrite) UITextField *passwordTextField;
 

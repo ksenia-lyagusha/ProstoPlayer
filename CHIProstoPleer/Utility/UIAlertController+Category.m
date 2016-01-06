@@ -21,9 +21,4 @@
     return alert;
 }
 
-//- (instancetype)createAlertWithMessage:(NSString *)message withComplitionHandler:(void (^ __nullable)(UIAlertAction *action))handler
-//{
-//    [self cre]
-//}
-
 @end

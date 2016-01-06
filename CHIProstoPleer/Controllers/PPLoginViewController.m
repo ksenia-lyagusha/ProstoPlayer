@@ -98,8 +98,9 @@
     FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
-
+    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     [self.navigationController pushViewController:tabController animated:YES];
+    
     [MBProgressHUD hideHUDForView:self.view animated:YES];
 }
 

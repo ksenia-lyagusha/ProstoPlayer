@@ -24,6 +24,7 @@
     
     PPLoginViewController *loginViewController = [[PPLoginViewController alloc] init];
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+
     self.window.rootViewController = navigationController;
     
     [self.window makeKeyAndVisible];
@@ -39,12 +40,12 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    __block UIBackgroundTaskIdentifier task = 0;
-    task = [application beginBackgroundTaskWithExpirationHandler:^{
-        NSLog(@"Expiration handler called %f",[application backgroundTimeRemaining]);
-        [application endBackgroundTask:task];
-        task = UIBackgroundTaskInvalid;
-    }];
+//    __block UIBackgroundTaskIdentifier task = 0;
+//    task = [application beginBackgroundTaskWithExpirationHandler:^{
+//        NSLog(@"Expiration handler called %f",[application backgroundTimeRemaining]);
+//        [application endBackgroundTask:task];
+//        task = UIBackgroundTaskInvalid;
+//    }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {

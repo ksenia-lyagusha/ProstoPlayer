@@ -21,12 +21,13 @@
     NSMutableArray *tracksObj = [NSMutableArray array];
         
     for (NSDictionary *trackInfo in [trackDict allValues]) {
+        
         TrackInfo *track = [[TrackInfo alloc] init];
-        track.title    = [trackInfo objectForKey:@"track"];
-        track.artist   = [trackInfo objectForKey:@"artist"];
-        track.track_id = [trackInfo objectForKey:@"id"];
-        track.text_id  = [trackInfo objectForKey:@"text_id"];
-        track.duration = [trackInfo objectForKey:@"bitrate"];
+        track.title      = [trackInfo objectForKey:@"track"];
+        track.artist     = [trackInfo objectForKey:@"artist"];
+        track.track_id   = [trackInfo objectForKey:@"id"];
+        track.text_id    = [trackInfo objectForKey:@"text_id"];
+        track.duration   = [trackInfo objectForKey:@"bitrate"];
         
         [tracksObj addObject:track];
     }
