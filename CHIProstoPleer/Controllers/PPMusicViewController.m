@@ -177,12 +177,14 @@
     
     self.HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
+
+    
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
         NSURL *url = [NSURL URLWithString:link];
         [weakSelf createPlayerWithURL:url];
-        
     }];
+   
 }
 
 - (void)sliderAction:(UISlider *)sender
@@ -207,38 +209,48 @@
 
 - (void)downloadTrackAction:(UIButton *)sender
 {
+    [self.downloadButton setEnabled:NO];
+    [self.downloadButton setTintColor:[UIColor clearColor]];
+    
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
     __weak typeof(self) weakSelf = self;
+
     [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location, NSError *error) {
         
-        if (error)
-        {
-            UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
-            [self presentViewController:alert animated:YES completion:nil];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            return;
-        }
+        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
         
-        Track *trackObj = [Track addNewTrack];
-        
-        [trackObj saveTrackInExternalFileWithLocation:location];
-        
-        [trackObj createTrackWithTrackInfoObject:weakSelf.info];
-        NSLog(@"%@", trackObj);
-        
-        NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-        User *currentUser = [User objectWithLogin:login];
-        [currentUser addTracksObject:trackObj];
-        
-        [[CoreDataManager sharedInstanceCoreData] saveContext];
-        NSLog(@"Track is downloaded successfully %@", trackObj.download);
- 
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-        [self.downloadButton setEnabled:NO];
-        [self.downloadButton setTintColor:[UIColor clearColor]];
+        dispatch_async(sideQueue, ^{
+            
+            if (error)
+            {
+                UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
+                [self presentViewController:alert animated:YES completion:nil];
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                return;
+            }
+            
+            Track *trackObj = [Track addNewTrack];
+            
+            [trackObj saveTrackInExternalFileWithLocation:location];
+            
+            [trackObj createTrackWithTrackInfoObject:weakSelf.info];
+            NSLog(@"%@", trackObj);
+            
+            NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+            User *currentUser = [User objectWithLogin:login];
+            [currentUser addTracksObject:trackObj];
+            
+            [[CoreDataManager sharedInstanceCoreData] saveContext];
+            NSLog(@"Track is downloaded successfully %@", trackObj.download);
+     
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+            });
+        });
     }];
-   
+    
+    
 }
 
 #pragma mark - Methods for Installing and Creating

@@ -167,66 +167,69 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion
 {
     [self checkTokenWithComplitionHandler:^{
-
-        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
         
-        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-        [request setHTTPMethod:@"POST"];
-        
-        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
             
-            NSString *link = [resultInfo objectForKey:@"url"];
-            if (completion)
-            {
-                completion(link, error);
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+            [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+            [request setHTTPMethod:@"POST"];
+            
+            [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
                 
-            }
-        }];
-    }];
+                NSString *link = [resultInfo objectForKey:@"url"];
+                if (completion)
+                {
+                    completion(link, error);
+                    
+                }
+            }];
+     }];
 }
 
 - (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *, NSError *))block
 {
-    [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
-        
-        NSURL * url = [NSURL URLWithString:link];
-        
-        NSURLSessionDownloadTask * downloadTask = [self.sessionURL downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+        [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
             
-            if (error) {
-                NSLog(@"downloadTaskWithRequest failed: %@", error);
+        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
+        dispatch_async(sideQueue, ^{
+            
+            NSURL * url = [NSURL URLWithString:link];
+            
+            NSURLSessionDownloadTask * downloadTask = [self.sessionURL downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
                 
-                if (block)
-                {
-                    block(nil, error);
+                if (error) {
+                    NSLog(@"downloadTaskWithRequest failed: %@", error);
+                    
+                    if (block)
+                    {
+                        block(nil, error);
+                    }
+                    return;
                 }
-                return;
-            }
-   
-            NSString *fileName = [response suggestedFilename];
-            NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
-            NSError *moveError;
-            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
-    
-                NSLog(@"moveItemAtURL failed: %@", moveError);
-                
-                if (block)
-                {
-                    block(nil, moveError);
-                }
-                return;
-            }
-     
-            if (block)
-            {
-                block(fileName, nil);
-            }
-        }];
+       
+                NSString *fileName = [response suggestedFilename];
+                NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
+                NSError *moveError;
+                if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
         
-        [downloadTask resume];
+                    NSLog(@"moveItemAtURL failed: %@", moveError);
+                    
+                    if (block)
+                    {
+                        block(nil, moveError);
+                    }
+                    return;
+                }
+         
+                if (block)
+                {
+                    block(fileName, nil);
+                }
+            }];
+            
+            [downloadTask resume];
+        });
     }];
-    
 }
 
 + (NSURL *)pathToCurrentDirectory:(NSString *)currentFileName
