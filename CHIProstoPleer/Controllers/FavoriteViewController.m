@@ -52,8 +52,6 @@
     UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
     self.tableView.contentInset = adjustForTabbarInsets;
     self.tableView.scrollIndicatorInsets = adjustForTabbarInsets;
-    
-     NSLog(@"DB OBJ %@", [self.fetchedResultsController fetchedObjects]);
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -149,7 +147,6 @@
     musicVC.delegate = self;
     
     self.currentIndex = indexPath.row;
-    NSLog(@"Favorite object%@", musicVC.info);
     self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
     [self.navigationController pushViewController:musicVC animated:YES];
 }
@@ -158,7 +155,6 @@
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
-    // The fetch controller is about to start sending change notifications, so prepare the table view for updates.
     [self.tableView beginUpdates];
 }
 
@@ -219,7 +215,6 @@
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    // The fetch controller has sent all current change notifications, so tell the table view to process all updates.
     [self.tableView endUpdates];
 }
 

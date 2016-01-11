@@ -8,7 +8,6 @@
 
 #import "Track.h"
 #import "CoreDataManager.h"
-
 #import "Track+CoreDataProperties.h"
 
 @implementation Track

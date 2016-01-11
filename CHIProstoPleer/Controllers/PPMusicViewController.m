@@ -35,10 +35,11 @@
 
 #pragma mark - View Lifecycle
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 
-    self.imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background.png"]];
+    self.imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
     self.imageView.contentMode = UIViewContentModeScaleAspectFill;
     self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
     self.imageView.layer.masksToBounds = YES;
@@ -70,7 +71,7 @@
     [self.view addSubview:self.currentTimeSlider];
   
     [self setupConstraints];
-    
+
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
     commandCenter.previousTrackCommand.enabled = YES;
@@ -176,9 +177,7 @@
     __weak typeof(self) weakSelf = self;
     
     self.HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-
-    
+  
     [[SessionManager sharedInstance] tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
         
         NSURL *url = [NSURL URLWithString:link];
@@ -198,7 +197,6 @@
     {
         self.musicView.playButton.selected = NO;
         [self.audioPlayer pause];
-        
     }
     else
     {
@@ -213,44 +211,21 @@
     [self.downloadButton setTintColor:[UIColor clearColor]];
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    
-    __weak typeof(self) weakSelf = self;
 
     [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location, NSError *error) {
+  
+        if (error)
+        {
+            UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
+            [self presentViewController:alert animated:YES completion:nil];
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            return;
+        }
         
-        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
-        
-        dispatch_async(sideQueue, ^{
-            
-            if (error)
-            {
-                UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
-                [self presentViewController:alert animated:YES completion:nil];
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
-                return;
-            }
-            
-            Track *trackObj = [Track addNewTrack];
-            
-            [trackObj saveTrackInExternalFileWithLocation:location];
-            
-            [trackObj createTrackWithTrackInfoObject:weakSelf.info];
-            NSLog(@"%@", trackObj);
-            
-            NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-            User *currentUser = [User objectWithLogin:login];
-            [currentUser addTracksObject:trackObj];
-            
-            [[CoreDataManager sharedInstanceCoreData] saveContext];
-            NSLog(@"Track is downloaded successfully %@", trackObj.download);
+        [[CoreDataManager sharedInstanceCoreData] saveWithLocation:location andTrackInfo:self.info];
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
      
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
-            });
-        });
     }];
-    
-    
 }
 
 #pragma mark - Methods for Installing and Creating
@@ -258,7 +233,6 @@
 - (void)updateTime
 {
     self.currentTimeSlider.maximumValue = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
-//    NSLog(@"max slider value %f ----------   min value = %f", self.currentTimeSlider.maximumValue, self.currentTimeSlider.minimumValue); 
     [self.currentTimeSlider setValue:CMTimeGetSeconds(self.audioPlayer.currentTime) animated:YES];
     
 //    Access Current Time
@@ -395,13 +369,11 @@
     {
         [self.downloadButton setEnabled:NO];
         [self.downloadButton setTintColor:[UIColor clearColor]];
-        NSLog(@"downloadButton NOT enabled");
     }
     else
     {
         [self.downloadButton setEnabled:YES];
         [self.downloadButton setTintColor:nil];
-        NSLog(@"downloadButton  ENABLED");
     }
     
     AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc] initWithURL:url];
@@ -430,22 +402,6 @@
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {
     [self nextTrackAction];
-}
-
-#pragma mark - ToolBar
-
-- (UIToolbar *)addToolbar
-{
-    UIBarButtonItem *customItem1 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"previous"] style:UIBarButtonItemStylePlain target:self action:@selector(previousTrackAction)];
-    UIBarButtonItem *customItem2 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"play"]  style:UIBarButtonItemStylePlain target:self action:@selector(playAction:)];
-    UIBarButtonItem *customItem3 = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"next"] style:UIBarButtonItemStylePlain target:self action:@selector(nextTrackAction)];
-    
-    NSArray *toolbarItems = [NSArray arrayWithObjects: customItem1, customItem2, customItem3, nil];
-    UIToolbar *toolbar = [[UIToolbar alloc] init];
-    [toolbar setBarStyle:UIBarStyleDefault];
-    [toolbar setItems:toolbarItems];
-    
-    return toolbar;
 }
 
 @end

@@ -8,15 +8,25 @@
 
 #import "CoreDataManager.h"
 
+#import "User.h"
+
 NSString * const kCurrentUser = @"currentUser";
+
+@interface CoreDataManager(){
+    dispatch_queue_t _sideQueue;
+    NSManagedObjectContext *_backgroundMOC;
+}
+
+@end
 
 @implementation CoreDataManager
 
 #pragma mark - Core Data stack
 
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+@synthesize managedObjectContext           = _managedObjectContext;
+@synthesize managedObjectModel             = _managedObjectModel;
+@synthesize persistentStoreCoordinator     = _persistentStoreCoordinator;
+@synthesize backgroundManagedObjectContext = _backgroundManagedObjectContext;
 
 + (instancetype)sharedInstanceCoreData
 {
@@ -26,6 +36,16 @@ NSString * const kCurrentUser = @"currentUser";
         sharedInstance = [[self alloc] init];
     });
     return sharedInstance;
+}
+
+- (dispatch_queue_t)sideQueue {
+    if (!_sideQueue) {
+        _sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
+        dispatch_async(_sideQueue, ^{
+            [self backgroundManagedObjectContext];
+        });
+    }
+    return _sideQueue;
 }
 
 - (NSURL *)applicationDocumentsDirectory {
@@ -86,6 +106,16 @@ NSString * const kCurrentUser = @"currentUser";
     return _managedObjectContext;
 }
 
+- (NSManagedObjectContext *)backgroundManagedObjectContext
+{
+    if (!_backgroundManagedObjectContext) {
+        _backgroundMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+        
+        _backgroundMOC.parentContext = self.managedObjectContext;
+    }    
+    return _backgroundMOC;
+}
+
 #pragma mark - Core Data Saving support
 
 - (void)saveContext {
@@ -137,11 +167,37 @@ NSString * const kCurrentUser = @"currentUser";
         NSLog(@"Unable to execute fetch request.");
         NSLog(@"%@, %@", error, error.localizedDescription);
         
-    } else
+    }
+    else
     {
         NSLog(@"%@", result);
     }
     return result;
+}
+
+- (void)saveWithLocation:(NSString *)location andTrackInfo:(id <PPTrackInfoProtocol>)info
+{
+    dispatch_async(self.sideQueue, ^{
+        
+        Track *trackObj = [Track addNewTrack];
+        
+        [trackObj saveTrackInExternalFileWithLocation:location];
+        [trackObj createTrackWithTrackInfoObject:info];
+        
+        NSLog(@"%@", trackObj);
+        NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+        
+        User *currentUser = [User objectWithLogin:login];
+        [currentUser addTracksObject:trackObj];
+        
+        NSLog(@"Track is downloaded successfully %@", trackObj.download);
+        [self.backgroundManagedObjectContext save:nil];
+    });
+}
+
+- (dispatch_queue_t)moveToBackgroundThread
+{
+    return self.sideQueue;
 }
 
 #pragma mark - Current user's login

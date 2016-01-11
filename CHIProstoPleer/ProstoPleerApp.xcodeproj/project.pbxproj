@@ -20,6 +20,7 @@
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
 		676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676444311BF2412500967F5A /* LaunchScreen.storyboard */; };
 		676444451BF2412500967F5A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6764443A1BF2412500967F5A /* main.m */; };
+		676840181C43E07300ED075A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 676840161C43E07300ED075A /* Main.storyboard */; };
 		6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */; };
 		677AA4F11C3183ED005007FD /* ProstoPleerApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 677AA4EF1C3183ED005007FD /* ProstoPleerApp.xcdatamodeld */; };
 		677B2F691C17040D00298947 /* MusicView.m in Sources */ = {isa = PBXBuildFile; fileRef = 677B2F681C17040C00298947 /* MusicView.m */; };
@@ -72,6 +73,7 @@
 		676444321BF2412500967F5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		676444391BF2412500967F5A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6764443A1BF2412500967F5A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		676840171C43E07300ED075A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6774C8E71C2AF9C6000B3F00 /* TrackInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrackInfo.h; sourceTree = "<group>"; };
 		6774C8E81C2AF9C6000B3F00 /* TrackInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrackInfo.m; sourceTree = "<group>"; };
 		677AA4F01C3183ED005007FD /* ProstoPleerApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ProstoPleerApp.xcdatamodel; sourceTree = "<group>"; };
@@ -207,6 +209,7 @@
 				676444381BF2412500967F5A /* Helpers */,
 				676444391BF2412500967F5A /* Info.plist */,
 				676444311BF2412500967F5A /* LaunchScreen.storyboard */,
+				676840161C43E07300ED075A /* Main.storyboard */,
 				D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */,
 				6764443A1BF2412500967F5A /* main.m */,
 				6709DCE61BF347670089B8CC /* Models */,
@@ -350,6 +353,7 @@
 				D7A44D1B1BFC5D80007DDF1E /* Localizable.strings in Resources */,
 				D71780601BFA67E6005246B3 /* Assets.xcassets in Resources */,
 				676444411BF2412500967F5A /* LaunchScreen.storyboard in Resources */,
+				676840181C43E07300ED075A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,6 +457,14 @@
 				676444321BF2412500967F5A /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		676840161C43E07300ED075A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				676840171C43E07300ED075A /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

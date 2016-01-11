@@ -7,7 +7,6 @@
 //
 
 #import "User.h"
-#import "Track.h"
 #import "CoreDataManager.h"
 
 @implementation User

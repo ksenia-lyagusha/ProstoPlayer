@@ -117,8 +117,6 @@
     cell.detailTextLabel.text = value.title;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-//    Track *trackObj = [Track objectWithTrackID:value.track_id];
-    
 //    favoriteButton.selected = trackObj != nil;
 
     [cell setPreservesSuperviewLayoutMargins:NO];
@@ -234,6 +232,13 @@
     }
     __weak typeof(self) weakSelf = self;
     [[SessionManager sharedInstance] topSongsListForPage:page withComplitionHandler:^(NSDictionary *topList, NSError *error) {
+        
+        if (error)
+        {
+            NSLog(@"Refresh error %@", error.localizedDescription);
+            return;
+        }
+        
         dispatch_async(dispatch_get_main_queue(), ^{
         
             NSDictionary *values = [topList objectForKey:@"data"];

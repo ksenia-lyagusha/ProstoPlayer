@@ -8,6 +8,7 @@
 
 #import "SessionManager.h"
 #import <Reachability.h>
+#import "CoreDataManager.h"
 
 NSString * const SessionManagerURL                    = @"http://api.pleer.com/resource.php";
 NSString * const SessionManagerTokenURL               = @"http://api.pleer.com/token.php";
@@ -49,7 +50,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                                                         delegate:nil
                                                    delegateQueue:[NSOperationQueue mainQueue]];
         
-
         self.reachabilityListener = [Reachability reachabilityForLocalWiFi];
         self.reachabilityListener.unreachableBlock = ^(Reachability * reachability){
 
@@ -117,7 +117,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             }
         }];
     }];
-    
 }
 
 - (void)topSongsListForPage:(NSInteger )page withComplitionHandler:(void(^)(NSDictionary *topList, NSError *error))completion
@@ -168,6 +167,9 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 {
     [self checkTokenWithComplitionHandler:^{
         
+        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.SessionManager", NULL);
+        dispatch_async(sideQueue, ^{
+            
             NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
             
             NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
@@ -183,52 +185,51 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                     
                 }
             }];
+        });
+        
      }];
 }
 
 - (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *, NSError *))block
 {
         [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
-            
-        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
-        dispatch_async(sideQueue, ^{
-            
-            NSURL * url = [NSURL URLWithString:link];
-            
-            NSURLSessionDownloadTask * downloadTask = [self.sessionURL downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
-                
-                if (error) {
-                    NSLog(@"downloadTaskWithRequest failed: %@", error);
-                    
-                    if (block)
-                    {
-                        block(nil, error);
-                    }
-                    return;
-                }
-       
-                NSString *fileName = [response suggestedFilename];
-                NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
-                NSError *moveError;
-                if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
+
+        NSURL * url = [NSURL URLWithString:link];
         
-                    NSLog(@"moveItemAtURL failed: %@", moveError);
-                    
-                    if (block)
-                    {
-                        block(nil, moveError);
-                    }
-                    return;
-                }
-         
+        NSURLSessionDownloadTask * downloadTask = [self.sessionURL downloadTaskWithURL:url completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error) {
+            
+            if (error) {
+                NSLog(@"downloadTaskWithRequest failed: %@", error);
+                
                 if (block)
                 {
-                    block(fileName, nil);
+                    block(nil, error);
                 }
-            }];
-            
-            [downloadTask resume];
-        });
+                return;
+            }
+   
+            NSString *fileName = [response suggestedFilename];
+            NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
+            NSError *moveError;
+            if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
+    
+                NSLog(@"moveItemAtURL failed: %@", moveError);
+                
+                if (block)
+                {
+                    block(nil, moveError);
+                }
+                return;
+            }
+     
+            if (block)
+            {
+                block(fileName, nil);
+            }
+        }];
+        
+        [downloadTask resume];
+        
     }];
 }
 
@@ -340,9 +341,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 {
     if (!_token)
     {
-        
         _token = [[NSUserDefaults standardUserDefaults] objectForKey:SessionManagerAccessTokenDefaultsKey];
-        
     }
     return _token;
 }
@@ -355,7 +354,6 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     NSDate *date = [NSDate date];
     self.expiredDate = [NSDate dateWithTimeInterval:3600 sinceDate:date];
     [[NSUserDefaults standardUserDefaults] setObject:self.expiredDate forKey:SessionManagerExpiredDatedefaultsKey];
-    
 }
 
 @end
