@@ -22,7 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)saveTrackInExternalFileWithLocation:(NSString *)location;
 
-+ (Track *)addNewTrack;
++ (Track *)addNewTrackWithMOC:(NSManagedObjectContext *)moc;
+
 
 @end
 

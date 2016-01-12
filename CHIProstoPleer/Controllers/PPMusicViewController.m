@@ -212,18 +212,26 @@
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 
+    __weak typeof(self) weakSelf = self;
+    id<PPTrackInfoProtocol> obj = self.info;
     [[SessionManager sharedInstance] downloadTrackWithTrackID:self.info.track_id withComplitionHandler:^(NSString *location, NSError *error) {
   
         if (error)
         {
             UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
-            [self presentViewController:alert animated:YES completion:nil];
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+            });
+            
             return;
         }
         
-        [[CoreDataManager sharedInstanceCoreData] saveWithLocation:location andTrackInfo:self.info];
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
+        [[CoreDataManager sharedInstanceCoreData] saveWithLocation:location andTrackInfo:obj];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+        });
      
     }];
 }

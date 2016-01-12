@@ -48,19 +48,25 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
     {
         self.sessionURL = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
                                                         delegate:nil
-                                                   delegateQueue:[NSOperationQueue mainQueue]];
+                                                   delegateQueue:[[NSOperationQueue alloc] init]];
         
         self.reachabilityListener = [Reachability reachabilityForLocalWiFi];
         self.reachabilityListener.unreachableBlock = ^(Reachability * reachability){
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionLost
-                                                                object:nil];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionLost
+                                                                    object:nil];
+            });
+            
         };
         self.reachabilityListener.reachableBlock = ^(Reachability *reachability){
-
-            [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionAppeared
-                                                                object:nil];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionAppeared
+                                                                    object:nil];
+            });
         };
+
         [self.reachabilityListener startNotifier];
         
         if (![self.reachabilityListener isReachableViaWiFi])
@@ -166,33 +172,29 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 - (void)tracksDownloadLinkWithTrackID:(NSString *)trackID withComplitionHandler:(void(^)(NSString *, NSError *))completion
 {
     [self checkTokenWithComplitionHandler:^{
+    
+        NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
         
-        dispatch_queue_t sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.SessionManager", NULL);
-        dispatch_async(sideQueue, ^{
+        NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
+        [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
+        [request setHTTPMethod:@"POST"];
+        
+        [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
             
-            NSString *requestText = [NSString stringWithFormat:@"access_token=%@&method=tracks_get_download_link&track_id=%@&reason=save", self.token, trackID];
-            
-            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:SessionManagerURL]];
-            [request setHTTPBody:[requestText dataUsingEncoding:NSUTF8StringEncoding]];
-            [request setHTTPMethod:@"POST"];
-            
-            [self dataTaskWithRequest:request complitionHandler:^(NSDictionary *resultInfo, NSError *error) {
+            NSString *link = [resultInfo objectForKey:@"url"];
+            if (completion)
+            {
+                completion(link, error);
                 
-                NSString *link = [resultInfo objectForKey:@"url"];
-                if (completion)
-                {
-                    completion(link, error);
-                    
-                }
-            }];
-        });
+            }
+        }];
         
      }];
 }
 
 - (void)downloadTrackWithTrackID:(NSString *)trackID withComplitionHandler:(void (^)(NSString *, NSError *))block
 {
-        [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
+    [self tracksDownloadLinkWithTrackID:trackID withComplitionHandler:^(NSString *link, NSError *error) {
 
         NSURL * url = [NSURL URLWithString:link];
         
@@ -207,12 +209,12 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                 }
                 return;
             }
-   
+
             NSString *fileName = [response suggestedFilename];
             NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
             NSError *moveError;
             if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
-    
+
                 NSLog(@"moveItemAtURL failed: %@", moveError);
                 
                 if (block)
@@ -250,6 +252,17 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
 {
     NSURLSessionDataTask *dataTask = [self.sessionURL dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         
+        if (error || !data)
+        {
+            NSLog(@"Request error %@", error);
+            
+            if (completion)
+            {
+                completion(nil, error);
+            }
+            return;
+        }
+        
         NSError *parseError;
         NSDictionary *result = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&parseError];
         
@@ -261,16 +274,11 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
         
         }
         
-        if (error)
-        {
-            NSLog(@"Request error %@", error);
-        }
-        
         NSLog(@"Response %@", result);
         
         if (completion)
         {
-            completion(result, error);
+            completion(result, parseError);
         }
     }];
     

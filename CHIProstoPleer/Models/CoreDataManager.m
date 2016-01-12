@@ -12,10 +12,10 @@
 
 NSString * const kCurrentUser = @"currentUser";
 
-@interface CoreDataManager(){
-    dispatch_queue_t _sideQueue;
-    NSManagedObjectContext *_backgroundMOC;
-}
+@interface CoreDataManager()
+
+@property (nonatomic, strong) dispatch_queue_t       sideQueue;
+@property (nonatomic, strong) NSManagedObjectContext *backgroundMOC;
 
 @end
 
@@ -26,7 +26,6 @@ NSString * const kCurrentUser = @"currentUser";
 @synthesize managedObjectContext           = _managedObjectContext;
 @synthesize managedObjectModel             = _managedObjectModel;
 @synthesize persistentStoreCoordinator     = _persistentStoreCoordinator;
-@synthesize backgroundManagedObjectContext = _backgroundManagedObjectContext;
 
 + (instancetype)sharedInstanceCoreData
 {
@@ -38,11 +37,12 @@ NSString * const kCurrentUser = @"currentUser";
     return sharedInstance;
 }
 
-- (dispatch_queue_t)sideQueue {
+- (dispatch_queue_t)sideQueue
+{
     if (!_sideQueue) {
         _sideQueue = dispatch_queue_create("CHI.ProstoPleerApp.download", NULL);
         dispatch_async(_sideQueue, ^{
-            [self backgroundManagedObjectContext];
+            [self backgroundMOC];
         });
     }
     return _sideQueue;
@@ -106,9 +106,10 @@ NSString * const kCurrentUser = @"currentUser";
     return _managedObjectContext;
 }
 
-- (NSManagedObjectContext *)backgroundManagedObjectContext
+- (NSManagedObjectContext *)backgroundMOC
 {
-    if (!_backgroundManagedObjectContext) {
+    if (!_backgroundMOC)
+    {
         _backgroundMOC = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
         
         _backgroundMOC.parentContext = self.managedObjectContext;
@@ -179,7 +180,7 @@ NSString * const kCurrentUser = @"currentUser";
 {
     dispatch_async(self.sideQueue, ^{
         
-        Track *trackObj = [Track addNewTrack];
+        Track *trackObj = [Track addNewTrackWithMOC:self.backgroundMOC];
         
         [trackObj saveTrackInExternalFileWithLocation:location];
         [trackObj createTrackWithTrackInfoObject:info];
@@ -187,11 +188,11 @@ NSString * const kCurrentUser = @"currentUser";
         NSLog(@"%@", trackObj);
         NSString *login = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
         
-        User *currentUser = [User objectWithLogin:login];
+        User *currentUser = [User objectWithLogin:login withMOC:self.backgroundMOC];
         [currentUser addTracksObject:trackObj];
         
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
-        [self.backgroundManagedObjectContext save:nil];
+        [self.backgroundMOC save:nil];
     });
 }
 

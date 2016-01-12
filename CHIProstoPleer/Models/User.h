@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Insert code here to declare functionality of your managed object subclass
 
-+ (instancetype)objectWithLogin:(NSString *)login;
++ (instancetype)objectWithLogin:(NSString *)login withMOC:(NSManagedObjectContext *)moc;
 + (User *)addNewUser;
 
 @end

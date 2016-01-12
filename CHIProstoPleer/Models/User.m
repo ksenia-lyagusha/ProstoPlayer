@@ -13,7 +13,7 @@
 
 // Insert code here to add functionality to your managed object subclass
 
-+ (instancetype)objectWithLogin:(NSString *)login
++ (instancetype)objectWithLogin:(NSString *)login withMOC:(NSManagedObjectContext *)moc
 {
     User *user;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"User"];

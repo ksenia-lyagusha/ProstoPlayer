@@ -45,9 +45,9 @@
     self.download = location;
 }
 
-+ (Track *)addNewTrack
++ (Track *)addNewTrackWithMOC:(NSManagedObjectContext *)moc
 {
-    Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    Track *track = [NSEntityDescription insertNewObjectForEntityForName:@"Track" inManagedObjectContext:moc];
     
     return track;
 }
