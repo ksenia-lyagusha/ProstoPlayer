@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6709DCE91BF347790089B8CC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCE81BF347790089B8CC /* SessionManager.m */; };
 		6709DCF51BF352A10089B8CC /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6709DCF41BF352A10089B8CC /* Tests.m */; };
 		6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBDF1C108540005A8385 /* UIAlertController+Category.m */; };
 		6714CBE41C108548005A8385 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6714CBE31C108548005A8385 /* LoginView.m */; };
 		6735DE381C19D495008591CA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6735DE371C19D495008591CA /* SystemConfiguration.framework */; };
 		674719C01BFDF64E00EA5B75 /* FavoriteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */; };
-		675BDBF31C2802700016938A /* CoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 675BDBF21C2802700016938A /* CoreDataManager.m */; };
+		6754DD191C45101B00162CDC /* CoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6754DD161C45101B00162CDC /* CoreDataManager.m */; };
+		6754DD1A1C45101B00162CDC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6754DD181C45101B00162CDC /* SessionManager.m */; };
 		675BDBF51C285F990016938A /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675BDBF41C285F990016938A /* CoreData.framework */; };
 		6762326C1C328BAF00B36727 /* User+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 676232691C328BAF00B36727 /* User+CoreDataProperties.m */; };
 		6762326D1C328BAF00B36727 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 6762326B1C328BAF00B36727 /* User.m */; };
@@ -47,8 +47,6 @@
 
 /* Begin PBXFileReference section */
 		4D992B9BD2F94DB79AFC356D /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		6709DCE71BF347790089B8CC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
-		6709DCE81BF347790089B8CC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		6709DCF21BF352A10089B8CC /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6709DCF41BF352A10089B8CC /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		6709DCF61BF352A10089B8CC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,8 +58,10 @@
 		674719BE1BFDF64E00EA5B75 /* FavoriteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteViewController.h; sourceTree = "<group>"; };
 		674719BF1BFDF64E00EA5B75 /* FavoriteViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteViewController.m; sourceTree = "<group>"; };
 		67516BBF1C2C0A0D007282B2 /* ProstoPleerProtocols.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProstoPleerProtocols.h; sourceTree = "<group>"; };
-		675BDBF11C2802700016938A /* CoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataManager.h; sourceTree = "<group>"; };
-		675BDBF21C2802700016938A /* CoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataManager.m; sourceTree = "<group>"; };
+		6754DD151C45101B00162CDC /* CoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataManager.h; sourceTree = "<group>"; };
+		6754DD161C45101B00162CDC /* CoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataManager.m; sourceTree = "<group>"; };
+		6754DD171C45101B00162CDC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
+		6754DD181C45101B00162CDC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		675BDBF41C285F990016938A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		676232681C328BAF00B36727 /* User+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "User+CoreDataProperties.h"; sourceTree = "<group>"; };
 		676232691C328BAF00B36727 /* User+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "User+CoreDataProperties.m"; sourceTree = "<group>"; };
@@ -132,11 +132,7 @@
 		6709DCE61BF347670089B8CC /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				675BDBF11C2802700016938A /* CoreDataManager.h */,
-				675BDBF21C2802700016938A /* CoreDataManager.m */,
 				67516BBF1C2C0A0D007282B2 /* ProstoPleerProtocols.h */,
-				6709DCE71BF347790089B8CC /* SessionManager.h */,
-				6709DCE81BF347790089B8CC /* SessionManager.m */,
 				D7F4BA041C27D27C00BB10B9 /* Track.h */,
 				D7F4BA051C27D27C00BB10B9 /* Track.m */,
 				D7F4BA061C27D27C00BB10B9 /* Track+CoreDataProperties.h */,
@@ -180,6 +176,17 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		6754DD141C45101B00162CDC /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				6754DD151C45101B00162CDC /* CoreDataManager.h */,
+				6754DD161C45101B00162CDC /* CoreDataManager.m */,
+				6754DD171C45101B00162CDC /* SessionManager.h */,
+				6754DD181C45101B00162CDC /* SessionManager.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		676443FF1BF2336B00967F5A = {
 			isa = PBXGroup;
 			children = (
@@ -206,12 +213,12 @@
 				6764442F1BF2412500967F5A /* AppDelegate.h */,
 				676444301BF2412500967F5A /* AppDelegate.m */,
 				676444351BF2412500967F5A /* Controllers */,
-				676444381BF2412500967F5A /* Helpers */,
+				6754DD141C45101B00162CDC /* Helpers */,
 				676444391BF2412500967F5A /* Info.plist */,
 				676444311BF2412500967F5A /* LaunchScreen.storyboard */,
-				676840161C43E07300ED075A /* Main.storyboard */,
 				D7A44D1A1BFC5D80007DDF1E /* Localizable.strings */,
 				6764443A1BF2412500967F5A /* main.m */,
+				676840161C43E07300ED075A /* Main.storyboard */,
 				6709DCE61BF347670089B8CC /* Models */,
 				6764443C1BF2412500967F5A /* Resource */,
 				6714CBDD1C108540005A8385 /* Utility */,
@@ -233,13 +240,6 @@
 				D79193E51BF9C9AE003690AD /* PPTopSongsListViewController.m */,
 			);
 			path = Controllers;
-			sourceTree = "<group>";
-		};
-		676444381BF2412500967F5A /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Helpers;
 			sourceTree = "<group>";
 		};
 		6764443C1BF2412500967F5A /* Resource */ = {
@@ -429,12 +429,12 @@
 				677B2F691C17040D00298947 /* MusicView.m in Sources */,
 				6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */,
 				676444451BF2412500967F5A /* main.m in Sources */,
+				6754DD1A1C45101B00162CDC /* SessionManager.m in Sources */,
 				D73479C01BF8EE2B0024053A /* PPLoginViewController.m in Sources */,
 				677AA4F11C3183ED005007FD /* ProstoPleerApp.xcdatamodeld in Sources */,
 				D79193E61BF9C9AE003690AD /* PPTopSongsListViewController.m in Sources */,
+				6754DD191C45101B00162CDC /* CoreDataManager.m in Sources */,
 				6714CBE01C108540005A8385 /* UIAlertController+Category.m in Sources */,
-				6709DCE91BF347790089B8CC /* SessionManager.m in Sources */,
-				675BDBF31C2802700016938A /* CoreDataManager.m in Sources */,
 				6762326C1C328BAF00B36727 /* User+CoreDataProperties.m in Sources */,
 				6714CBE41C108548005A8385 /* LoginView.m in Sources */,
 			);
