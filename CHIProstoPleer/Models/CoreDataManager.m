@@ -196,11 +196,6 @@ NSString * const kCurrentUser = @"currentUser";
     });
 }
 
-- (dispatch_queue_t)moveToBackgroundThread
-{
-    return self.sideQueue;
-}
-
 #pragma mark - Current user's login
 
 - (NSString *)currentUserLogin

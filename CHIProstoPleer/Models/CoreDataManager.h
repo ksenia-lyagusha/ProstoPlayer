@@ -23,7 +23,6 @@
 - (NSArray *)fetchTrackObjects;
 - (NSArray *)fetchObjectsForUserWithLogin:(NSString *)login;
 - (void)saveWithLocation:(NSString *)location andTrackInfo:(id <PPTrackInfoProtocol>)info;
-- (dispatch_queue_t)moveToBackgroundThread;
 
 - (NSString *)currentUserLogin;
 - (void)setCurrentUserLogin:(NSString *)login;

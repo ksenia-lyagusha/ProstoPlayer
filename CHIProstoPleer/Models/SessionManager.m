@@ -51,7 +51,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
                                                    delegateQueue:[[NSOperationQueue alloc] init]];
         
         self.reachabilityListener = [Reachability reachabilityForLocalWiFi];
-        self.reachabilityListener.unreachableBlock = ^(Reachability * reachability){
+        self.reachabilityListener.unreachableBlock = ^(Reachability *reachability){
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:PPSessionManagerInternetConnectionLost

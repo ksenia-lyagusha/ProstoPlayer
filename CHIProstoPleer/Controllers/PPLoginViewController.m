@@ -90,6 +90,8 @@
     }];    
 }
 
+#pragma mark - Private methods
+
 - (void)goToMainMenu
 {
     UITabBarController *tabController = [[UITabBarController alloc] init];

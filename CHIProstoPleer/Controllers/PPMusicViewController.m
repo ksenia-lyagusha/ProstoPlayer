@@ -372,40 +372,41 @@
 
 - (void)createPlayerWithURL:(NSURL *)url
 {
-    Track *track = [Track objectWithTrackID:self.info.track_id];
-    if (track)
-    {
-        [self.downloadButton setEnabled:NO];
-        [self.downloadButton setTintColor:[UIColor clearColor]];
-    }
-    else
-    {
-        [self.downloadButton setEnabled:YES];
-        [self.downloadButton setTintColor:nil];
-    }
-    
-    AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc] initWithURL:url];
-    
-    self.audioPlayer = [[AVPlayer alloc] initWithPlayerItem:avPlayerItem];
-    [self.audioPlayer play];
-    
-    self.musicView.playButton.selected = YES;
-    
-    __weak typeof(self) weakSelf = self;
-    void (^observerBlock)(CMTime time) = ^(CMTime time) {
+    dispatch_async(dispatch_get_main_queue(), ^{
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
+        Track *track = [Track objectWithTrackID:self.info.track_id];
+        if (track)
+        {
+            [self.downloadButton setEnabled:NO];
+            [self.downloadButton setTintColor:[UIColor clearColor]];
+        }
+        else
+        {
+            [self.downloadButton setEnabled:YES];
+            [self.downloadButton setTintColor:nil];
+        }
+        
+        AVPlayerItem *avPlayerItem =[[AVPlayerItem alloc] initWithURL:url];
+        
+        self.audioPlayer = [[AVPlayer alloc] initWithPlayerItem:avPlayerItem];
+        [self.audioPlayer play];
+        self.musicView.playButton.selected = YES;
+        
+        __weak typeof(self) weakSelf = self;
+        void (^observerBlock)(CMTime time) = ^(CMTime time) {
+ 
             [weakSelf updateTime];
             [weakSelf.HUD hide:YES];
             weakSelf.HUD = nil;
-        });
-        
-    };
-    self.timeObserver = [self.audioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
-                                                                       queue:dispatch_queue_create("CHI.ProstoPleerApp.avplayer", NULL)
-                                                                  usingBlock:observerBlock];
+            
+        };
+        self.timeObserver = [self.audioPlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1)
+                                                                           queue:dispatch_get_main_queue()
+                                                                      usingBlock:observerBlock];
+    });
 }
+
+#pragma mark - Notifications
 
 - (void)playerItemDidReachEnd:(NSNotification *)notification
 {

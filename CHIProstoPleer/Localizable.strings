@@ -12,5 +12,6 @@
 "InvalidData" = "Server error";
 "No more tracks" = "No more tracks";
 "NoInternet" = "No Internet Connection";
+"InternetAppeared" = "Internet connection appeared";
 "SuccessfullyAdded" = "Track successfully added to favourites";
 "AlreadyAdded" = "Track is already added to favourites";

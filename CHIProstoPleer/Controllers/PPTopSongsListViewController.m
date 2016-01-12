@@ -66,7 +66,7 @@
     self.topList = [NSMutableArray array];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetNotReachable:) name:PPSessionManagerInternetConnectionLost object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetDidAppear:) name:PPSessionManagerInternetConnectionAppeared object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -77,6 +77,12 @@
                                                                                              target:self
                                                                                              action:@selector(logoutAction:)];
     [self.tableView reloadData];
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - TableViewDataSource and TableViewDelegate
@@ -270,16 +276,17 @@
 
 - (void)internetNotReachable:(NSNotification *)notification
 {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"NoInternet", nil)
-                                                                   message:nil
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    
-    UIAlertAction *closeAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Close", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil];
-    [alert addAction:closeAction];
+    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"NoInternet", nil)];
     
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)internetDidAppear:(NSNotification *)notification
+{
+    UIAlertController *alert = [UIAlertController createAlertWithMessage:NSLocalizedString(@"InternetAppeared", nil)];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+    [self refreshTableView:self.currentPage withComplitionHandler:nil];
 }
 
 #pragma mark - PPTopSongsListViewControllerDelegate
