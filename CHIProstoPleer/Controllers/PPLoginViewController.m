@@ -9,6 +9,7 @@
 #import "PPLoginViewController.h"
 #import "PPTopSongsListViewController.h"
 #import "FavoriteViewController.h"
+#import "PPFavotireCollectionViewController.h"
 #import "LoginView.h"
 
 #import "SessionManager.h"
@@ -97,13 +98,20 @@
     UITabBarController *tabController = [[UITabBarController alloc] init];
     
     PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+//    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+    
+    PPFavotireCollectionViewController *favoriteVC = [[PPFavotireCollectionViewController alloc] init];
+    
     NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
     tabController.viewControllers = controllers;
     self.navigationController.navigationBar.tintColor = [UIColor blackColor];
     [self.navigationController pushViewController:tabController animated:YES];
     
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+         [MBProgressHUD hideHUDForView:self.view animated:YES];
+    });
+   
 }
 
 @end
