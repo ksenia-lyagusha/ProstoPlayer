@@ -219,9 +219,9 @@
         if (error)
         {
             UIAlertController *alert = [UIAlertController createAlertWithMessage:error.localizedDescription];
-            [weakSelf presentViewController:alert animated:YES completion:nil];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
             });
             
             return;

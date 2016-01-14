@@ -214,7 +214,7 @@ NSString * const PPSessionManagerInternetConnectionAppeared = @"PPSessionManager
             NSURL *fileURL = [SessionManager pathToCurrentDirectory:fileName];
             NSError *moveError;
             if (![[NSFileManager defaultManager] moveItemAtURL:location toURL:fileURL error:&moveError]) {
-
+                
                 NSLog(@"moveItemAtURL failed: %@", moveError);
                 
                 if (block)

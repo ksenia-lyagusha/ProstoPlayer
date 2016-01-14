@@ -95,21 +95,22 @@
 
 - (void)goToMainMenu
 {
-    UITabBarController *tabController = [[UITabBarController alloc] init];
-    
-    PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-//    FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
-    
-    PPFavotireCollectionViewController *favoriteVC = [[PPFavotireCollectionViewController alloc] init];
-    
-    NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
-    tabController.viewControllers = controllers;
-    self.navigationController.navigationBar.tintColor = [UIColor blackColor];
-    [self.navigationController pushViewController:tabController animated:YES];
-    
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
+        UITabBarController *tabController = [[UITabBarController alloc] init];
         
-         [MBProgressHUD hideHUDForView:self.view animated:YES];
+        PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
+//        FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+        
+        UICollectionViewFlowLayout *collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
+        PPFavotireCollectionViewController *favoriteVC = [[PPFavotireCollectionViewController alloc] initWithCollectionViewLayout:collectionViewLayout];
+        
+        NSArray *controllers = [NSArray arrayWithObjects:topSongsListVC, favoriteVC,nil];
+        tabController.viewControllers = controllers;
+        self.navigationController.navigationBar.tintColor = [UIColor blackColor];
+        [self.navigationController pushViewController:tabController animated:YES];
+        
+        [MBProgressHUD hideHUDForView:weakSelf.view animated:YES];
     });
    
 }
