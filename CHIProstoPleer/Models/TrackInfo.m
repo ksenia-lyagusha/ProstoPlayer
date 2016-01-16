@@ -27,7 +27,7 @@
         track.artist     = [trackInfo objectForKey:@"artist"];
         track.track_id   = [trackInfo objectForKey:@"id"];
         track.text_id    = [trackInfo objectForKey:@"text_id"];
-        track.duration   = [trackInfo objectForKey:@"bitrate"];
+        track.duration   = [trackInfo objectForKey:@"length"];
         
         [tracksObj addObject:track];
     }

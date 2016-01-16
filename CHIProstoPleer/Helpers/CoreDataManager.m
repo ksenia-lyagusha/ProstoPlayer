@@ -193,6 +193,7 @@ NSString * const kCurrentUser = @"currentUser";
         
         NSLog(@"Track is downloaded successfully %@", trackObj.download);
         [self.backgroundMOC save:nil];
+        [self saveContext];
     });
 }
 

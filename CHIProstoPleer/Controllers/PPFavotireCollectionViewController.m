@@ -62,11 +62,13 @@ static NSString * const reuseIdentifier = @"Cell";
     // Register cell classes
     [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:reuseIdentifier];
     
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(activateDeletionMode:)];
+    [self.collectionView addGestureRecognizer:longPress];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
+    [super viewWillAppear:YES];
     self.tabBarController.title = @"Favorites";
 }
 
@@ -112,63 +114,40 @@ static NSString * const reuseIdentifier = @"Cell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    
+    cell.contentView.translatesAutoresizingMaskIntoConstraints = NO;
     Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
     UILabel *textLabel = [[UILabel alloc] init];
     textLabel.text = object.artist;
     textLabel.numberOfLines = 0;
-    textLabel.adjustsFontSizeToFitWidth = YES;
     textLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     UILabel *detailTextLabel = [[UILabel alloc] init];
     detailTextLabel.text = object.title;
     detailTextLabel.numberOfLines = 0;
-    detailTextLabel.adjustsFontSizeToFitWidth = YES; 
     detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image"]];
-    imageView.translatesAutoresizingMaskIntoConstraints = NO;
     
     [cell.contentView addSubview:imageView];
     [cell.contentView addSubview:textLabel];
     [cell.contentView addSubview:detailTextLabel]; 
     
-    NSDictionary *views = NSDictionaryOfVariableBindings(detailTextLabel, textLabel, imageView);
+    NSDictionary *views = NSDictionaryOfVariableBindings(detailTextLabel, textLabel);
     
     NSDictionary *metrics = @{@"verticalSpacing" : @50.0};
     
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textLabel]|"
+    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textLabel(100)]|"
                                                                  options:0
                                                                  metrics:metrics
                                                                    views:views]];
     
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[textLabel]-[detailTextLabel]|"
+    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-verticalSpacing-[textLabel(50)]-[detailTextLabel(50)]|"
                                                                  options:0
                                                                  metrics:metrics
                                                                    views:views]];
     
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[detailTextLabel]|"
-                                                                 options:0
-                                                                 metrics:metrics
-                                                                   views:views]];
-    
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[textLabel(50)]|"
-                                                                 options:0
-                                                                 metrics:metrics
-                                                                   views:views]];
-    
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[detailTextLabel(50)]|"
-                                                                 options:0
-                                                                 metrics:metrics
-                                                                   views:views]];
-    
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[textLabel(50)]|"
-                                                                 options:0
-                                                                 metrics:metrics
-                                                                   views:views]];
-    
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[detailTextLabel(50)]|"
+    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[detailTextLabel(100)]|"
                                                                  options:0
                                                                  metrics:metrics
                                                                    views:views]];
@@ -188,60 +167,10 @@ static NSString * const reuseIdentifier = @"Cell";
     [self.navigationController pushViewController:musicVC animated:YES];
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
-	return YES;
-}
-
-- (BOOL)collectionView:(UICollectionView *)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    return YES;
-}
-
-//- (void)collectionView:(UICollectionView *)collectionView commitEditingStyle:(UICollectionViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    if (editingStyle == UICollectionViewCellEditingStyleDelete)
-//    {
-//        Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-//        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:object];
-//        
-//        NSError *error;
-//        [[NSFileManager defaultManager] removeItemAtURL:[NSURL URLWithString:object.download] error:&error];
-//        
-//        if (error)
-//        {
-//            NSLog(@"%@", error);
-//        }
-//    }
-//    
-//    [[CoreDataManager sharedInstanceCoreData] saveContext];
-//}
-
-// Uncomment this method to specify if the specified item should be selected
-//- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-//    return YES;
-//}
-
-
-/*
-// Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
-	return NO;
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
-}
-
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
-}
-*/
-
 #pragma mark - UICollectionViewFlowLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(50, 150);
+    return CGSizeMake(100, 150);
 }
 
 #pragma mark - PPTopSongsListViewControllerDelegate
@@ -302,7 +231,7 @@ static NSString * const reuseIdentifier = @"Cell";
             
         case NSFetchedResultsChangeDelete: {
             [self.blockOperation addExecutionBlock:^{
-                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];
+                [collectionView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]];                
             }];
             break;
         }
@@ -325,7 +254,7 @@ static NSString * const reuseIdentifier = @"Cell";
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath
 {
-    __weak UICollectionView *collectionView = self.collectionView;
+    __weak UICollectionView *collectionView = self.collectionView;    
     switch (type) {
         case NSFetchedResultsChangeInsert: {
             if ([self.collectionView numberOfSections] > 0) {
@@ -366,7 +295,6 @@ static NSString * const reuseIdentifier = @"Cell";
             }];
             break;
         }
-            
         default:
             break;
     }
@@ -374,7 +302,6 @@ static NSString * const reuseIdentifier = @"Cell";
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    // Checks if we should reload the collection view to fix a bug @ http://openradar.appspot.com/12954582
     if (self.shouldReloadCollectionView)
     {
         [self.collectionView reloadData];
@@ -383,8 +310,41 @@ static NSString * const reuseIdentifier = @"Cell";
         [self.collectionView performBatchUpdates:^{
             
             [self.blockOperation start];
+            
         } completion:nil];
     }
 }
 
+-(void)activateDeletionMode:(UILongPressGestureRecognizer *)recognizer
+{
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:[recognizer locationInView:self.collectionView]];
+        
+        Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+        [[[CoreDataManager sharedInstanceCoreData] managedObjectContext] deleteObject:object];
+        
+        NSError *error;
+        [[NSFileManager defaultManager] removeItemAtURL:[NSURL URLWithString:object.download] error:&error];
+        
+        if (error)
+        {
+            NSLog(@"%@", error);
+        }
+        
+        [[CoreDataManager sharedInstanceCoreData] saveContext];
+        
+        NSLog(@"Deleted from DB");
+    }
+}
+
+//- (void)revertString
+//{
+//    NSString *string = @"string";
+//    NSMutableArray *revertArray = [NSMutableArray array];
+//    NSMutableString *revertString = [NSMutableString string];
+//    for (NSInteger i = [string length]; i >= 0; i--) {
+//        [revertArray addObject:[NSString stringWithFormat:@"%C", [string characterAtIndex:i]]];
+//        [revertString stringByAppendingString:[revertArray objectAtIndex:i]];
+//    }
+//}
 @end
