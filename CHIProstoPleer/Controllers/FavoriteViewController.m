@@ -8,6 +8,7 @@
 
 #import "FavoriteViewController.h"
 #import "PPMusicViewController.h"
+#import "CustomTableViewCell.h"
 
 #import "CoreDataManager.h"
 #import "Track.h"
@@ -52,6 +53,7 @@
     UIEdgeInsets adjustForTabbarInsets = UIEdgeInsetsMake(0, 0, CGRectGetHeight(self.tabBarController.tabBar.frame), 0);
     self.tableView.contentInset = adjustForTabbarInsets;
     self.tableView.scrollIndicatorInsets = adjustForTabbarInsets;
+    [self configureTableView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -60,58 +62,35 @@
     self.tabBarController.title = @"Favorites";
 }
 
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (_fetchedResultsController)
-        return _fetchedResultsController;
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    [fetchRequest setEntity:entity];
-    
-    NSString *user = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY user.login = %@", user];
-    [fetchRequest setPredicate:predicate];
-    
-    [fetchRequest setFetchBatchSize:20];
-    
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-    return _fetchedResultsController;
-}
-
 #pragma mark - TableViewDataSource and TableViewDelegate
 
-- (NSInteger)tableView:(UITableView*)tableView numberOfRowsInSection:(NSInteger)sectionIndex
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)sectionIndex
 {
     return [[self.fetchedResultsController fetchedObjects] count];
 }
 
-- (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
+- (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
+    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomCell"];
     
     if (!cell)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
+        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"CustomCell"];
     }
-    [cell setPreservesSuperviewLayoutMargins:NO];
-    [cell setLayoutMargins:UIEdgeInsetsZero];
-    
+   
     Track *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = object.artist;
-    cell.detailTextLabel.text = object.title;
-    
+    cell.customTextLabel.text = object.artist;
+    cell.customDetailTextLabel.text = object.title;
     return cell;
 }
 
-- (BOOL)tableView:(UITableView*)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
+- (void)configureTableView
+{
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 160.0;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath*)indexPath
 {
     return YES;
 }
@@ -151,7 +130,33 @@
     [self.navigationController pushViewController:musicVC animated:YES];
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
+#pragma mark - NSFetchedResultsController & Delegate
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController)
+        return _fetchedResultsController;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    [fetchRequest setEntity:entity];
+    
+    NSString *user = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY user.login = %@", user];
+    [fetchRequest setPredicate:predicate];
+    
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    return _fetchedResultsController;
+}
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {

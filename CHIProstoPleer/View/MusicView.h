@@ -15,6 +15,7 @@
 - (void)playAction:(id)sender;
 - (void)nextTrackAction;
 - (void)previousTrackAction;
+- (void)sliderAction:(id)sender;
 
 @end
 
@@ -22,8 +23,11 @@
 
 @property (weak, nonatomic) id <PPMusicViewDelegate>delegate;
 
-@property (strong, nonatomic) UIButton *playButton;
-@property (strong, nonatomic) UIButton *nextTrack;
-@property (strong, nonatomic) UIButton *previousTrack;
+@property (strong, nonatomic) UIButton    *playButton;
+@property (strong, nonatomic) UIButton    *nextTrack;
+@property (strong, nonatomic) UIButton    *previousTrack;
+@property (nonatomic, strong) UISlider    *currentTimeSlider;
+@property (nonatomic, strong) UILabel     *playedTime;
+@property (nonatomic, strong) UILabel     *trackTitle;
 
 @end

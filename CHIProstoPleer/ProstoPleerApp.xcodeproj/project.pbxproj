@@ -16,6 +16,7 @@
 		6754DD191C45101B00162CDC /* CoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6754DD161C45101B00162CDC /* CoreDataManager.m */; };
 		6754DD1A1C45101B00162CDC /* SessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6754DD181C45101B00162CDC /* SessionManager.m */; };
 		675BDBF51C285F990016938A /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 675BDBF41C285F990016938A /* CoreData.framework */; };
+		67622F8E1C4E37E300EA4844 /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 67622F8D1C4E37E300EA4844 /* CustomTableViewCell.m */; };
 		6762326C1C328BAF00B36727 /* User+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 676232691C328BAF00B36727 /* User+CoreDataProperties.m */; };
 		6762326D1C328BAF00B36727 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 6762326B1C328BAF00B36727 /* User.m */; };
 		676444401BF2412500967F5A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 676444301BF2412500967F5A /* AppDelegate.m */; };
@@ -66,6 +67,8 @@
 		6754DD171C45101B00162CDC /* SessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionManager.h; sourceTree = "<group>"; };
 		6754DD181C45101B00162CDC /* SessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionManager.m; sourceTree = "<group>"; };
 		675BDBF41C285F990016938A /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		67622F8C1C4E37E300EA4844 /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
+		67622F8D1C4E37E300EA4844 /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
 		676232681C328BAF00B36727 /* User+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "User+CoreDataProperties.h"; sourceTree = "<group>"; };
 		676232691C328BAF00B36727 /* User+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "User+CoreDataProperties.m"; sourceTree = "<group>"; };
 		6762326A1C328BAF00B36727 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
@@ -175,6 +178,8 @@
 				6714CBE31C108548005A8385 /* LoginView.m */,
 				677B2F671C17040C00298947 /* MusicView.h */,
 				677B2F681C17040C00298947 /* MusicView.m */,
+				67622F8C1C4E37E300EA4844 /* CustomTableViewCell.h */,
+				67622F8D1C4E37E300EA4844 /* CustomTableViewCell.m */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -430,6 +435,7 @@
 				D7A1FE011C0591CD009EF802 /* PPMusicViewController.m in Sources */,
 				D7F4BA081C27D27C00BB10B9 /* Track.m in Sources */,
 				6762326D1C328BAF00B36727 /* User.m in Sources */,
+				67622F8E1C4E37E300EA4844 /* CustomTableViewCell.m in Sources */,
 				D7F4BA091C27D27C00BB10B9 /* Track+CoreDataProperties.m in Sources */,
 				677B2F691C17040D00298947 /* MusicView.m in Sources */,
 				6774C8E91C2AF9C6000B3F00 /* TrackInfo.m in Sources */,

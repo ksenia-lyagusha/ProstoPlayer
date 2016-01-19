@@ -8,6 +8,7 @@
 
 #import "PPTopSongsListViewController.h"
 #import "PPMusicViewController.h"
+#import "CustomTableViewCell.h"
 
 #import "UIAlertController+Category.h"
 #import "ProstoPleerProtocols.h"
@@ -67,6 +68,8 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetNotReachable:) name:PPSessionManagerInternetConnectionLost object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(internetDidAppear:) name:PPSessionManagerInternetConnectionAppeared object:nil];
+    
+    [self configureTableView];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -102,11 +105,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"identifier"];
+    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CustomCell"];
     
     if (!cell)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"identifier"];
+        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"CustomCell"];
     }
     id <PPTrackInfoProtocol>value;
     if (self.filteredList)
@@ -119,15 +122,11 @@
         
     }
     
-    cell.textLabel.text = value.artist;
-    cell.detailTextLabel.text = value.title;
+    cell.customTextLabel.text = value.artist;
+    cell.customDetailTextLabel.text = value.title;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
 //    favoriteButton.selected = trackObj != nil;
-
-    [cell setPreservesSuperviewLayoutMargins:NO];
-    [cell setLayoutMargins:UIEdgeInsetsZero];
-    
     return cell;
 }
 
@@ -270,6 +269,12 @@
             [weakSelf.tableView reloadData];
         });
     }];
+}
+
+- (void)configureTableView
+{
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    self.tableView.estimatedRowHeight = 40;
 }
 
 #pragma mark - Reachability

@@ -100,7 +100,7 @@
         UITabBarController *tabController = [[UITabBarController alloc] init];
         
         PPTopSongsListViewController *topSongsListVC = [[PPTopSongsListViewController alloc] init];
-//        FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init];
+//        FavoriteViewController *favoriteVC = [[FavoriteViewController alloc] init]; 
         
         UICollectionViewFlowLayout *collectionViewLayout = [[UICollectionViewFlowLayout alloc] init];
         PPFavotireCollectionViewController *favoriteVC = [[PPFavotireCollectionViewController alloc] initWithCollectionViewLayout:collectionViewLayout];

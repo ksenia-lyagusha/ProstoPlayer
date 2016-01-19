@@ -19,10 +19,6 @@
 
 @interface PPMusicViewController () <PPMusicViewDelegate>
 
-@property (nonatomic, strong) UISlider        *currentTimeSlider;
-@property (nonatomic, strong) UILabel         *playedTime;
-@property (nonatomic, strong) UILabel         *trackTitle;
-@property (nonatomic, strong) UIImageView     *imageView;
 @property (nonatomic, strong) NSArray         *topList;
 @property (nonatomic, strong) id              timeObserver;
 @property (nonatomic, strong) MusicView       *musicView;
@@ -38,40 +34,27 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"background"]];
-    self.imageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.imageView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.imageView.layer.masksToBounds = YES;
     
     self.title = @"Music player";
-    
-    self.currentTimeSlider = [[UISlider alloc] init];
-    [self.currentTimeSlider addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
-    self.currentTimeSlider.continuous = YES; 
-    self.currentTimeSlider.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    self.playedTime = [[UILabel alloc] init];
-    self.playedTime.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    self.trackTitle = [[UILabel alloc] init];
-    self.trackTitle.lineBreakMode = NSLineBreakByWordWrapping;
-    self.trackTitle.numberOfLines = 0;
-    self.trackTitle.textAlignment = NSTextAlignmentCenter;
-    self.trackTitle.translatesAutoresizingMaskIntoConstraints = NO;
 
     self.musicView = [[MusicView alloc] init];
     self.musicView.delegate = self;
     self.musicView.translatesAutoresizingMaskIntoConstraints = NO;
-    
-    [self.view addSubview:self.imageView];
-    [self.view addSubview:self.musicView];
-    [self.view addSubview:self.playedTime];
-    [self.view addSubview:self.trackTitle];
-    [self.view addSubview:self.currentTimeSlider];
-  
-    [self setupConstraints];
 
+    [self.view addSubview:self.musicView];
+
+    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView);
+    
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|[_musicView]|"
+                                                                      options:0
+                                                                      metrics:nil
+                                                                        views:views]];
+
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_musicView]|"
+                                                                          options:0
+                                                                          metrics:nil
+                                                                            views:views]];
+    
     MPRemoteCommandCenter *commandCenter = [MPRemoteCommandCenter sharedCommandCenter];
     
     commandCenter.previousTrackCommand.enabled = YES;
@@ -239,19 +222,19 @@
 
 - (void)updateTime
 {
-    self.currentTimeSlider.maximumValue = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
-    [self.currentTimeSlider setValue:CMTimeGetSeconds(self.audioPlayer.currentTime) animated:YES];
+    self.musicView.currentTimeSlider.maximumValue = CMTimeGetSeconds(self.audioPlayer.currentItem.asset.duration);
+    [self.musicView.currentTimeSlider setValue:CMTimeGetSeconds(self.audioPlayer.currentTime) animated:YES];
     
 //    Access Current Time
     NSTimeInterval aCurrentTime = CMTimeGetSeconds(self.audioPlayer.currentTime);
     
 //    update UI with currentTime;
-    self.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
+    self.musicView.playedTime.text = [NSString stringWithFormat:@"%02li:%02li", (long)aCurrentTime/60, (long)aCurrentTime %60];
     
-    NSArray *dividedString = [self.trackTitle.text componentsSeparatedByString:@"-"];
+    NSArray *dividedString = [self.musicView.trackTitle.text componentsSeparatedByString:@"-"];
     
-    NSDictionary *info = @{MPNowPlayingInfoPropertyElapsedPlaybackTime : self.playedTime.text,
-                                  MPMediaItemPropertyPlaybackDuration  : @(self.currentTimeSlider.maximumValue),
+    NSDictionary *info = @{MPNowPlayingInfoPropertyElapsedPlaybackTime : self.musicView.playedTime.text,
+                                  MPMediaItemPropertyPlaybackDuration  : @(self.musicView.currentTimeSlider.maximumValue),
                                               MPMediaItemPropertyTitle : [dividedString objectAtIndex:0],
                                              MPMediaItemPropertyArtist : [dividedString objectAtIndex:1]
                            };
@@ -263,110 +246,7 @@
     NSString *artist = song.artist;
     NSString *track = song.title;
     
-    self.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
-}
-
-- (void)setupConstraints
-{
-    NSDictionary *views = NSDictionaryOfVariableBindings(_musicView, _currentTimeSlider, _trackTitle, _imageView);
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[_musicView(280)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_musicView(50)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    NSLayoutConstraint *verticalConstraintForView = [NSLayoutConstraint constraintWithItem:self.musicView
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                multiplier:1
-                                                                                  constant:0];
-    [self.view addConstraint:verticalConstraintForView];
-    
-    NSLayoutConstraint *horizontalConstraintForView = [NSLayoutConstraint constraintWithItem:self.musicView
-                                                                                   attribute:NSLayoutAttributeCenterY
-                                                                                   relatedBy:NSLayoutRelationEqual
-                                                                                      toItem:self.view
-                                                                                   attribute:NSLayoutAttributeBottom
-                                                                                  multiplier:0.8
-                                                                                    constant:0];
-    [self.view addConstraint:horizontalConstraintForView];
-    
-    NSLayoutConstraint *horizontalConstraintForSlider = [NSLayoutConstraint constraintWithItem:self.currentTimeSlider
-                                                                                     attribute:NSLayoutAttributeCenterY
-                                                                                     relatedBy:NSLayoutRelationEqual
-                                                                                        toItem:self.view
-                                                                                     attribute:NSLayoutAttributeBottom
-                                                                                    multiplier:0.6
-                                                                                      constant:0];
-    [self.view addConstraint:horizontalConstraintForSlider];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-30-[_currentTimeSlider]-|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_trackTitle(50)]"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[_trackTitle]-|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    NSLayoutConstraint *verticalConstraintForTime =  [NSLayoutConstraint constraintWithItem:self.playedTime
-                                                                                  attribute:NSLayoutAttributeCenterX
-                                                                                  relatedBy:NSLayoutRelationEqual
-                                                                                     toItem:self.view
-                                                                                  attribute:NSLayoutAttributeCenterX
-                                                                                 multiplier:1
-                                                                                   constant:0];
-    [self.view addConstraint:verticalConstraintForTime];
-    
-    NSLayoutConstraint *horizontalConstraintForTime = [NSLayoutConstraint constraintWithItem:self.playedTime
-                                                                                   attribute:NSLayoutAttributeCenterY
-                                                                                   relatedBy:NSLayoutRelationEqual
-                                                                                      toItem:self.view
-                                                                                   attribute:NSLayoutAttributeBottom
-                                                                                  multiplier:0.65
-                                                                                    constant:0];
-    [self.view addConstraint:horizontalConstraintForTime];
-    
-    NSLayoutConstraint *yCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
-                                                                                 attribute:NSLayoutAttributeCenterY
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeCenterY
-                                                                                multiplier:1.0
-                                                                                  constant:0];
-    [self.view addConstraint:yCenterConstraintForTitle];
-    
-    NSLayoutConstraint *xCenterConstraintForTitle = [NSLayoutConstraint constraintWithItem:self.trackTitle
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                 relatedBy:NSLayoutRelationEqual
-                                                                                    toItem:self.view
-                                                                                 attribute:NSLayoutAttributeCenterX
-                                                                                multiplier:1.0
-                                                                                  constant:0];
-    [self.view addConstraint:xCenterConstraintForTitle];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_imageView]|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[_imageView]|"
-                                                                      options:0
-                                                                      metrics:nil
-                                                                        views:views]];
+    self.musicView.trackTitle.text = [NSString stringWithFormat:@"%@ - %@", artist, track];
 }
 
 - (void)createPlayerWithURL:(NSURL *)url

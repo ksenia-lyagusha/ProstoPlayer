@@ -16,6 +16,9 @@
 
 @interface PPFavotireCollectionViewController () <PPTopSongsListViewControllerDelegate, NSFetchedResultsControllerDelegate>
 
+//@property (weak, nonatomic) IBOutlet UILabel *trackTitle;
+//@property (weak, nonatomic) IBOutlet UILabel *artist;
+
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 
 @property (nonatomic)         NSInteger currentIndex;
@@ -27,6 +30,8 @@
 @implementation PPFavotireCollectionViewController
 
 static NSString * const reuseIdentifier = @"Cell";
+
+#pragma mark - Initialization
 
 - (instancetype)initWithCollectionViewLayout:(UICollectionViewFlowLayout *)collectionViewFlowLayout
 {
@@ -72,33 +77,7 @@ static NSString * const reuseIdentifier = @"Cell";
     self.tabBarController.title = @"Favorites";
 }
 
-- (NSFetchedResultsController *)fetchedResultsController
-{
-    if (_fetchedResultsController)
-        return _fetchedResultsController;
-    
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
-    [fetchRequest setEntity:entity];
-    
-    NSString *user = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY user.login = %@", user];
-    [fetchRequest setPredicate:predicate];
-    
-    [fetchRequest setFetchBatchSize:20];
-    
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
-    NSArray *sortDescriptors = @[sortDescriptor];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = self;
-    self.fetchedResultsController = aFetchedResultsController;
-    
-    return _fetchedResultsController;
-}
-
-#pragma mark <UICollectionViewDataSource>
+#pragma mark - UICollectionViewDataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
@@ -126,6 +105,8 @@ static NSString * const reuseIdentifier = @"Cell";
     detailTextLabel.text = object.title;
     detailTextLabel.numberOfLines = 0;
     detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    detailTextLabel.textColor = [UIColor grayColor];
+    detailTextLabel.font = [UIFont systemFontOfSize:14 weight:UIFontWeightLight];
     
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"image"]];
     
@@ -137,7 +118,7 @@ static NSString * const reuseIdentifier = @"Cell";
     
     NSDictionary *metrics = @{@"verticalSpacing" : @50.0};
     
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textLabel(100)]|"
+    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[textLabel(100)]-|"
                                                                  options:0
                                                                  metrics:metrics
                                                                    views:views]];
@@ -147,14 +128,21 @@ static NSString * const reuseIdentifier = @"Cell";
                                                                  metrics:metrics
                                                                    views:views]];
     
-    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[detailTextLabel(100)]|"
+    [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[detailTextLabel(100)]-|"
                                                                  options:0
                                                                  metrics:metrics
                                                                    views:views]];
+    
+//    self.trackTitle.text = object.title;
+//    self.artist.text     = object.artist;
+//    
+//    [cell addSubview:self.artist];
+//    [cell addSubview:self.trackTitle];
+    
     return cell;
 }
 
-#pragma mark <UICollectionViewDelegate>
+#pragma mark - UICollectionViewDelegate
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -207,7 +195,33 @@ static NSString * const reuseIdentifier = @"Cell";
     return song;
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
+#pragma mark - NSFetchedResultsController & Delegate
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (_fetchedResultsController)
+        return _fetchedResultsController;
+    
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Track" inManagedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext]];
+    [fetchRequest setEntity:entity];
+    
+    NSString *user = [[CoreDataManager sharedInstanceCoreData] currentUserLogin];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY user.login = %@", user];
+    [fetchRequest setPredicate:predicate];
+    
+    [fetchRequest setFetchBatchSize:20];
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:NO];
+    NSArray *sortDescriptors = @[sortDescriptor];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreDataManager sharedInstanceCoreData] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
+    aFetchedResultsController.delegate = self;
+    self.fetchedResultsController = aFetchedResultsController;
+    
+    return _fetchedResultsController;
+}
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
@@ -314,6 +328,7 @@ static NSString * const reuseIdentifier = @"Cell";
         } completion:nil];
     }
 }
+#pragma mark - Action Methods
 
 -(void)activateDeletionMode:(UILongPressGestureRecognizer *)recognizer
 {
@@ -337,14 +352,4 @@ static NSString * const reuseIdentifier = @"Cell";
     }
 }
 
-//- (void)revertString
-//{
-//    NSString *string = @"string";
-//    NSMutableArray *revertArray = [NSMutableArray array];
-//    NSMutableString *revertString = [NSMutableString string];
-//    for (NSInteger i = [string length]; i >= 0; i--) {
-//        [revertArray addObject:[NSString stringWithFormat:@"%C", [string characterAtIndex:i]]];
-//        [revertString stringByAppendingString:[revertArray objectAtIndex:i]];
-//    }
-//}
 @end
